@@ -81,19 +81,15 @@ function Show-Header {
     Write-Host "`n"  # Reduced gap
 }
 
-# Function to show the categories as a sub-menu
+# Function to show the categories in a simple numbered list format
 function Show-CategoryMenu {
-    $MenuWidth = 30
     $categories = Get-MenuOptions
-
-    Write-Host (Align-Header "Category Menu" $MenuWidth) -ForegroundColor Yellow
     $counter = 1
     foreach ($category in $categories) {
-        Write-Host "$counter. $($category.name) [$($category.apps.Count)]" -ForegroundColor Cyan
+        Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
         $counter++
     }
-    Write-Host "0. Exit" -ForegroundColor Red
-    Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
+    Write-Host "[0] Exit" -ForegroundColor Red
     Write-Host "`n"  # Reduced gap
 }
 
@@ -108,9 +104,7 @@ function Show-AppsInCategory {
 
     if ($selectedCategory) {
         Clear-Host
-        $MenuWidth = 30
-        Write-Host (Align-Header $selectedCategory.name $MenuWidth) -ForegroundColor Yellow
-        
+        Write-Host "=== $($selectedCategory.name) ===" -ForegroundColor Yellow
         $counter = 1
         foreach ($app in $selectedCategory.apps) {
             Write-Host "$counter. $($app.name)" -ForegroundColor Green
@@ -119,9 +113,7 @@ function Show-AppsInCategory {
             Write-Host "" # Add extra line for readability
             $counter++
         }
-        Write-Host "0. Back to Category Menu" -ForegroundColor Red
-        Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
-        Write-Host "`n"  # Reduced gap
+        Write-Host "[0] Back to Category Menu" -ForegroundColor Red
     } else {
         Write-Host "Invalid category selection." -ForegroundColor Red
     }

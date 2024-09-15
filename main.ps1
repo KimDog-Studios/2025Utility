@@ -3,6 +3,9 @@
 # URL of the winget menu script
 $wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
 
+# URL of the Windows Manager script
+$windowsManagerUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/windowsManager.ps1"
+
 # Function to maximize the PowerShell window
 function Set-FullScreenWindow {
     $console = $Host.UI.RawUI
@@ -125,6 +128,19 @@ function Show-MainMenu {
     Write-Host "`n"  # Reduced gap
 }
 
+# Function to fetch and execute the Windows Manager script from GitHub
+function Run-WindowsManager {
+    try {
+        $scriptContent = Invoke-RestMethod -Uri $windowsManagerUrl
+        Write-Host "Executing Windows Manager script..." -ForegroundColor Green
+        
+        # Execute the fetched script content
+        Invoke-Expression $scriptContent
+    } catch {
+        Write-Host "Failed to fetch or execute Windows Manager script: $_" -ForegroundColor Red
+    }
+}
+
 # Function to fetch and execute the winget menu script from GitHub
 function Run-WingetMenu {
     try {
@@ -142,7 +158,7 @@ function Run-WingetMenu {
 function Option1 {
     Clear-Host
     Write-Host "You selected Option 1: Windows Manager" -ForegroundColor Green
-    # Add your Option 1 code here
+    Run-WindowsManager
 }
 
 # Function for Option 2

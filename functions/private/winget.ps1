@@ -6,24 +6,17 @@ function Set-FullScreenWindow {
     $currentSize = $console.WindowSize
     $maxSize = $console.MaxWindowSize
 
-    # Set window size to maximum
     $console.WindowSize = $maxSize
     $console.BufferSize = $maxSize
-
-    # Set window position to the top-left corner of the screen
     $console.WindowPosition = New-Object System.Management.Automation.Host.Coordinates -ArgumentList 0,0
 }
 
-# Call the function to set the window to full screen
 Set-FullScreenWindow
 
-# Define the URL for the JSON file
 $jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
 
-# Function to fetch and parse JSON data from GitHub
 function Get-JsonData {
     try {
-        # Fetch and parse JSON data
         $jsonData = Invoke-RestMethod -Uri $jsonFileUrl -Method Get
         return $jsonData.categories
     } catch {
@@ -32,7 +25,6 @@ function Get-JsonData {
     }
 }
 
-# Function to align header text
 function Align-Header {
     param (
         [string]$Text,
@@ -48,7 +40,6 @@ function Align-Header {
     $AlignedText
 }
 
-# Function to show the header
 function Show-Header {
     Clear-Host
     $HeaderWidth = 30
@@ -56,10 +47,9 @@ function Show-Header {
     Write-Host (Align-Header "KimDog's Winget Menu" $HeaderWidth) -ForegroundColor Yellow
     Write-Host (Align-Header "Last Updated: 2024-09-15" $HeaderWidth) -ForegroundColor Cyan
     Write-Host (Align-Header "=" $HeaderWidth) -ForegroundColor Cyan
-    Write-Host "`n"  # Reduced gap
+    Write-Host "`n"
 }
 
-# Function to show the categories in a simple numbered list format
 function Show-CategoryMenu {
     $categories = Get-JsonData
     $counter = 1
@@ -68,10 +58,9 @@ function Show-CategoryMenu {
         $counter++
     }
     Write-Host "[B] Exit" -ForegroundColor Red
-    Write-Host "`n"  # Reduced gap
+    Write-Host "`n"
 }
 
-# Function to show the apps within a selected category with pagination and description container
 function Show-AppsInCategory {
     param (
         [int]$categoryIndex
@@ -86,7 +75,7 @@ function Show-AppsInCategory {
         $itemsPerPage = 5
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
-        $descriptionWidth = 60  # Set description width to 60 characters
+        $descriptionWidth = 60
         $borderChar = "_"
 
         while ($true) {
@@ -100,7 +89,6 @@ function Show-AppsInCategory {
                 $app = $apps[$i]
                 $description = $app.description
 
-                # Wrap description text to the specified width
                 $wrappedDescription = $description -split "(?<=\G.{${descriptionWidth}})"
                 
                 Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
@@ -108,13 +96,13 @@ function Show-AppsInCategory {
                 Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
                 
                 foreach ($line in $wrappedDescription) {
-                    $paddedLine = $line.PadLeft($descriptionWidth + 2) # Align text with padding
+                    $paddedLine = $line.PadLeft($descriptionWidth + 2)
                     Write-Host $paddedLine -ForegroundColor Gray
                 }
 
                 Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
                 Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
-                Write-Host "" # Add extra line for readability
+                Write-Host ""
             }
 
             Write-Host "Page $page of $totalPages"
@@ -144,7 +132,7 @@ function Show-AppsInCategory {
                     Write-Host "You are already on the first page." -ForegroundColor Red
                 }
             } elseif ($input -eq 'B') {
-                return # Return to the category menu
+                return
             } else {
                 Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red
             }
@@ -154,7 +142,6 @@ function Show-AppsInCategory {
     }
 }
 
-# Function to install an application using winget
 function Install-Application {
     param (
         [string]$wingetId
@@ -176,7 +163,6 @@ function Install-Application {
     }
 }
 
-# Function to handle app selection
 function Handle-AppSelection {
     param (
         [int]$appIndex,
@@ -198,7 +184,6 @@ function Handle-AppSelection {
     }
 }
 
-# Main menu loop
 while ($true) {
     Show-Header
     Show-CategoryMenu

@@ -5,37 +5,30 @@
       "options": [
         {
           "name": "Microsoft Edge",
-          "description": "World-class performance with more privacy, more productivity, and more value while you browse.",
           "wingetId": "Microsoft.Edge"
         },
         {
           "name": "Google Chrome",
-          "description": "A more simple, secure, and faster web browser than ever, with Google’s smarts built-in.",
           "wingetId": "Google.Chrome"
         },
         {
           "name": "Mozilla Firefox",
-          "description": "Firefox Browser, also known as Mozilla Firefox or simply Firefox, is a free and open-source web browser developed by the Mozilla Foundation.",
           "wingetId": "Mozilla.Firefox"
         },
         {
           "name": "Vivaldi",
-          "description": "The new Vivaldi browser protects you from trackers, blocks unwanted ads, and puts you in control with unique built-in features. Get Vivaldi and browse fast.",
           "wingetId": "Vivaldi.Vivaldi"
         },
         {
           "name": "Brave",
-          "description": "The new Brave browser blocks ads and trackers that slow you down and invade your privacy. Discover a new way of thinking about how the web can work.",
           "wingetId": "Brave.Brave"
         },
         {
           "name": "Opera",
-          "description": "Opera is a multi-platform web browser developed by Opera Software. Opera is a Chromium-based browser. It distinguishes itself from other browsers through its user interface, functionality, and other features.",
           "wingetId": "Opera.Opera"
         },
         {
           "name": "OperaGX",
-          "description": "Opera GX is a special version of the Opera browser which, on top of Opera’s great features for privacy, security and efficiency, includes special features designed to complement gaming.",
           "wingetId": "Opera.OperaGX"
         }
       ]
@@ -45,27 +38,22 @@
       "options": [
         {
           "name": "Notepad++",
-          "description": "Notepad++ is a free source code editor that supports several languages.",
           "wingetId": "Notepad++.Notepad++"
         },
         {
           "name": "Visual Studio Code",
-          "description": "Visual Studio Code is a free source code editor that supports several languages.",
           "wingetId": "Microsoft.VisualStudioCode"
         },
         {
           "name": "Sublime Text 4",
-          "description": "Sublime Text is a free source code editor that supports several languages.",
           "wingetId": "SublimeHQ.SublimeText.4"
         },
         {
           "name": "Atom",
-          "description": "Atom is a free and open-source text and source code editor.",
           "wingetId": "GitHub.Atom"
         },
         {
           "name": "Visual Studio Community 2022 Preview",
-          "description": "Visual Studio Community 2022 Preview is a free source code editor that supports several languages.",
           "wingetId": "Microsoft.VisualStudio.2022.Community.Preview"
         }
       ]
@@ -75,7 +63,6 @@
       "options": [
         {
           "name": "7-Zip",
-          "description": "7-Zip is a file archiver with a high compression ratio.",
           "wingetId": "7zip.7zip"
         }
       ]
@@ -85,7 +72,6 @@
       "options": [
         {
           "name": "Discord",
-          "description": "Cross-platform chat and voice software that lets you and your friends talk, stay in touch, and talk.",
           "wingetId": "Discord.Discord"
         }
       ]

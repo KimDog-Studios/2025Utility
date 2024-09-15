@@ -47,7 +47,11 @@ function Show-Header {
 
 function Show-CategoryMenu {
     $categories = Get-JsonData
-    $categories | ForEach-Object { Write-Host "[$($_.Index + 1)] $($_.name)" -ForegroundColor Cyan }
+    $counter = 1
+    foreach ($category in $categories) {
+        Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
+        $counter++
+    }
     Write-Host "[B] Exit" -ForegroundColor Red
     Write-Host "`n"
 }
@@ -74,9 +78,10 @@ function Show-AppsInCategory {
             $startIndex = ($page - 1) * $itemsPerPage
             $endIndex = [math]::Min($startIndex + $itemsPerPage, $totalApps)
 
-            $apps[$startIndex..($endIndex - 1)] | ForEach-Object {
-                Write-Host "$($_.Index + $startIndex + 1). $($_.name)" -ForegroundColor Green
-                Write-Host "Winget ID: $($_.wingetId)" -ForegroundColor Cyan
+            for ($i = $startIndex; $i -lt $endIndex; $i++) {
+                $app = $apps[$i]
+                Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
+                Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
                 Write-Host ""
             }
 
@@ -88,22 +93,14 @@ function Show-AppsInCategory {
             $input = Read-Host "Choose an option"
 
             switch ($input) {
-                '^(\d+)$' {
-                    $selectedAppIndex = [int]$input - 1
-                    if ($selectedAppIndex -ge 0 -and $selectedAppIndex -lt $totalApps) {
-                        Handle-AppSelection -appIndex ($selectedAppIndex + 1) -categoryIndex $categoryIndex
-                    } else {
-                        Write-Host "Invalid app selection, please try again." -ForegroundColor Red
-                    }
-                }
-                'N', 'n' {
+                'N' {
                     if ($page -lt $totalPages) {
                         $page++
                     } else {
                         Write-Host "You are already on the last page." -ForegroundColor Red
                     }
                 }
-                'P', 'p' {
+                'P' {
                     if ($page -gt 1) {
                         $page--
                     } else {
@@ -114,7 +111,16 @@ function Show-AppsInCategory {
                     return
                 }
                 default {
-                    Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red
+                    if ($input -match '^\d+$') {
+                        $selectedAppIndex = [int]$input - 1
+                        if ($selectedAppIndex -ge 0 -and $selectedAppIndex -lt $totalApps) {
+                            Handle-AppSelection -appIndex ($selectedAppIndex + 1) -categoryIndex $categoryIndex
+                        } else {
+                            Write-Host "Invalid app selection, please try again." -ForegroundColor Red
+                        }
+                    } else {
+                        Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red
+                    }
                 }
             }
         }

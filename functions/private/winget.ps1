@@ -93,7 +93,7 @@ function Show-CategoryMenu {
     Write-Host "`n"  # Reduced gap
 }
 
-# Function to show the apps within a selected category
+# Function to show the apps within a selected category with pagination
 function Show-AppsInCategory {
     param (
         [int]$categoryIndex
@@ -103,23 +103,61 @@ function Show-AppsInCategory {
     $selectedCategory = $categories[$categoryIndex - 1]
 
     if ($selectedCategory) {
-        Clear-Host
-        Write-Host "=== $($selectedCategory.name) ===" -ForegroundColor Yellow
+        $apps = $selectedCategory.options
+        $totalApps = $apps.Count
+        $itemsPerPage = 20
+        $page = 1
+        $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
 
-        if ($selectedCategory.options.Count -eq 0) {
-            Write-Host "No apps available in this category." -ForegroundColor Red
-        } else {
-            $counter = 1
-            foreach ($app in $selectedCategory.options) {
-                Write-Host "$counter. $($app.name)" -ForegroundColor Green
+        while ($true) {
+            Clear-Host
+            Write-Host "=== $($selectedCategory.name) ===" -ForegroundColor Yellow
+
+            $startIndex = ($page - 1) * $itemsPerPage
+            $endIndex = [math]::Min($startIndex + $itemsPerPage, $totalApps)
+
+            for ($i = $startIndex; $i -lt $endIndex; $i++) {
+                $app = $apps[$i]
+                Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
                 Write-Host "   Description: $($app.description)" -ForegroundColor Gray
                 Write-Host "   Winget ID: $($app.wingetId)" -ForegroundColor Cyan
                 Write-Host "" # Add extra line for readability
-                $counter++
+            }
+
+            Write-Host "Page $page of $totalPages"
+            Write-Host "[0] Back to Category Menu" -ForegroundColor Red
+            Write-Host "[N] Next Page" -ForegroundColor Cyan
+            Write-Host "[P] Previous Page" -ForegroundColor Cyan
+
+            $input = Read-Host "Choose an option"
+
+            if ($input -match '^\d+$') {
+                $selectedAppIndex = [int]$input - 1
+                if ($selectedAppIndex -ge 0 -and $selectedAppIndex -lt $totalApps) {
+                    Handle-AppSelection -appIndex ($selectedAppIndex + 1) -categoryIndex $categoryIndex
+                } elseif ($selectedAppIndex -eq -1) {
+                    break
+                } else {
+                    Write-Host "Invalid app selection, please try again." -ForegroundColor Red
+                }
+            } elseif ($input -eq 'N' -or $input -eq 'n') {
+                if ($page -lt $totalPages) {
+                    $page++
+                } else {
+                    Write-Host "You are already on the last page." -ForegroundColor Red
+                }
+            } elseif ($input -eq 'P' -or $input -eq 'p') {
+                if ($page -gt 1) {
+                    $page--
+                } else {
+                    Write-Host "You are already on the first page." -ForegroundColor Red
+                }
+            } elseif ($input -eq '0') {
+                break
+            } else {
+                Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red
             }
         }
-
-        Write-Host "[0] Back to Category Menu" -ForegroundColor Red
     } else {
         Write-Host "Invalid category selection." -ForegroundColor Red
     }
@@ -189,26 +227,9 @@ while ($true) {
             Write-Host "Exiting..." -ForegroundColor Red
             break
         } elseif ($categorySelection -le (Get-MenuOptions).Count -and $categorySelection -gt 0) {
-            # Show the selected category apps
+            # Show the selected category apps with pagination
             while ($true) {
                 Show-AppsInCategory -categoryIndex $categorySelection
-                $appSelection = Read-Host "Please enter the App to Install (or 0 to go back): "
-
-                if ($appSelection -match '^\d+$') {
-                    $appSelection = [int]$appSelection
-
-                    if ($appSelection -eq 0) {
-                        break
-                    } else {
-                        Handle-AppSelection -appIndex $appSelection -categoryIndex $categorySelection
-                    }
-                } else {
-                    Write-Host "Invalid input, please enter a number." -ForegroundColor Red
-                }
-
-                # Wait for user input to continue
-                Write-Host "`nPress Enter to continue..." -ForegroundColor Yellow
-                Read-Host
             }
         } else {
             Write-Host "Invalid category selection, please try again." -ForegroundColor Red

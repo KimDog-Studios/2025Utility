@@ -1,0 +1,323 @@
+[Master]
+Implementation=2
+FontFace=JetBrainsMono NF ExtraBold
+FontHeight=-9
+FontWeight=800
+ZoomRatio=3
+[Settings]
+Name=
+EnvVars=
+RefreshPeriod=1000
+EmbeddedImage=Overlay-BG.png
+PingAddr=
+[General]
+Sources=11
+Tables=0
+Layers=25
+[Source0]
+Name=CPU usage
+Units=%
+Format=
+Formula=
+Provider=HAL
+ID=CPU usage
+[Source1]
+Name=CPU temperature
+Units=°C
+Format=
+Formula=
+Provider=HAL
+ID=CPU temperature
+[Source2]
+Name=CPU power
+Units=W
+Format=
+Formula=
+Provider=HAL
+ID=CPU power
+[Source3]
+Name=CPU clock
+Units=MHz
+Format=
+Formula=
+Provider=HAL
+ID=CPU clock
+[Source4]
+Name=RAM usage
+Units=MB
+Format=
+Formula=
+Provider=HAL
+ID=RAM usage
+[Source5]
+Name=GPU1 temperature
+Units=°C
+Format=
+Formula=
+Provider=HAL
+ID=GPU1 temperature
+[Source6]
+Name=GPU1 usage
+Units=%
+Format=
+Formula=
+Provider=HAL
+ID=GPU1 usage
+[Source7]
+Name=GPU1 power
+Units=W
+Format=
+Formula=
+Provider=HAL
+ID=GPU1 power
+[Source8]
+Name=GPU1 memory usage
+Units=MB
+Format=
+Formula=
+Provider=HAL
+ID=GPU1 memory usage
+[Source9]
+Name=GPU1 clock
+Units=MHz
+Format=
+Formula=
+Provider=HAL
+ID=GPU1 clock
+[Source10]
+Name=RAM usage percent
+Units=%
+Format=
+Formula=
+Provider=HAL
+ID=RAM usage percent
+[Layer0]
+Name=
+Text=%CPU usage%%
+PositionX=-6
+PositionY=-1
+ExtentX=-4
+ExtentY=-1
+ExtentOrigin=0
+TextColor=FFFFFF
+[Layer1]
+Name=
+Text=Usage:
+PositionX=0
+PositionY=-1
+ExtentX=-10
+ExtentY=-1
+ExtentOrigin=0
+TextColor=80C0
+[Layer2]
+Name=
+Text=Temp:
+PositionX=0
+PositionY=-2
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=80C0
+[Layer3]
+Name=
+Text=%CPU temperature%°C
+PositionX=-5
+PositionY=-2
+ExtentX=-4
+ExtentY=-1
+ExtentOrigin=0
+TextColor=FFFFFF
+[Layer4]
+Name=
+Text=Power:
+PositionX=0
+PositionY=-3
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=80C0
+[Layer5]
+Name=
+Text=%CPU power%W
+PositionX=-6
+PositionY=-3
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FFFFFF
+[Layer6]
+Name=
+Text=Clock:
+PositionX=0
+PositionY=-4
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=80C0
+[Layer7]
+Name=
+Text=%CPU clock%MHz
+PositionX=-6
+PositionY=-4
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FFFFFF
+[Layer8]
+Name=
+Text=RAM:
+PositionX=0
+PositionY=-5
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=80C0
+[Layer9]
+Name=
+Text=<FR>FPS
+PositionX=-19
+PositionY=-6
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FFFFFF
+[Layer10]
+Name=
+Text=FPS:
+PositionX=-15
+PositionY=-6
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FF00
+[Layer11]
+Name=
+Text=%RAM usage%MB
+PositionX=-4
+PositionY=-5
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FFFFFF
+[Layer12]
+Name=
+Text=Intel Core i5 10600K
+PositionX=0
+PositionY=0
+ExtentX=-13
+ExtentY=-1
+ExtentOrigin=0
+Size=70
+TextColor=80C0
+MarginTop=5
+[Layer13]
+Name=
+Text=Nvidia Geforce RTX 4070
+PositionX=-15
+PositionY=0
+ExtentX=-10
+ExtentY=-1
+ExtentOrigin=0
+Size=65
+TextColor=FF00
+MarginTop=5
+[Layer14]
+Name=
+Text=Usage:
+PositionX=-15
+PositionY=-1
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FF00
+[Layer15]
+Name=
+Text=%GPU1 usage%%
+PositionX=-21
+PositionY=-1
+ExtentX=-3
+ExtentY=-1
+ExtentOrigin=0
+TextColor=FFFFFF
+[Layer16]
+Name=
+Text=Temp:
+PositionX=-15
+PositionY=-2
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FF00
+[Layer17]
+Name=
+Text=%GPU1 temperature%°C
+PositionX=-20
+PositionY=-2
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FFFFFF
+[Layer18]
+Name=
+Text=Power:
+PositionX=-15
+PositionY=-3
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FF00
+[Layer19]
+Name=
+Text=%GPU1 power%W
+PositionX=-21
+PositionY=-3
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FFFFFF
+[Layer20]
+Name=
+Text=Clock:
+PositionX=-15
+PositionY=-4
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FF00
+[Layer21]
+Name=
+Text=%GPU1 clock%MHz
+PositionX=-21
+PositionY=-4
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FFFFFF
+[Layer22]
+Name=
+Text=VRAM:
+PositionX=-15
+PositionY=-5
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FF00
+[Layer23]
+Name=
+Text=%GPU1 memory usage%MB
+PositionX=-20
+PositionY=-5
+ExtentX=0
+ExtentY=0
+ExtentOrigin=0
+TextColor=FFFFFF
+[Layer24]
+Name=
+Text=<G=Frametime><FT> ms
+PositionX=-15
+PositionY=-7
+ExtentX=-12
+ExtentY=-2
+ExtentOrigin=0
+Size=60
+TextColor=FFFFFF

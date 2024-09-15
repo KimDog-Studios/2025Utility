@@ -1,5 +1,14 @@
 # Custom Winget Management Menu in PowerShell
 
+# Function to maximize the PowerShell window
+function Set-FullScreenWindow {
+    $host.UI.RawUI.WindowSize = $host.UI.RawUI.MaxWindowSize
+    $host.UI.RawUI.BufferSize = $host.UI.RawUI.MaxWindowSize
+}
+
+# Call the function to set the window to full screen
+Set-FullScreenWindow
+
 # Define paths for the JSON file and folder
 $kimDogFolder = [System.IO.Path]::Combine($env:TEMP, "KimDog Studios")
 $tempJsonFilePath = [System.IO.Path]::Combine($kimDogFolder, "apps.json")
@@ -135,7 +144,7 @@ function Show-AppsInCategory {
                 }
 
                 Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
-                Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+                Write-Host "   Winget ID: $($app.wingetId)" -ForegroundColor Cyan
                 Write-Host "" # Add extra line for readability
             }
 
@@ -213,14 +222,15 @@ function Handle-AppSelection {
         Clear-Host
         Write-Host "You have chosen to Install: $($selectedApp.name)" -ForegroundColor Green
         Write-Host "Description:" -ForegroundColor Cyan
-        Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
         Write-Host "$($selectedApp.description)" -ForegroundColor Gray
-        Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
         Write-Host "Winget ID: $($selectedApp.wingetId)" -ForegroundColor Cyan
-        
-        # Call Install-Application function with the selected Winget ID
-        Install-Application -wingetId $selectedApp.wingetId
-        
+
+        $installChoice = Read-Host "Do you want to install this application? (Y/N)"
+        if ($installChoice -match '^[Yy]$') {
+            Install-Application -wingetId $selectedApp.wingetId
+        } else {
+            Write-Host "Installation canceled." -ForegroundColor Yellow
+        }
     } else {
         Write-Host "Invalid application selection." -ForegroundColor Red
     }

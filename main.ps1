@@ -1,5 +1,3 @@
-# Custom Main Menu in PowerShell
-
 # URL of the winget menu script
 $wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
 

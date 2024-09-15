@@ -30,7 +30,7 @@ function Show-Header {
     $HeaderWidth = 30
 
     Write-Host (Align-Header "KimDog's Winget Menu" $HeaderWidth) -ForegroundColor Yellow
-    Write-Host (Align-Header "Last Updated: 2024-09-15" $HeaderWidth) -ForegroundColor Cyan
+    Write-Host (Align-Header "Last Updated: 2024-09-16" $HeaderWidth) -ForegroundColor Cyan
     Write-Host (Align-Header "=" $HeaderWidth) -ForegroundColor Cyan
     Write-Host "`n"
 }

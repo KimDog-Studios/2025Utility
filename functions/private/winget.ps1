@@ -84,7 +84,7 @@ function Show-Header {
 # Function to show the categories in a simple numbered list format
 function Show-CategoryMenu {
     $categories = Get-MenuOptions
-    $counter = 100
+    $counter = 1
     foreach ($category in $categories) {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
         $counter++

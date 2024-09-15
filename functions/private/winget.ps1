@@ -43,7 +43,7 @@ function Get-MenuOptions {
     try {
         if (Test-Path $tempJsonFilePath) {
             $jsonContent = Get-Content -Path $tempJsonFilePath -Raw | ConvertFrom-Json
-            return $jsonContent.options
+            return $jsonContent.categories
         } else {
             Write-Host "JSON file not found at $tempJsonFilePath" -ForegroundColor Red
             return @()
@@ -84,16 +84,25 @@ function Show-Header {
 # Function to show the menu based on JSON content
 function Show-Menu {
     $MenuWidth = 30
-    $options = Get-MenuOptions
+    $categories = Get-MenuOptions
 
     Write-Host (Align-Header "Main Menu" $MenuWidth) -ForegroundColor Yellow
-    foreach ($option in $options) {
-        Write-Host "   Option: $($option.id)" -ForegroundColor Cyan
-        Write-Host "   Name: $($option.name)" -ForegroundColor Green
-        Write-Host "   Description: $($option.description)" -ForegroundColor Gray
-        Write-Host "   Winget ID: $($option.wingetId)" -ForegroundColor Cyan
-        Write-Host "" # Add extra line for readability
+
+    # Iterate over each category and display its options
+    foreach ($category in $categories) {
+        $optionCount = $category.options.Count
+        Write-Host "$($category.name) [$optionCount]" -ForegroundColor Green
+
+        # Show options within each category
+        foreach ($option in $category.options) {
+            Write-Host "   Option: $($option.id)" -ForegroundColor Cyan
+            Write-Host "   Name: $($option.name)" -ForegroundColor Green
+            Write-Host "   Description: $($option.description)" -ForegroundColor Gray
+            Write-Host "   Winget ID: $($option.wingetId)" -ForegroundColor Cyan
+            Write-Host "" # Add extra line for readability
+        }
     }
+
     Write-Host "0. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
     Write-Host "`n"  # Reduced gap
@@ -127,18 +136,24 @@ function Handle-Option {
         [int]$optionId
     )
 
-    $options = Get-MenuOptions
-    $selectedOption = $options | Where-Object { $_.id -eq $optionId }
+    $categories = Get-MenuOptions
+    $selectedOption = $null
+
+    # Iterate over categories to find the selected option
+    foreach ($category in $categories) {
+        $selectedOption = $category.options | Where-Object { $_.id -eq $optionId }
+        if ($selectedOption) { break }
+    }
 
     if ($selectedOption) {
         Clear-Host
         Write-Host "You have chosen to Install: $($selectedOption.name)" -ForegroundColor Green
         Write-Host "Description: $($selectedOption.description)" -ForegroundColor Green
         Write-Host "Winget ID: $($selectedOption.wingetId)" -ForegroundColor Cyan
-        
+
         # Call Install-Application function with the selected Winget ID
         Install-Application -wingetId $selectedOption.wingetId
-        
+
     } else {
         Write-Host "Invalid selection, please try again." -ForegroundColor Red
     }

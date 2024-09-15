@@ -35,13 +35,14 @@ function Download-JsonFile {
         Create-KimDogFolder
         Write-Host "Starting download of JSON file from $jsonFileUrl..." -ForegroundColor Yellow
 
-        Invoke-WebRequest -Uri $jsonFileUrl -OutFile $tempJsonFilePath
-
-        # Check if the file was successfully downloaded
-        if (Test-Path $tempJsonFilePath) {
+        # Download the JSON file
+        $response = Invoke-WebRequest -Uri $jsonFileUrl -UseBasicP
+        if ($response.StatusCode -eq 200) {
+            # Save content to file
+            $response.Content | Set-Content -Path $tempJsonFilePath
             Write-Host "Download complete. File saved to $tempJsonFilePath." -ForegroundColor Green
         } else {
-            Write-Host "Download failed. File not found at $tempJsonFilePath." -ForegroundColor Red
+            Write-Host "Download failed. Status code: $($response.StatusCode)" -ForegroundColor Red
         }
     } catch {
         Write-Host "Failed to download JSON file: $_" -ForegroundColor Red

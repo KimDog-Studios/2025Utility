@@ -135,7 +135,7 @@ function Show-AppsInCategory {
                 }
 
                 Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
-                Write-Host "   Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+                Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
                 Write-Host "" # Add extra line for readability
             }
 

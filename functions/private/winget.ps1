@@ -154,8 +154,6 @@ function Show-AppsInCategory {
                 $selectedAppIndex = [int]$input - 1
                 if ($selectedAppIndex -ge 0 -and $selectedAppIndex -lt $totalApps) {
                     Handle-AppSelection -appIndex ($selectedAppIndex + 1) -categoryIndex $categoryIndex
-                } elseif ($selectedAppIndex -eq -1) {
-                    break
                 } else {
                     Write-Host "Invalid app selection, please try again." -ForegroundColor Red
                 }
@@ -229,31 +227,26 @@ function Handle-AppSelection {
     }
 }
 
-# Main execution
-Download-JsonFile
-
-# Main loop
+# Main script execution
 while ($true) {
     Show-Header
     Show-CategoryMenu
-    $categorySelection = Read-Host "Please enter your Category: "
 
-    # Validate the category selection
-    if ($categorySelection -match '^\d+$') {
-        $categorySelection = [int]$categorySelection
+    $selection = Read-Host "Choose a category"
 
-        if ($categorySelection -eq 0) {
-            Write-Host "Exiting..." -ForegroundColor Red
+    if ($selection -match '^\d+$') {
+        $categoryIndex = [int]$selection
+        if ($categoryIndex -eq 0) {
             break
-        } elseif ($categorySelection -le (Get-MenuOptions).Count -and $categorySelection -gt 0) {
-            # Show the selected category apps with pagination
-            while ($true) {
-                Show-AppsInCategory -categoryIndex $categorySelection
-            }
+        } elseif ($categoryIndex -gt 0) {
+            Show-AppsInCategory -categoryIndex $categoryIndex
         } else {
-            Write-Host "Invalid category selection, please try again." -ForegroundColor Red
+            Write-Host "Invalid category selection. Please try again." -ForegroundColor Red
         }
     } else {
-        Write-Host "Invalid input, please enter a number." -ForegroundColor Red
+        Write-Host "Invalid input. Please enter a number." -ForegroundColor Red
     }
 }
+
+# Clean up the temporary files and folders
+Cleanup-KimDogFolder

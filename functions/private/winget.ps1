@@ -109,7 +109,7 @@ function Show-AppsInCategory {
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
         $descriptionWidth = 60  # Adjust this value as needed
-        $borderChar = "="
+        $borderChar = "_"
         $padding = 2
 
         while ($true) {
@@ -127,14 +127,14 @@ function Show-AppsInCategory {
                 $wrappedDescription = $description -split "(?<=\G.{${descriptionWidth}})"
                 
                 Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
-                Write-Host "$($borderChar * ($descriptionWidth + 4))" -ForegroundColor Gray
-
+                Write-Host "`nDescription:" -ForegroundColor Cyan
+                Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
+                
                 foreach ($line in $wrappedDescription) {
-                    $paddedLine = " $line" + (" " * ($descriptionWidth - $line.Length))
-                    Write-Host "$borderChar$paddedLine$borderChar" -ForegroundColor Gray
+                    Write-Host $line -ForegroundColor Gray
                 }
 
-                Write-Host "$($borderChar * ($descriptionWidth + 4))" -ForegroundColor Gray
+                Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
                 Write-Host "   Winget ID: $($app.wingetId)" -ForegroundColor Cyan
                 Write-Host "" # Add extra line for readability
             }
@@ -212,7 +212,10 @@ function Handle-AppSelection {
     if ($selectedApp) {
         Clear-Host
         Write-Host "You have chosen to Install: $($selectedApp.name)" -ForegroundColor Green
-        Write-Host "Description: $($selectedApp.description)" -ForegroundColor Green
+        Write-Host "Description:" -ForegroundColor Cyan
+        Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
+        Write-Host "$($selectedApp.description)" -ForegroundColor Gray
+        Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
         Write-Host "Winget ID: $($selectedApp.wingetId)" -ForegroundColor Cyan
         
         # Call Install-Application function with the selected Winget ID
@@ -223,7 +226,7 @@ function Handle-AppSelection {
     }
 }
 
-# Main script execution
+# Main menu loop
 while ($true) {
     Show-Header
     Show-CategoryMenu

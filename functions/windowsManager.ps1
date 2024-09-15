@@ -36,10 +36,25 @@ function Show-Header {
 function Show-Menu {
     Clear-Host
     Write-Host "1. Activate and Add Ultimate Power Plan" -ForegroundColor Cyan
-    Write-Host "2. Chnage Display Settings to Performance" -ForegroundColor Cyan
+    Write-Host "2. Change Display Settings to Performance" -ForegroundColor Cyan
     Write-Host "3. Change Theme to Dark Mode" -ForegroundColor Cyan
     Write-Host "4. Exit" -ForegroundColor Red
     Write-Host "`n"
+}
+
+# Function to run the script from GitHub
+function Run-GitHubScript {
+    param (
+        [string]$url
+    )
+
+    try {
+        $scriptContent = Invoke-RestMethod -Uri $url
+        Write-Host "Executing script from $url..." -ForegroundColor Green
+        Invoke-Expression $scriptContent
+    } catch {
+        Write-Host "Failed to fetch or execute script from $url: $_" -ForegroundColor Red
+    }
 }
 
 # Function to handle menu selection
@@ -51,17 +66,18 @@ function Handle-MenuSelection {
     switch ($selection) {
         1 {
             Write-Host "Running Script 1..." -ForegroundColor Green
-            # Call Script 1
-            # .\Path\To\Script1.ps1
+            # URL of the script to activate and add Ultimate Power Plan
+            $ultimatePowerPlanUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/activateUltimatePowerPlan.ps1"
+            Run-GitHubScript -url $ultimatePowerPlanUrl
         }
         2 {
             Write-Host "Running Script 2..." -ForegroundColor Green
-            # Call Script 2
+            # Placeholder for Script 2
             # .\Path\To\Script2.ps1
         }
         3 {
             Write-Host "Running Script 3..." -ForegroundColor Green
-            # Call Script 3
+            # Placeholder for Script 3
             # .\Path\To\Script3.ps1
         }
         4 {

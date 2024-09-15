@@ -53,11 +53,10 @@ function Show-Menu {
 
     Write-Host (Align-Header "Main Menu" $MenuWidth) -ForegroundColor Yellow
     foreach ($option in $options) {
-        Write-Host "$($option.id). $($option.name)" -ForegroundColor Green
+        Write-Host "   Option: $($option.id)" -ForegroundColor Cyan
+        Write-Host "   Name: $($option.name)" -ForegroundColor Green
         Write-Host "   Description: $($option.description)" -ForegroundColor Gray
-        if ($option.wingetId) {
-            Write-Host "   Winget ID: $($option.wingetId)" -ForegroundColor Cyan
-        }
+        Write-Host "   Winget ID: $($option.wingetId)" -ForegroundColor Cyan
         Write-Host "" # Add extra line for readability
     }
     Write-Host "0. Exit" -ForegroundColor Red
@@ -76,14 +75,12 @@ function Handle-Option {
 
     if ($selectedOption) {
         Clear-Host
-        Write-Host "You selected: $($selectedOption.name)" -ForegroundColor Green
+        Write-Host "You have chosen to Install: $($selectedOption.name)" -ForegroundColor Green
         Write-Host "Description: $($selectedOption.description)" -ForegroundColor Green
+        Write-Host "Winget ID: $($selectedOption.wingetId)" -ForegroundColor Cyan
         
-        if ($selectedOption.wingetId) {
-            Write-Host "Winget ID: $($selectedOption.wingetId)" -ForegroundColor Cyan
-        } else {
-            Write-Host "No Winget ID found for the selected option." -ForegroundColor Red
-        }
+        # Call Install-Application function if required here
+        # Install-Application -wingetId $selectedOption.wingetId
         
     } else {
         Write-Host "Invalid selection, please try again." -ForegroundColor Red
@@ -94,7 +91,7 @@ function Handle-Option {
 while ($true) {
     Show-Header
     Show-Menu
-    $selection = Read-Host "Please enter your choice"
+    $selection = Read-Host "Please enter your Option: "
 
     # Validate the selection
     if ($selection -match '^\d+$') {

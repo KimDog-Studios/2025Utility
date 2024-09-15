@@ -1,8 +1,22 @@
 {
-    "options": [
-      { "id": 1, "name": "Microsoft Edge", "description": "Description for Microsoft Edge", "wingetId": "Microsoft.Edge" },
-      { "id": 2, "name": "Notepad++", "description": "Description for Notepad++", "wingetId": "Notepad++.Notepad++" },
-      { "id": 3, "name": "7-Zip", "description": "Description for 7-Zip", "wingetId": "7zip.7zip" }
-    ]
-  }
-  
+  "options": [
+    {
+      "id": 1,
+      "name": "Microsoft Edge",
+      "description": "World-class performance with more privacy, more productivity, and more value while you browse.",
+      "wingetId": "Microsoft.Edge"
+    },
+    {
+      "id": 2,
+      "name": "Notepad++",
+      "description": "Notepad++ is a free source code editor that supports several languages.",
+      "wingetId": "Notepad++.Notepad++"
+    },
+    {
+      "id": 3,
+      "name": "7-Zip",
+      "description": "7-Zip is a file archiver with a high compression ratio.",
+      "wingetId": "7zip.7zip"
+    }
+  ]
+}

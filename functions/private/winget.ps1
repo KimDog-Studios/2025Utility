@@ -52,7 +52,6 @@ function Show-CategoryMenu {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
         $counter++
     }
-    Write-Host "[B] Exit" -ForegroundColor Red
     Write-Host "`n"
 }
 
@@ -106,9 +105,6 @@ function Show-AppsInCategory {
                     } else {
                         Write-Host "You are already on the first page." -ForegroundColor Red
                     }
-                }
-                'B' {
-                    Exit
                 }
                 default {
                     if ($input -match '^\d+$') {

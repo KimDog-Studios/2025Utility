@@ -108,7 +108,7 @@ function Show-AppsInCategory {
                     }
                 }
                 'B' {
-                    return
+                    Exit
                 }
                 default {
                     if ($input -match '^\d+$') {

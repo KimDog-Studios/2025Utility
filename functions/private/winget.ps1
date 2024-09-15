@@ -105,7 +105,7 @@ function Show-AppsInCategory {
     if ($selectedCategory) {
         $apps = $selectedCategory.options
         $totalApps = $apps.Count
-        $itemsPerPage = 20
+        $itemsPerPage = 5
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
 

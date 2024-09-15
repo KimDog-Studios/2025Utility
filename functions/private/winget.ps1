@@ -2,8 +2,16 @@
 
 # Function to maximize the PowerShell window
 function Set-FullScreenWindow {
-    $host.UI.RawUI.WindowSize = $host.UI.RawUI.MaxWindowSize
-    $host.UI.RawUI.BufferSize = $host.UI.RawUI.MaxWindowSize
+    $console = $Host.UI.RawUI
+    $currentSize = $console.WindowSize
+    $maxSize = $console.MaxWindowSize
+
+    # Set window size to maximum
+    $console.WindowSize = $maxSize
+    $console.BufferSize = $maxSize
+
+    # Set window position to the top-left corner of the screen
+    $console.WindowPosition = New-Object System.Management.Automation.Host.Coordinates -ArgumentList 0,0
 }
 
 # Call the function to set the window to full screen
@@ -117,7 +125,7 @@ function Show-AppsInCategory {
         $itemsPerPage = 5
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
-        $descriptionWidth = 50  # Set description width to 50 characters
+        $descriptionWidth = 60  # Set description width to 50 characters
         $borderChar = "_"
 
         while ($true) {
@@ -216,46 +224,41 @@ function Handle-AppSelection {
 
     $categories = Get-MenuOptions
     $selectedCategory = $categories[$categoryIndex - 1]
-    $selectedApp = $selectedCategory.options[$appIndex - 1]
 
-    if ($selectedApp) {
-        Clear-Host
-        Write-Host "You have chosen to Install: $($selectedApp.name)" -ForegroundColor Green
-        Write-Host "Description:" -ForegroundColor Cyan
-        Write-Host "$($selectedApp.description)" -ForegroundColor Gray
-        Write-Host "Winget ID: $($selectedApp.wingetId)" -ForegroundColor Cyan
+    if ($selectedCategory) {
+        $apps = $selectedCategory.options
+        $app = $apps[$appIndex - 1]
 
-        $installChoice = Read-Host "Do you want to install this application? (Y/N)"
-        if ($installChoice -match '^[Yy]$') {
-            Install-Application -wingetId $selectedApp.wingetId
+        if ($app) {
+            Write-Host "`nYou selected $($app.name) with Winget ID: $($app.wingetId)." -ForegroundColor Green
+            Write-Host "Installing application..." -ForegroundColor Yellow
+            Install-Application -wingetId $app.wingetId
         } else {
-            Write-Host "Installation canceled." -ForegroundColor Yellow
+            Write-Host "Invalid app selection." -ForegroundColor Red
         }
     } else {
-        Write-Host "Invalid application selection." -ForegroundColor Red
+        Write-Host "Invalid category selection." -ForegroundColor Red
     }
 }
 
-# Main menu loop
+# Main menu logic
 while ($true) {
     Show-Header
     Show-CategoryMenu
 
-    $selection = Read-Host "Choose a category"
+    $categoryInput = Read-Host "Select a category"
 
-    if ($selection -match '^\d+$') {
-        $categoryIndex = [int]$selection
+    if ($categoryInput -match '^\d+$') {
+        $categoryIndex = [int]$categoryInput
         if ($categoryIndex -eq 0) {
+            Write-Host "Exiting menu. Goodbye!" -ForegroundColor Green
             break
-        } elseif ($categoryIndex -gt 0) {
+        } elseif ($categoryIndex -gt 0 -and $categoryIndex -lt 10) {
             Show-AppsInCategory -categoryIndex $categoryIndex
         } else {
-            Write-Host "Invalid category selection. Please try again." -ForegroundColor Red
+            Write-Host "Invalid category selection, please try again." -ForegroundColor Red
         }
     } else {
-        Write-Host "Invalid input. Please enter a number." -ForegroundColor Red
+        Write-Host "Invalid input, please enter a number." -ForegroundColor Red
     }
 }
-
-# Clean up the temporary files and folders
-Cleanup-KimDogFolder

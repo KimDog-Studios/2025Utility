@@ -40,7 +40,7 @@ function Download-JsonFile {
         Write-Host "Loading: [", -NoNewline
 
         for ($i = 0; $i -le $loadingBarLength; $i++) {
-            Start-Sleep -Milliseconds 500
+            Start-Sleep -Milliseconds 50
             Write-Host "#" -NoNewline
         }
 
@@ -194,7 +194,7 @@ function Show-AppsInCategory {
                     Write-Host "You are already on the first page." -ForegroundColor Red
                 }
             } elseif ($input -eq '0') {
-                break
+                return # Return to the category menu
             } else {
                 Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red
             }
@@ -222,7 +222,7 @@ function Install-Application {
         Start-Process -FilePath "cmd.exe" -ArgumentList "/c $cmdCommand" -NoNewWindow -Wait
         Write-Host "Installation process for $wingetId has started." -ForegroundColor Green
     } catch {
-        Write-Host "Failed to start installation for ${wingetId}: $_" -ForegroundColor Red
+        Write-Host "Failed to install application: $_" -ForegroundColor Red
     }
 }
 

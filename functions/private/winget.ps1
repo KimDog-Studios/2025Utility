@@ -81,31 +81,50 @@ function Show-Header {
     Write-Host "`n"  # Reduced gap
 }
 
-# Function to show the menu based on JSON content
-function Show-Menu {
+# Function to show the categories as a sub-menu
+function Show-CategoryMenu {
     $MenuWidth = 30
     $categories = Get-MenuOptions
 
-    Write-Host (Align-Header "Main Menu" $MenuWidth) -ForegroundColor Yellow
-
-    # Iterate over each category and display its options
+    Write-Host (Align-Header "Category Menu" $MenuWidth) -ForegroundColor Yellow
+    $counter = 1
     foreach ($category in $categories) {
-        $optionCount = $category.options.Count
-        Write-Host "$($category.name) [$optionCount]" -ForegroundColor Green
-
-        # Show options within each category
-        foreach ($option in $category.options) {
-            Write-Host "   Option: $($option.id)" -ForegroundColor Cyan
-            Write-Host "   Name: $($option.name)" -ForegroundColor Green
-            Write-Host "   Description: $($option.description)" -ForegroundColor Gray
-            Write-Host "   Winget ID: $($option.wingetId)" -ForegroundColor Cyan
-            Write-Host "" # Add extra line for readability
-        }
+        Write-Host "$counter. $($category.name) [$($category.apps.Count)]" -ForegroundColor Cyan
+        $counter++
     }
-
     Write-Host "0. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
     Write-Host "`n"  # Reduced gap
+}
+
+# Function to show the apps within a selected category
+function Show-AppsInCategory {
+    param (
+        [int]$categoryId
+    )
+
+    $categories = Get-MenuOptions
+    $selectedCategory = $categories[$categoryId - 1]
+
+    if ($selectedCategory) {
+        Clear-Host
+        $MenuWidth = 30
+        Write-Host (Align-Header $selectedCategory.name $MenuWidth) -ForegroundColor Yellow
+        
+        $counter = 1
+        foreach ($app in $selectedCategory.apps) {
+            Write-Host "$counter. $($app.name)" -ForegroundColor Green
+            Write-Host "   Description: $($app.description)" -ForegroundColor Gray
+            Write-Host "   Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+            Write-Host "" # Add extra line for readability
+            $counter++
+        }
+        Write-Host "0. Back to Category Menu" -ForegroundColor Red
+        Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
+        Write-Host "`n"  # Reduced gap
+    } else {
+        Write-Host "Invalid category selection." -ForegroundColor Red
+    }
 }
 
 # Function to install an application using winget
@@ -131,31 +150,27 @@ function Install-Application {
 }
 
 # Function for Option selection
-function Handle-Option {
+function Handle-AppSelection {
     param (
-        [int]$optionId
+        [int]$appId,
+        [int]$categoryId
     )
 
     $categories = Get-MenuOptions
-    $selectedOption = $null
+    $selectedCategory = $categories[$categoryId - 1]
+    $selectedApp = $selectedCategory.apps[$appId - 1]
 
-    # Iterate over categories to find the selected option
-    foreach ($category in $categories) {
-        $selectedOption = $category.options | Where-Object { $_.id -eq $optionId }
-        if ($selectedOption) { break }
-    }
-
-    if ($selectedOption) {
+    if ($selectedApp) {
         Clear-Host
-        Write-Host "You have chosen to Install: $($selectedOption.name)" -ForegroundColor Green
-        Write-Host "Description: $($selectedOption.description)" -ForegroundColor Green
-        Write-Host "Winget ID: $($selectedOption.wingetId)" -ForegroundColor Cyan
-
+        Write-Host "You have chosen to Install: $($selectedApp.name)" -ForegroundColor Green
+        Write-Host "Description: $($selectedApp.description)" -ForegroundColor Green
+        Write-Host "Winget ID: $($selectedApp.wingetId)" -ForegroundColor Cyan
+        
         # Call Install-Application function with the selected Winget ID
-        Install-Application -wingetId $selectedOption.wingetId
-
+        Install-Application -wingetId $selectedApp.wingetId
+        
     } else {
-        Write-Host "Invalid selection, please try again." -ForegroundColor Red
+        Write-Host "Invalid app selection, please try again." -ForegroundColor Red
     }
 }
 
@@ -165,18 +180,40 @@ Download-JsonFile
 # Main loop
 while ($true) {
     Show-Header
-    Show-Menu
-    $selection = Read-Host "Please enter your Option: "
+    Show-CategoryMenu
+    $categorySelection = Read-Host "Please enter your Category: "
 
-    # Validate the selection
-    if ($selection -match '^\d+$') {
-        $selection = [int]$selection
+    # Validate the category selection
+    if ($categorySelection -match '^\d+$') {
+        $categorySelection = [int]$categorySelection
 
-        if ($selection -eq 0) {
+        if ($categorySelection -eq 0) {
             Write-Host "Exiting..." -ForegroundColor Red
             break
+        } elseif ($categorySelection -le (Get-MenuOptions).Count -and $categorySelection -gt 0) {
+            # Show the selected category apps
+            while ($true) {
+                Show-AppsInCategory -categoryId $categorySelection
+                $appSelection = Read-Host "Please enter the App to Install (or 0 to go back): "
+
+                if ($appSelection -match '^\d+$') {
+                    $appSelection = [int]$appSelection
+
+                    if ($appSelection -eq 0) {
+                        break
+                    } else {
+                        Handle-AppSelection -appId $appSelection -categoryId $categorySelection
+                    }
+                } else {
+                    Write-Host "Invalid input, please enter a number." -ForegroundColor Red
+                }
+
+                # Wait for user input to continue
+                Write-Host "`nPress Enter to continue..." -ForegroundColor Yellow
+                Read-Host
+            }
         } else {
-            Handle-Option -optionId $selection
+            Write-Host "Invalid category selection, please try again." -ForegroundColor Red
         }
     } else {
         Write-Host "Invalid input, please enter a number." -ForegroundColor Red

@@ -1,14 +1,72 @@
 # Custom Main Menu in PowerShell
 
-# Import the winget management script
-$wingetScriptPath = ".\functions\private\winget_manager.ps1"
-if (Test-Path $wingetScriptPath) {
-    . $wingetScriptPath
-} else {
-    Write-Host "Winget management script not found at $wingetScriptPath" -ForegroundColor Red
-    exit
+# Function to check if winget is installed
+function Check-Winget {
+    $wingetCommand = "winget"
+    
+    try {
+        # Check if winget command is available
+        $wingetPath = Get-Command $wingetCommand -ErrorAction SilentlyContinue
+        if ($wingetPath) {
+            Write-Host "winget is already installed." -ForegroundColor Green
+            return $true
+        } else {
+            Write-Host "winget is not installed." -ForegroundColor Red
+            return $false
+        }
+    } catch {
+        Write-Host "Error checking winget installation: $_" -ForegroundColor Red
+        return $false
+    }
 }
 
+# Function to get the latest winget release URL
+function Get-Latest-Winget-Release-Url {
+    $githubApiUrl = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
+    
+    try {
+        $response = Invoke-RestMethod -Uri $githubApiUrl -Headers @{ "User-Agent" = "PowerShell" }
+        $latestRelease = $response.assets | Where-Object { $_.name -like "*AppInstaller*.msixbundle" }
+        if ($latestRelease) {
+            $downloadUrl = $latestRelease.browser_download_url
+            Write-Host "Latest winget release URL: $downloadUrl" -ForegroundColor Cyan
+            return $downloadUrl
+        } else {
+            Write-Host "No suitable release found." -ForegroundColor Red
+            return $null
+        }
+    } catch {
+        Write-Host "Failed to fetch latest release URL: $_" -ForegroundColor Red
+        return $null
+    }
+}
+
+# Function to install winget
+function Install-Winget {
+    $downloadUrl = Get-Latest-Winget-Release-Url
+    if (-not $downloadUrl) {
+        Write-Host "Cannot proceed with installation. Exiting..." -ForegroundColor Red
+        return
+    }
+    
+    Write-Host "Downloading winget from $downloadUrl..." -ForegroundColor Yellow
+
+    $tempFile = [System.IO.Path]::GetTempFileName()
+    try {
+        Invoke-WebRequest -Uri $downloadUrl -OutFile $tempFile
+        Write-Host "Download complete. Installing..." -ForegroundColor Green
+
+        Start-Process -FilePath $tempFile -ArgumentList "/quiet" -Wait
+        Write-Host "winget installation process has started." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to download or install winget: $_" -ForegroundColor Red
+    } finally {
+        # Clean up temporary file
+        Remove-Item -Path $tempFile -ErrorAction SilentlyContinue
+    }
+}
+
+# Function to align header text
 function Align-Header {
     param (
         [string]$Text,
@@ -24,7 +82,8 @@ function Align-Header {
     $AlignedText
 }
 
-function Show-Header {
+# Function to show the header
+function Show-MainHeader {
     Clear-Host
     $HeaderWidth = 30
 
@@ -34,7 +93,8 @@ function Show-Header {
     Write-Host "`n"  # Reduced gap
 }
 
-function Show-Menu {
+# Function to show the main menu
+function Show-MainMenu {
     $MenuWidth = 30
 
     Write-Host (Align-Header "Main Menu" $MenuWidth) -ForegroundColor Yellow
@@ -45,34 +105,37 @@ function Show-Menu {
     Write-Host "`n"  # Reduced gap
 }
 
+# Function for Option 1
 function Option1 {
     Clear-Host
     Write-Host "You selected Option 1." -ForegroundColor Green
     # Add your Option 1 code here
-    Start-Sleep -Seconds 2
 }
 
+# Function for Option 2
 function Option2 {
     Clear-Host
     Write-Host "You selected Option 2: Application Manager" -ForegroundColor Green
-    
-    # Call functions from winget-management.ps1
-    if (-not (Check-Winget)) {
-        Install-Winget
+
+    # Launch the winget menu script
+    $wingetMenuPath = ".\functions\private\winget.ps1"
+    if (Test-Path $wingetMenuPath) {
+        Start-Process powershell -ArgumentList "-File `"$wingetMenuPath`"" -NoNewWindow -Wait
+    } else {
+        Write-Host "Winget menu script not found at $wingetMenuPath" -ForegroundColor Red
     }
-    Start-Sleep -Seconds 2
 }
 
+# Function for invalid option
 function Show-InvalidOption {
     Clear-Host
     Write-Host "Invalid selection, please try again." -ForegroundColor Red
-    Start-Sleep -Seconds 2
 }
 
 # Main loop
 while ($true) {
-    Show-Header
-    Show-Menu
+    Show-MainHeader
+    Show-MainMenu
     $selection = Read-Host "Please enter your choice"
 
     switch ($selection) {

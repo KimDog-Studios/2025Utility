@@ -1,0 +1,8 @@
+{
+    "options": [
+      { "id": 1, "name": "Microsoft Edge", "description": "Description for Microsoft Edge", "wingetId": "Microsoft.Edge" },
+      { "id": 2, "name": "Notepad++", "description": "Description for Notepad++", "wingetId": "Notepad++.Notepad++" },
+      { "id": 3, "name": "7-Zip", "description": "Description for 7-Zip", "wingetId": "7zip.7zip" }
+    ]
+  }
+  

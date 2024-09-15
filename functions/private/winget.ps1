@@ -93,7 +93,7 @@ function Show-CategoryMenu {
     Write-Host "`n"  # Reduced gap
 }
 
-# Function to show the apps within a selected category with pagination
+# Function to show the apps within a selected category with pagination and truncated descriptions
 function Show-AppsInCategory {
     param (
         [int]$categoryIndex
@@ -108,6 +108,7 @@ function Show-AppsInCategory {
         $itemsPerPage = 5
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
+        $descriptionWidth = 50  # Adjust this value as needed
 
         while ($true) {
             Clear-Host
@@ -118,8 +119,12 @@ function Show-AppsInCategory {
 
             for ($i = $startIndex; $i -lt $endIndex; $i++) {
                 $app = $apps[$i]
+                $description = $app.description
+                if ($description.Length -gt $descriptionWidth) {
+                    $description = $description.Substring(0, $descriptionWidth) + "..."
+                }
                 Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
-                Write-Host "   Description: $($app.description)" -ForegroundColor Gray
+                Write-Host "   Description: $description" -ForegroundColor Gray
                 Write-Host "   Winget ID: $($app.wingetId)" -ForegroundColor Cyan
                 Write-Host "" # Add extra line for readability
             }

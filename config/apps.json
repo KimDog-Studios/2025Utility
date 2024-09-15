@@ -10,17 +10,17 @@
         },
         {
           "name": "Google Chrome",
-          "description": "Google Chrome is a popular and secure web browser.",
+          "description": "A more simple, secure, and faster web browser than ever, with Google’s smarts built-in.",
           "wingetId": "Google.Chrome"
         },
         {
           "name": "Mozilla Firefox",
-          "description": "Mozilla Firefox is a free and open-source web browser.",
+          "description": "Firefox Browser, also known as Mozilla Firefox or simply Firefox, is a free and open-source web browser developed by the Mozilla Foundation.",
           "wingetId": "Mozilla.Firefox"
         },
         {
           "name": "Vivaldi",
-          "description": "Vivaldi is a lightweight and fast web browser.",
+          "description": "The new Vivaldi browser protects you from trackers, blocks unwanted ads, and puts you in control with unique built-in features. Get Vivaldi and browse fast.",
           "wingetId": "Vivaldi.Vivaldi"
         },
         {

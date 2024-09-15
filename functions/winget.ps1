@@ -1,15 +1,5 @@
 # Custom Winget Management Menu in PowerShell
 
-# Function to maximize the PowerShell window
-function Set-FullScreenWindow {
-    $console = $Host.UI.RawUI
-    $console.WindowSize = $console.MaxWindowSize
-    $console.BufferSize = $console.MaxWindowSize
-    $console.WindowPosition = New-Object System.Management.Automation.Host.Coordinates -ArgumentList 0,0
-}
-
-Set-FullScreenWindow
-
 $jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
 
 function Get-JsonData {

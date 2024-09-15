@@ -1,20 +1,3 @@
-# Function to maximize the PowerShell window
-function Set-FullScreenWindow {
-    $console = $Host.UI.RawUI
-    $currentSize = $console.WindowSize
-    $maxSize = $console.MaxWindowSize
-
-    # Set window size to maximum
-    $console.WindowSize = $maxSize
-    $console.BufferSize = $maxSize
-
-    # Set window position to the top-left corner of the screen
-    $console.WindowPosition = New-Object System.Management.Automation.Host.Coordinates -ArgumentList 0,0
-}
-
-# Call the function to set the window to full screen
-Set-FullScreenWindow
-
 # Function to align and display header
 function Align-Header {
     param (

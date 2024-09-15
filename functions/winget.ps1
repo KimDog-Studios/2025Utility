@@ -37,11 +37,10 @@ function Show-Header {
 
 function Show-CategoryMenu {
     $categories = Get-JsonData
-    $sortedCategories = $categories | Sort-Object { $_.name.ToLower() }
     
     Write-Host "`nCategories:" -ForegroundColor Yellow
     $counter = 1
-    foreach ($category in $sortedCategories) {
+    foreach ($category in $categories) {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
         $counter++
     }

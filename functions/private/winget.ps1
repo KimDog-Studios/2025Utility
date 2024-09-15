@@ -3,11 +3,8 @@
 # Function to maximize the PowerShell window
 function Set-FullScreenWindow {
     $console = $Host.UI.RawUI
-    $currentSize = $console.WindowSize
-    $maxSize = $console.MaxWindowSize
-
-    $console.WindowSize = $maxSize
-    $console.BufferSize = $maxSize
+    $console.WindowSize = $console.MaxWindowSize
+    $console.BufferSize = $console.MaxWindowSize
     $console.WindowPosition = New-Object System.Management.Automation.Host.Coordinates -ArgumentList 0,0
 }
 
@@ -31,13 +28,11 @@ function Align-Header {
         [int]$Width = 30
     )
 
-    $TextLength = $Text.Length
-    $Padding = $Width - $TextLength
+    $Padding = $Width - $Text.Length
     $LeftPadding = [math]::Floor($Padding / 2)
     $RightPadding = [math]::Ceiling($Padding / 2)
 
-    $AlignedText = ("=" * $LeftPadding) + $Text + ("=" * $RightPadding)
-    $AlignedText
+    return ("=" * $LeftPadding) + $Text + ("=" * $RightPadding)
 }
 
 function Show-Header {
@@ -52,11 +47,7 @@ function Show-Header {
 
 function Show-CategoryMenu {
     $categories = Get-JsonData
-    $counter = 1
-    foreach ($category in $categories) {
-        Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
-        $counter++
-    }
+    $categories | ForEach-Object { Write-Host "[$($_.Index + 1)] $($_.name)" -ForegroundColor Cyan }
     Write-Host "[B] Exit" -ForegroundColor Red
     Write-Host "`n"
 }
@@ -75,9 +66,7 @@ function Show-AppsInCategory {
         $itemsPerPage = 5
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
-        $descriptionWidth = 60
-        $borderChar = "_"
-
+        
         while ($true) {
             Clear-Host
             Write-Host "=== $($selectedCategory.name) ===" -ForegroundColor Yellow
@@ -85,23 +74,9 @@ function Show-AppsInCategory {
             $startIndex = ($page - 1) * $itemsPerPage
             $endIndex = [math]::Min($startIndex + $itemsPerPage, $totalApps)
 
-            for ($i = $startIndex; $i -lt $endIndex; $i++) {
-                $app = $apps[$i]
-                $description = $app.description
-
-                $wrappedDescription = $description -split "(?<=\G.{${descriptionWidth}})"
-                
-                Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
-                Write-Host "`nDescription:" -ForegroundColor Cyan
-                Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
-                
-                foreach ($line in $wrappedDescription) {
-                    $paddedLine = $line.PadLeft($descriptionWidth + 2)
-                    Write-Host $paddedLine -ForegroundColor Gray
-                }
-
-                Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
-                Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+            $apps[$startIndex..($endIndex - 1)] | ForEach-Object {
+                Write-Host "$($_.Index + $startIndex + 1). $($_.name)" -ForegroundColor Green
+                Write-Host "Winget ID: $($_.wingetId)" -ForegroundColor Cyan
                 Write-Host ""
             }
 
@@ -112,29 +87,35 @@ function Show-AppsInCategory {
 
             $input = Read-Host "Choose an option"
 
-            if ($input -match '^\d+$') {
-                $selectedAppIndex = [int]$input - 1
-                if ($selectedAppIndex -ge 0 -and $selectedAppIndex -lt $totalApps) {
-                    Handle-AppSelection -appIndex ($selectedAppIndex + 1) -categoryIndex $categoryIndex
-                } else {
-                    Write-Host "Invalid app selection, please try again." -ForegroundColor Red
+            switch ($input) {
+                '^(\d+)$' {
+                    $selectedAppIndex = [int]$input - 1
+                    if ($selectedAppIndex -ge 0 -and $selectedAppIndex -lt $totalApps) {
+                        Handle-AppSelection -appIndex ($selectedAppIndex + 1) -categoryIndex $categoryIndex
+                    } else {
+                        Write-Host "Invalid app selection, please try again." -ForegroundColor Red
+                    }
                 }
-            } elseif ($input -eq 'N' -or $input -eq 'n') {
-                if ($page -lt $totalPages) {
-                    $page++
-                } else {
-                    Write-Host "You are already on the last page." -ForegroundColor Red
+                'N', 'n' {
+                    if ($page -lt $totalPages) {
+                        $page++
+                    } else {
+                        Write-Host "You are already on the last page." -ForegroundColor Red
+                    }
                 }
-            } elseif ($input -eq 'P' -or $input -eq 'p') {
-                if ($page -gt 1) {
-                    $page--
-                } else {
-                    Write-Host "You are already on the first page." -ForegroundColor Red
+                'P', 'p' {
+                    if ($page -gt 1) {
+                        $page--
+                    } else {
+                        Write-Host "You are already on the first page." -ForegroundColor Red
+                    }
                 }
-            } elseif ($input -eq 'B') {
-                return
-            } else {
-                Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red
+                'B' {
+                    return
+                }
+                default {
+                    Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red
+                }
             }
         }
     } else {
@@ -175,8 +156,7 @@ function Handle-AppSelection {
 
     if ($selectedApp) {
         Write-Host "You have selected $($selectedApp.name)."
-        $install = Read-Host "Do you want to install this application? (Y/N)"
-        if ($install -eq 'Y' -or $install -eq 'y') {
+        if (Read-Host "Do you want to install this application? (Y/N)" -match '^[Yy]$') {
             Install-Application -wingetId $selectedApp.wingetId
         }
     } else {

@@ -35,7 +35,7 @@
     },
     
     {
-      "name": "Text Editors",
+      "name": "Development",
       "options": [
         {
           "name": "Notepad++",
@@ -56,6 +56,18 @@
         {
           "name": "Visual Studio Community 2022 Preview",
           "wingetId": "Microsoft.VisualStudio.2022.Community.Preview"
+        },
+        {
+          "name": "Unity 2022",
+          "wingetId": "Unity.Unity.2022"
+        },
+        {
+          "name": "PyCharm Community Edition",
+          "wingetId": "JJetBrains.PyCharm.Community"
+        },
+        {
+          "name": "Visual Studio Code Insiders",
+          "wingetId": "Microsoft.VisualStudioCode.Insiders"
         }
       ]
     },

@@ -35,16 +35,6 @@ function Download-JsonFile {
         Create-KimDogFolder
         Write-Host "Starting download of JSON file from $jsonFileUrl..." -ForegroundColor Yellow
 
-        # Simulated loading bar
-        $loadingBarLength = 50
-        Write-Host "Loading: [", -NoNewline
-
-        for ($i = 0; $i -le $loadingBarLength; $i++) {
-            Start-Sleep -Milliseconds 50
-            Write-Host "#" -NoNewline
-        }
-
-        Write-Host "]" -ForegroundColor Green
         Invoke-WebRequest -Uri $jsonFileUrl -OutFile $tempJsonFilePath
 
         # Check if the file was successfully downloaded

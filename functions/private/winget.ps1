@@ -106,6 +106,9 @@ function Show-AppsInCategory {
                         Write-Host "You are already on the first page." -ForegroundColor Red
                     }
                 }
+                'B' {
+                    return
+                }
                 default {
                     if ($input -match '^\d+$') {
                         $selectedAppIndex = [int]$input - 1

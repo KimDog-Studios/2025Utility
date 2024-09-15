@@ -53,7 +53,8 @@ function Run-GitHubScript {
         Write-Host "Executing script from $url..." -ForegroundColor Green
         Invoke-Expression $scriptContent
     } catch {
-        Write-Host "Failed to fetch or execute script from $url: $_" -ForegroundColor Red
+        $errorMessage = $_.Exception.Message
+        Write-Host ("Failed to fetch or execute script from {0}: {1}" -f $url, $errorMessage) -ForegroundColor Red
     }
 }
 
@@ -65,20 +66,22 @@ function Handle-MenuSelection {
 
     switch ($selection) {
         1 {
-            Write-Host "Running Script 1..." -ForegroundColor Green
+            Write-Host "Running Script 1: Activate and Add Ultimate Power Plan" -ForegroundColor Green
             # URL of the script to activate and add Ultimate Power Plan
             $ultimatePowerPlanUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/activateUltimatePowerPlan.ps1"
             Run-GitHubScript -url $ultimatePowerPlanUrl
         }
         2 {
-            Write-Host "Running Script 2..." -ForegroundColor Green
+            Write-Host "Running Script 2: Change Display Settings to Performance" -ForegroundColor Green
             # Placeholder for Script 2
-            # .\Path\To\Script2.ps1
+            # $displaySettingsUrl = "https://path/to/displaySettingsScript.ps1"
+            # Run-GitHubScript -url $displaySettingsUrl
         }
         3 {
-            Write-Host "Running Script 3..." -ForegroundColor Green
+            Write-Host "Running Script 3: Change Theme to Dark Mode" -ForegroundColor Green
             # Placeholder for Script 3
-            # .\Path\To\Script3.ps1
+            # $darkModeUrl = "https://path/to/darkModeScript.ps1"
+            # Run-GitHubScript -url $darkModeUrl
         }
         4 {
             Write-Host "Exiting..." -ForegroundColor Green

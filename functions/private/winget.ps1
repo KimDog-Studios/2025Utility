@@ -33,10 +33,9 @@ function Cleanup-KimDogFolder {
     }
 }
 
-# Register cleanup function to run on script exit
-trap {
+# Register cleanup function to run on script exit (for both normal and unexpected exit)
+Register-EngineEvent PowerShell.Exiting -Action {
     Cleanup-KimDogFolder
-    exit
 }
 
 # Function to read and parse JSON file
@@ -66,7 +65,7 @@ function Align-Header {
     $Padding = $Width - $TextLength
     $LeftPadding = [math]::Floor($Padding / 2)
     $RightPadding = [math]::Ceiling($Padding / 2)
-    
+
     $AlignedText = ("=" * $LeftPadding) + $Text + ("=" * $RightPadding)
     $AlignedText
 }

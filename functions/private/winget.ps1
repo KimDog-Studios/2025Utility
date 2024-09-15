@@ -64,6 +64,28 @@ function Show-Menu {
     Write-Host "`n"  # Reduced gap
 }
 
+# Function to install an application using winget
+function Install-Application {
+    param (
+        [string]$wingetId
+    )
+
+    if (-not $wingetId) {
+        Write-Host "No Winget ID provided. Exiting..." -ForegroundColor Red
+        return
+    }
+
+    Write-Host "Starting installation of $wingetId..." -ForegroundColor Yellow
+
+    try {
+        $cmdCommand = "winget install --id $wingetId --silent"
+        Start-Process -FilePath "cmd.exe" -ArgumentList "/c $cmdCommand" -NoNewWindow -Wait
+        Write-Host "Installation process for $wingetId has started." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to start installation for ${wingetId}: $_" -ForegroundColor Red
+    }
+}
+
 # Function for Option selection
 function Handle-Option {
     param (
@@ -79,8 +101,8 @@ function Handle-Option {
         Write-Host "Description: $($selectedOption.description)" -ForegroundColor Green
         Write-Host "Winget ID: $($selectedOption.wingetId)" -ForegroundColor Cyan
         
-        # Call Install-Application function if required here
-        # Install-Application -wingetId $selectedOption.wingetId
+        # Call Install-Application function with the selected Winget ID
+        Install-Application -wingetId $selectedOption.wingetId
         
     } else {
         Write-Host "Invalid selection, please try again." -ForegroundColor Red

@@ -33,6 +33,7 @@
         }
       ]
     },
+    
     {
       "name": "Text Editors",
       "options": [
@@ -58,21 +59,39 @@
         }
       ]
     },
+
     {
       "name": "Utilities",
       "options": [
         {
           "name": "7-Zip",
           "wingetId": "7zip.7zip"
+        },
+        {
+          "name": "WinRAR",
+          "wingetId": "Rarlab.WinRAR"
+        },
+        {
+          "name": "CCleaner",
+          "wingetId": "Piriform.CCleaner"
         }
       ]
     },
+    
     {
       "name": "Communication",
       "options": [
         {
           "name": "Discord",
           "wingetId": "Discord.Discord"
+        },
+        {
+          "name": "Slack",
+          "wingetId": "SlackTechnologies.Slack"
+        },
+        {
+          "name": "Microsoft Teams",
+          "wingetId": "Microsoft.Teams"
         }
       ]
     }

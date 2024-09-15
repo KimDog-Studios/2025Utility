@@ -1,14 +1,22 @@
 # Custom Winget Management Menu in PowerShell
 
-# Define paths for the JSON file
-$tempJsonFilePath = [System.IO.Path]::Combine($env:TEMP, "apps.json")
-$jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
+# Define paths for the JSON file and winget menu script
+$tempFolderPath = [System.IO.Path]::Combine($env:TEMP, "KimDog Studios")
+$appsJsonFilePath = [System.IO.Path]::Combine($tempFolderPath, "apps.json")
+$wingetMenuPath = [System.IO.Path]::Combine($tempFolderPath, "winget.ps1")
+$appsJsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
+$wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/winget.ps1"
+
+# Ensure the temp folder exists
+if (-not (Test-Path $tempFolderPath)) {
+    New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
+}
 
 # Function to download JSON file
 function Download-JsonFile {
     try {
-        Write-Host "Downloading JSON file from $jsonFileUrl..." -ForegroundColor Yellow
-        Invoke-WebRequest -Uri $jsonFileUrl -OutFile $tempJsonFilePath
+        Write-Host "Downloading JSON file from $appsJsonUrl..." -ForegroundColor Yellow
+        Invoke-WebRequest -Uri $appsJsonUrl -OutFile $appsJsonFilePath
         Write-Host "Download complete." -ForegroundColor Green
     } catch {
         Write-Host "Failed to download JSON file: $_" -ForegroundColor Red
@@ -16,12 +24,30 @@ function Download-JsonFile {
     }
 }
 
+# Function to download winget menu script
+function Download-WingetMenu {
+    try {
+        Write-Host "Downloading winget menu script from $wingetMenuUrl..." -ForegroundColor Yellow
+        Invoke-WebRequest -Uri $wingetMenuUrl -OutFile $wingetMenuPath
+        Write-Host "Download complete." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to download winget menu script: $_" -ForegroundColor Red
+        exit
+    }
+}
+
 # Function to clean up temporary files
 function Cleanup-TempFiles {
-    if (Test-Path $tempJsonFilePath) {
-        Remove-Item -Path $tempJsonFilePath -ErrorAction SilentlyContinue
-        Write-Host "Temporary files have been cleaned up." -ForegroundColor Green
+    if (Test-Path $appsJsonFilePath) {
+        Remove-Item -Path $appsJsonFilePath -ErrorAction SilentlyContinue
     }
+    if (Test-Path $wingetMenuPath) {
+        Remove-Item -Path $wingetMenuPath -ErrorAction SilentlyContinue
+    }
+    if (Test-Path $tempFolderPath) {
+        Remove-Item -Path $tempFolderPath -Recurse -ErrorAction SilentlyContinue
+    }
+    Write-Host "Temporary files have been cleaned up." -ForegroundColor Green
 }
 
 # Register cleanup function to run on script exit
@@ -33,11 +59,11 @@ trap {
 # Function to read and parse JSON file
 function Get-MenuOptions {
     try {
-        if (Test-Path $tempJsonFilePath) {
-            $jsonContent = Get-Content -Path $tempJsonFilePath -Raw | ConvertFrom-Json
+        if (Test-Path $appsJsonFilePath) {
+            $jsonContent = Get-Content -Path $appsJsonFilePath -Raw | ConvertFrom-Json
             return $jsonContent.options
         } else {
-            Write-Host "JSON file not found at $tempJsonFilePath" -ForegroundColor Red
+            Write-Host "JSON file not found at $appsJsonFilePath" -ForegroundColor Red
             return @()
         }
     } catch {
@@ -138,6 +164,7 @@ function Handle-Option {
 
 # Main execution
 Download-JsonFile
+Download-WingetMenu
 
 # Main loop
 while ($true) {

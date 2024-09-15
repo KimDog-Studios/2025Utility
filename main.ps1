@@ -2,32 +2,12 @@
 
 # URL of the winget menu script
 $wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/winget.ps1"
-$wingetMenuPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "winget.ps1")
+$tempFolderPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "KimDog Studios")
+$wingetMenuPath = [System.IO.Path]::Combine($tempFolderPath, "winget.ps1")
 
-# Function to download winget menu script
-function Download-WingetMenu {
-    try {
-        Write-Host "Downloading winget menu script from $wingetMenuUrl..." -ForegroundColor Yellow
-        Invoke-WebRequest -Uri $wingetMenuUrl -OutFile $wingetMenuPath
-        Write-Host "Download complete." -ForegroundColor Green
-    } catch {
-        Write-Host "Failed to download winget menu script: $_" -ForegroundColor Red
-        exit
-    }
-}
-
-# Function to clean up temporary files
-function Cleanup-TempFiles {
-    if (Test-Path $wingetMenuPath) {
-        Remove-Item -Path $wingetMenuPath -ErrorAction SilentlyContinue
-        Write-Host "Temporary files have been cleaned up." -ForegroundColor Green
-    }
-}
-
-# Register cleanup function to run on script exit
-trap {
-    Cleanup-TempFiles
-    exit
+# Ensure the temp folder exists
+if (-not (Test-Path $tempFolderPath)) {
+    New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
 }
 
 # Function to check if winget is installed
@@ -137,15 +117,22 @@ function Show-MainMenu {
 
 # Function to download and run the winget menu script
 function Run-WingetMenu {
-    Download-WingetMenu
     try {
-        Write-Host "Running winget menu..." -ForegroundColor Green
+        Write-Host "Downloading winget menu script from $wingetMenuUrl..." -ForegroundColor Yellow
+        Invoke-WebRequest -Uri $wingetMenuUrl -OutFile $wingetMenuPath
+        Write-Host "Download complete. Running winget menu..." -ForegroundColor Green
+
         Start-Process powershell -ArgumentList "-File `"$wingetMenuPath`"" -NoNewWindow -Wait
     } catch {
-        Write-Host "Failed to run winget menu script: $_" -ForegroundColor Red
+        Write-Host "Failed to download or run winget menu script: $_" -ForegroundColor Red
     } finally {
-        # Clean up temporary file
-        Cleanup-TempFiles
+        # Clean up temporary folder and file
+        if (Test-Path $wingetMenuPath) {
+            Remove-Item -Path $wingetMenuPath -ErrorAction SilentlyContinue
+        }
+        if (Test-Path $tempFolderPath) {
+            Remove-Item -Path $tempFolderPath -Recurse -ErrorAction SilentlyContinue
+        }
     }
 }
 

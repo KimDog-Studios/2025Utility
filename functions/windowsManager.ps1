@@ -26,7 +26,7 @@ function Show-Header {
     Clear-Host
     $HeaderWidth = 30
 
-    Write-Host (Align-Header "Custom Menu" $HeaderWidth) -ForegroundColor Yellow
+    Write-Host (Align-Header "Windows Manager Menu" $HeaderWidth) -ForegroundColor Yellow
     Write-Host (Align-Header "Last Updated: 2024-09-15" $HeaderWidth) -ForegroundColor Cyan
     Write-Host (Align-Header "=" $HeaderWidth) -ForegroundColor Cyan
     Write-Host "`n"

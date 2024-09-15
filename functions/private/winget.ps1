@@ -46,7 +46,13 @@ function Download-JsonFile {
 
         Write-Host "]" -ForegroundColor Green
         Invoke-WebRequest -Uri $jsonFileUrl -OutFile $tempJsonFilePath
-        Write-Host "Download complete." -ForegroundColor Green
+
+        # Check if the file was successfully downloaded
+        if (Test-Path $tempJsonFilePath) {
+            Write-Host "Download complete. File saved to $tempJsonFilePath." -ForegroundColor Green
+        } else {
+            Write-Host "Download failed. File not found at $tempJsonFilePath." -ForegroundColor Red
+        }
     } catch {
         Write-Host "Failed to download JSON file: $_" -ForegroundColor Red
         exit
@@ -136,7 +142,7 @@ function Show-AppsInCategory {
         $itemsPerPage = 5
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
-        $descriptionWidth = 60  # Set description width to 50 characters
+        $descriptionWidth = 60  # Set description width to 60 characters
         $borderChar = "_"
 
         while ($true) {
@@ -222,7 +228,7 @@ function Install-Application {
         Start-Process -FilePath "cmd.exe" -ArgumentList "/c $cmdCommand" -NoNewWindow -Wait
         Write-Host "Installation process for $wingetId has started." -ForegroundColor Green
     } catch {
-        Write-Host "Failed to install application: $_" -ForegroundColor Red
+        Write-Host "Failed to start the installation process: $_" -ForegroundColor Red
     }
 }
 
@@ -235,36 +241,32 @@ function Handle-AppSelection {
 
     $categories = Get-MenuOptions
     $selectedCategory = $categories[$categoryIndex - 1]
+    $selectedApp = $selectedCategory.options[$appIndex - 1]
 
-    if ($selectedCategory) {
-        $apps = $selectedCategory.options
-        $app = $apps[$appIndex - 1]
-
-        if ($app) {
-            Write-Host "`nYou selected $($app.name) with Winget ID: $($app.wingetId)." -ForegroundColor Green
-            Write-Host "Installing application..." -ForegroundColor Yellow
-            Install-Application -wingetId $app.wingetId
-        } else {
-            Write-Host "Invalid app selection." -ForegroundColor Red
+    if ($selectedApp) {
+        Write-Host "You have selected $($selectedApp.name)."
+        $install = Read-Host "Do you want to install this application? (Y/N)"
+        if ($install -eq 'Y' -or $install -eq 'y') {
+            Install-Application -wingetId $selectedApp.wingetId
         }
     } else {
-        Write-Host "Invalid category selection." -ForegroundColor Red
+        Write-Host "Invalid application selection." -ForegroundColor Red
     }
 }
 
-# Main menu logic
+# Main menu loop
 while ($true) {
     Show-Header
     Show-CategoryMenu
 
-    $categoryInput = Read-Host "Select a category"
+    $selection = Read-Host "Select a category"
 
-    if ($categoryInput -match '^\d+$') {
-        $categoryIndex = [int]$categoryInput
+    if ($selection -match '^\d+$') {
+        $categoryIndex = [int]$selection
         if ($categoryIndex -eq 0) {
-            Write-Host "Exiting menu. Goodbye!" -ForegroundColor Green
-            break
-        } elseif ($categoryIndex -gt 0 -and $categoryIndex -lt 10) {
+            Write-Host "Exiting script." -ForegroundColor Green
+            exit
+        } elseif ($categoryIndex -gt 0) {
             Show-AppsInCategory -categoryIndex $categoryIndex
         } else {
             Write-Host "Invalid category selection, please try again." -ForegroundColor Red

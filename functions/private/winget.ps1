@@ -106,7 +106,7 @@ function Show-AppsInCategory {
         Clear-Host
         Write-Host "=== $($selectedCategory.name) ===" -ForegroundColor Yellow
         $counter = 1
-        foreach ($app in $selectedCategory.apps) {
+        foreach ($app in $selectedCategory.options) {
             Write-Host "$counter. $($app.name)" -ForegroundColor Green
             Write-Host "   Description: $($app.description)" -ForegroundColor Gray
             Write-Host "   Winget ID: $($app.wingetId)" -ForegroundColor Cyan
@@ -150,7 +150,7 @@ function Handle-AppSelection {
 
     $categories = Get-MenuOptions
     $selectedCategory = $categories[$categoryId - 1]
-    $selectedApp = $selectedCategory.apps[$appId - 1]
+    $selectedApp = $selectedCategory.options[$appId - 1]
 
     if ($selectedApp) {
         Clear-Host

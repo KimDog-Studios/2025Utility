@@ -108,7 +108,7 @@ function Show-AppsInCategory {
         $itemsPerPage = 5
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
-        $descriptionWidth = 50  # Adjust this value as needed
+        $descriptionWidth = 60  # Adjust this value as needed
         $borderChar = "="
         $padding = 2
 
@@ -122,18 +122,14 @@ function Show-AppsInCategory {
             for ($i = $startIndex; $i -lt $endIndex; $i++) {
                 $app = $apps[$i]
                 $description = $app.description
-                $descriptionLines = @()
 
-                if ($description.Length -gt $descriptionWidth) {
-                    $descriptionLines = $description -split "(?<=\G.{$descriptionWidth})"
-                } else {
-                    $descriptionLines = @($description)
-                }
-
+                # Wrap description text to the specified width
+                $wrappedDescription = $description -split "(?<=\G.{${descriptionWidth}})"
+                
                 Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
                 Write-Host "$($borderChar * ($descriptionWidth + 4))" -ForegroundColor Gray
 
-                foreach ($line in $descriptionLines) {
+                foreach ($line in $wrappedDescription) {
                     $paddedLine = " $line" + (" " * ($descriptionWidth - $line.Length))
                     Write-Host "$borderChar$paddedLine$borderChar" -ForegroundColor Gray
                 }

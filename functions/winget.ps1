@@ -46,9 +46,10 @@ function Show-Header {
 }
 
 function Show-CategoryMenu {
-    $categories = Get-JsonData | Sort-Object name
+    $categories = Get-JsonData
+    $sortedCategories = $categories | Sort-Object { $_.name.ToLower() }
     $counter = 1
-    foreach ($category in $categories) {
+    foreach ($category in $sortedCategories) {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
         $counter++
     }
@@ -64,8 +65,9 @@ function Show-AppsInCategory {
     $selectedCategory = $categories[$categoryIndex - 1]
 
     if ($selectedCategory) {
-        $apps = $selectedCategory.options | Sort-Object name
-        $totalApps = $apps.Count
+        $apps = $selectedCategory.options
+        $sortedApps = $apps | Sort-Object { $_.name.ToLower() }
+        $totalApps = $sortedApps.Count
         $itemsPerPage = 5
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
@@ -78,7 +80,7 @@ function Show-AppsInCategory {
             $endIndex = [math]::Min($startIndex + $itemsPerPage, $totalApps)
 
             for ($i = $startIndex; $i -lt $endIndex; $i++) {
-                $app = $apps[$i]
+                $app = $sortedApps[$i]
                 Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
                 Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
                 Write-Host ""

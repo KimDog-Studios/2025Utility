@@ -67,7 +67,7 @@ function Show-CategoryMenu {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
         $counter++
     }
-    Write-Host "[0] Exit" -ForegroundColor Red
+    Write-Host "[B] Exit" -ForegroundColor Red
     Write-Host "`n"  # Reduced gap
 }
 
@@ -143,7 +143,7 @@ function Show-AppsInCategory {
                 } else {
                     Write-Host "You are already on the first page." -ForegroundColor Red
                 }
-            } elseif ($input -eq '0') {
+            } elseif ($input -eq 'B') {
                 return # Return to the category menu
             } else {
                 Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red

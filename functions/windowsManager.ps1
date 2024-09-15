@@ -1,11 +1,18 @@
 # Function to maximize the PowerShell window
 function Set-FullScreenWindow {
     $console = $Host.UI.RawUI
-    $console.WindowSize = $console.MaxWindowSize
-    $console.BufferSize = $console.MaxWindowSize
+    $currentSize = $console.WindowSize
+    $maxSize = $console.MaxWindowSize
+
+    # Set window size to maximum
+    $console.WindowSize = $maxSize
+    $console.BufferSize = $maxSize
+
+    # Set window position to the top-left corner of the screen
     $console.WindowPosition = New-Object System.Management.Automation.Host.Coordinates -ArgumentList 0,0
 }
 
+# Call the function to set the window to full screen
 Set-FullScreenWindow
 
 # Function to align and display header
@@ -15,94 +22,90 @@ function Align-Header {
         [int]$Width = 30
     )
 
-    $Padding = $Width - $Text.Length
+    $TextLength = $Text.Length
+    $Padding = $Width - $TextLength
     $LeftPadding = [math]::Floor($Padding / 2)
     $RightPadding = [math]::Ceiling($Padding / 2)
-
-    return ("=" * $LeftPadding) + $Text + ("=" * $RightPadding)
+    
+    $AlignedText = ("=" * $LeftPadding) + $Text + ("=" * $RightPadding)
+    $AlignedText
 }
 
-function Show-Header {
+# Function to show the header
+function Show-MainHeader {
     Clear-Host
     $HeaderWidth = 30
 
-    Write-Host (Align-Header "Windows Manager Menu" $HeaderWidth) -ForegroundColor Yellow
+    Write-Host (Align-Header "KimDog's Windows Utility" $HeaderWidth) -ForegroundColor Yellow
     Write-Host (Align-Header "Last Updated: 2024-09-15" $HeaderWidth) -ForegroundColor Cyan
     Write-Host (Align-Header "=" $HeaderWidth) -ForegroundColor Cyan
-    Write-Host "`n"
+    Write-Host "`n"  # Reduced gap
 }
 
 # Function to show the main menu
-function Show-Menu {
-    Clear-Host
-    Write-Host "1. Activate and Add Ultimate Power Plan" -ForegroundColor Cyan
-    Write-Host "2. Change Display Settings to Performance" -ForegroundColor Cyan
-    Write-Host "3. Change Theme to Dark Mode" -ForegroundColor Cyan
-    Write-Host "4. Exit" -ForegroundColor Red
-    Write-Host "`n"
+function Show-MainMenu {
+    $MenuWidth = 30
+
+    Write-Host (Align-Header "Main Menu" $MenuWidth) -ForegroundColor Yellow
+    Write-Host "1. Windows Manager" -ForegroundColor Green
+    Write-Host "2. Application Manager" -ForegroundColor Green
+    Write-Host "3. Exit" -ForegroundColor Red
+    Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
+    Write-Host "`n"  # Reduced gap
 }
 
-# Function to run the script from GitHub
-function Run-GitHubScript {
-    param (
-        [string]$url
-    )
-
+# Function to fetch and execute the Windows Manager script from GitHub
+function Run-WindowsManager {
     try {
-        $scriptContent = Invoke-RestMethod -Uri $url
-        Write-Host "Executing script from $url..." -ForegroundColor Green
+        $scriptContent = Invoke-RestMethod -Uri $windowsManagerUrl
+        Write-Host "Executing Windows Manager script..." -ForegroundColor Green
         Invoke-Expression $scriptContent
     } catch {
-        $errorMessage = $_.Exception.Message
-        Write-Host ("Failed to fetch or execute script from {0}: {1}" -f $url, $errorMessage) -ForegroundColor Red
+        Write-Host "Failed to fetch or execute Windows Manager script: $_" -ForegroundColor Red
     }
 }
 
-# Function to handle menu selection
-function Handle-MenuSelection {
-    param (
-        [int]$selection
-    )
-
-    switch ($selection) {
-        1 {
-            Write-Host "Running Script 1: Activate and Add Ultimate Power Plan" -ForegroundColor Green
-            # URL of the script to activate and add Ultimate Power Plan
-            $ultimatePowerPlanUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/activateUltimatePowerPlan.ps1"
-            Run-GitHubScript -url $ultimatePowerPlanUrl
-        }
-        2 {
-            Write-Host "Running Script 2: Change Display Settings to Performance" -ForegroundColor Green
-            # Placeholder for Script 2
-            # $displaySettingsUrl = "https://path/to/displaySettingsScript.ps1"
-            # Run-GitHubScript -url $displaySettingsUrl
-        }
-        3 {
-            Write-Host "Running Script 3: Change Theme to Dark Mode" -ForegroundColor Green
-            # Placeholder for Script 3
-            # $darkModeUrl = "https://path/to/darkModeScript.ps1"
-            # Run-GitHubScript -url $darkModeUrl
-        }
-        4 {
-            Write-Host "Exiting..." -ForegroundColor Green
-            exit
-        }
-        default {
-            Write-Host "Invalid selection, please try again." -ForegroundColor Red
-        }
+# Function to fetch and execute the winget menu script from GitHub
+function Run-WingetMenu {
+    try {
+        $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl
+        Write-Host "Executing winget menu script..." -ForegroundColor Green
+        Invoke-Expression $scriptContent
+    } catch {
+        Write-Host "Failed to fetch or execute winget menu script: $_" -ForegroundColor Red
     }
+}
+
+# Function for Option 1
+function Option1 {
+    Clear-Host
+    Write-Host "You selected Option 1: Windows Manager" -ForegroundColor Green
+    Run-WindowsManager
+}
+
+# Function for Option 2
+function Option2 {
+    Clear-Host
+    Write-Host "You selected Option 2: Application Manager" -ForegroundColor Green
+    Run-WingetMenu
+}
+
+# Function for invalid option
+function Show-InvalidOption {
+    Clear-Host
+    Write-Host "Invalid selection, please try again." -ForegroundColor Red
 }
 
 # Main loop
 while ($true) {
-    Show-Header
-    Show-Menu
+    Show-MainHeader
+    Show-MainMenu
+    $selection = Read-Host "Please enter your choice"
 
-    $selection = Read-Host "Select an option"
-
-    if ($selection -match '^\d+$') {
-        Handle-MenuSelection -selection [int]$selection
-    } else {
-        Write-Host "Invalid input, please enter a number." -ForegroundColor Red
+    switch ($selection) {
+        "1" { Option1 }
+        "2" { Option2 }
+        "3" { Write-Host "Exiting..." -ForegroundColor Red; break }
+        default { Show-InvalidOption }
     }
 }

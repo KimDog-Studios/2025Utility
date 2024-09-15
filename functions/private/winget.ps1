@@ -9,7 +9,10 @@ $wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/m
 
 # Ensure the temp folder exists
 if (-not (Test-Path $tempFolderPath)) {
+    Write-Host "Creating directory: $tempFolderPath" -ForegroundColor Yellow
     New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
+} else {
+    Write-Host "Directory already exists: $tempFolderPath" -ForegroundColor Green
 }
 
 # Function to download JSON file
@@ -17,7 +20,7 @@ function Download-JsonFile {
     try {
         Write-Host "Downloading JSON file from $appsJsonUrl..." -ForegroundColor Yellow
         Invoke-WebRequest -Uri $appsJsonUrl -OutFile $appsJsonFilePath
-        Write-Host "Download complete." -ForegroundColor Green
+        Write-Host "Download complete. File saved at $appsJsonFilePath" -ForegroundColor Green
     } catch {
         Write-Host "Failed to download JSON file: $_" -ForegroundColor Red
         exit
@@ -29,7 +32,7 @@ function Download-WingetMenu {
     try {
         Write-Host "Downloading winget menu script from $wingetMenuUrl..." -ForegroundColor Yellow
         Invoke-WebRequest -Uri $wingetMenuUrl -OutFile $wingetMenuPath
-        Write-Host "Download complete." -ForegroundColor Green
+        Write-Host "Download complete. File saved at $wingetMenuPath" -ForegroundColor Green
     } catch {
         Write-Host "Failed to download winget menu script: $_" -ForegroundColor Red
         exit
@@ -40,12 +43,15 @@ function Download-WingetMenu {
 function Cleanup-TempFiles {
     if (Test-Path $appsJsonFilePath) {
         Remove-Item -Path $appsJsonFilePath -ErrorAction SilentlyContinue
+        Write-Host "Deleted file: $appsJsonFilePath" -ForegroundColor Green
     }
     if (Test-Path $wingetMenuPath) {
         Remove-Item -Path $wingetMenuPath -ErrorAction SilentlyContinue
+        Write-Host "Deleted file: $wingetMenuPath" -ForegroundColor Green
     }
     if (Test-Path $tempFolderPath) {
         Remove-Item -Path $tempFolderPath -Recurse -ErrorAction SilentlyContinue
+        Write-Host "Deleted folder: $tempFolderPath" -ForegroundColor Green
     }
     Write-Host "Temporary files have been cleaned up." -ForegroundColor Green
 }

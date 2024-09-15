@@ -17,6 +17,16 @@
           "name": "Mozilla Firefox",
           "description": "Mozilla Firefox is a free and open-source web browser.",
           "wingetId": "Mozilla.Firefox"
+        },
+        {
+          "name": "Vivaldi",
+          "description": "Vivaldi is a lightweight and fast web browser.",
+          "wingetId": "Vivaldi.Vivaldi"
+        },
+        {
+          "name": "Brave",
+          "description": "Brave is a privacy-focused web browser.",
+          "wingetId": "Brave.Brave"
         }
       ]
     },

@@ -47,6 +47,26 @@
           "name": "Notepad++",
           "description": "Notepad++ is a free source code editor that supports several languages.",
           "wingetId": "Notepad++.Notepad++"
+        },
+        {
+          "name": "Visual Studio Code",
+          "description": "Visual Studio Code is a free source code editor that supports several languages.",
+          "wingetId": "Microsoft.VisualStudioCode"
+        },
+        {
+          "name": "Sublime Text 4",
+          "description": "Sublime Text is a free source code editor that supports several languages.",
+          "wingetId": "SublimeHQ.SublimeText.4"
+        },
+        {
+          "name": "Atom",
+          "description": "Atom is a free and open-source text and source code editor.",
+          "wingetId": "GitHub.Atom"
+        },
+        {
+          "name": "Visual Studio Community 2022 Preview",
+          "description": "Visual Studio Community 2022 Preview is a free source code editor that supports several languages.",
+          "wingetId": "Microsoft.VisualStudio.2022.Community.Preview"
         }
       ]
     },
@@ -57,6 +77,16 @@
           "name": "7-Zip",
           "description": "7-Zip is a file archiver with a high compression ratio.",
           "wingetId": "7zip.7zip"
+        }
+      ]
+    },
+    {
+      "name": "Communication",
+      "options": [
+        {
+          "name": "Discord",
+          "description": "Cross-platform chat and voice software that lets you and your friends talk, stay in touch, and talk.",
+          "wingetId": "Discord.Discord"
         }
       ]
     }

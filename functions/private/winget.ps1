@@ -17,65 +17,20 @@ function Set-FullScreenWindow {
 # Call the function to set the window to full screen
 Set-FullScreenWindow
 
-# Define paths for the JSON file and folder
-$kimDogFolder = [System.IO.Path]::Combine($env:TEMP, "KimDog Studios")
-$tempJsonFilePath = [System.IO.Path]::Combine($kimDogFolder, "apps.json")
+# Define the URL for the JSON file
 $jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
 
-# Function to create the KimDog Studios folder
-function Create-KimDogFolder {
-    if (-not (Test-Path $kimDogFolder)) {
-        New-Item -Path $kimDogFolder -ItemType Directory | Out-Null
-    }
-}
-
-# Function to download JSON file
-function Download-JsonFile {
+# Function to fetch and parse JSON data from GitHub
+function Get-JsonData {
     try {
-        Create-KimDogFolder
-        Write-Host "Starting download of JSON file from $jsonFileUrl..." -ForegroundColor Yellow
+        Write-Host "Fetching JSON data from $jsonFileUrl..." -ForegroundColor Yellow
 
-        # Download the JSON file
-        $response = Invoke-WebRequest -Uri $jsonFileUrl -UseBasicP
-        if ($response.StatusCode -eq 200) {
-            # Save content to file
-            $response.Content | Set-Content -Path $tempJsonFilePath
-            Write-Host "Download complete. File saved to $tempJsonFilePath." -ForegroundColor Green
-        } else {
-            Write-Host "Download failed. Status code: $($response.StatusCode)" -ForegroundColor Red
-        }
+        # Fetch and parse JSON data
+        $jsonData = Invoke-RestMethod -Uri $jsonFileUrl -Method Get
+        return $jsonData.categories
     } catch {
-        Write-Host "Failed to download JSON file: $_" -ForegroundColor Red
+        Write-Host "Failed to fetch JSON data: $_" -ForegroundColor Red
         exit
-    }
-}
-
-# Function to clean up KimDog Studios folder
-function Cleanup-KimDogFolder {
-    if (Test-Path $kimDogFolder) {
-        Remove-Item -Path $kimDogFolder -Recurse -Force -ErrorAction SilentlyContinue
-        Write-Host "KimDog Studios folder and its contents have been cleaned up." -ForegroundColor Green
-    }
-}
-
-# Register cleanup function to run on script exit (for both normal and unexpected exit)
-Register-EngineEvent PowerShell.Exiting -Action {
-    Cleanup-KimDogFolder
-}
-
-# Function to read and parse JSON file
-function Get-MenuOptions {
-    try {
-        if (Test-Path $tempJsonFilePath) {
-            $jsonContent = Get-Content -Path $tempJsonFilePath -Raw | ConvertFrom-Json
-            return $jsonContent.categories
-        } else {
-            Write-Host "JSON file not found at $tempJsonFilePath" -ForegroundColor Red
-            return @()
-        }
-    } catch {
-        Write-Host "Failed to read or parse JSON file: $_" -ForegroundColor Red
-        return @()
     }
 }
 
@@ -108,7 +63,7 @@ function Show-Header {
 
 # Function to show the categories in a simple numbered list format
 function Show-CategoryMenu {
-    $categories = Get-MenuOptions
+    $categories = Get-JsonData
     $counter = 1
     foreach ($category in $categories) {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
@@ -124,7 +79,7 @@ function Show-AppsInCategory {
         [int]$categoryIndex
     )
 
-    $categories = Get-MenuOptions
+    $categories = Get-JsonData
     $selectedCategory = $categories[$categoryIndex - 1]
 
     if ($selectedCategory) {
@@ -230,7 +185,7 @@ function Handle-AppSelection {
         [int]$categoryIndex
     )
 
-    $categories = Get-MenuOptions
+    $categories = Get-JsonData
     $selectedCategory = $categories[$categoryIndex - 1]
     $selectedApp = $selectedCategory.options[$appIndex - 1]
 

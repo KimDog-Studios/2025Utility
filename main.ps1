@@ -108,7 +108,7 @@ function Show-MainMenu {
     $MenuWidth = 30
 
     Write-Host (Align-Header "Main Menu" $MenuWidth) -ForegroundColor Yellow
-    Write-Host "1. Copy KimDog's On Screen Display Settings" -ForegroundColor Green
+    Write-Host "1. Windows Manager" -ForegroundColor Green
     Write-Host "2. Application Manager" -ForegroundColor Green
     Write-Host "3. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
@@ -139,7 +139,7 @@ function Run-WingetMenu {
 # Function for Option 1
 function Option1 {
     Clear-Host
-    Write-Host "You selected Option 1." -ForegroundColor Green
+    Write-Host "You selected Option 1: Windows Manager" -ForegroundColor Green
     # Add your Option 1 code here
 }
 

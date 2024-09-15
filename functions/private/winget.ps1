@@ -33,7 +33,18 @@ function Create-KimDogFolder {
 function Download-JsonFile {
     try {
         Create-KimDogFolder
-        Write-Host "Downloading JSON file from $jsonFileUrl..." -ForegroundColor Yellow
+        Write-Host "Starting download of JSON file from $jsonFileUrl..." -ForegroundColor Yellow
+
+        # Simulated loading bar
+        $loadingBarLength = 50
+        Write-Host "Loading: [", -NoNewline
+
+        for ($i = 0; $i -le $loadingBarLength; $i++) {
+            Start-Sleep -Milliseconds 500
+            Write-Host "#" -NoNewline
+        }
+
+        Write-Host "]" -ForegroundColor Green
         Invoke-WebRequest -Uri $jsonFileUrl -OutFile $tempJsonFilePath
         Write-Host "Download complete." -ForegroundColor Green
     } catch {
@@ -122,10 +133,10 @@ function Show-AppsInCategory {
     if ($selectedCategory) {
         $apps = $selectedCategory.options
         $totalApps = $apps.Count
-        $itemsPerPage = 4
+        $itemsPerPage = 5
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
-        $descriptionWidth = 80  # Set description width to 50 characters
+        $descriptionWidth = 60  # Set description width to 50 characters
         $borderChar = "_"
 
         while ($true) {
@@ -215,7 +226,7 @@ function Install-Application {
     }
 }
 
-# Function for Option selection
+# Function to handle app selection
 function Handle-AppSelection {
     param (
         [int]$appIndex,

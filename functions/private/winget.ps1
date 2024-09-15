@@ -1,16 +1,43 @@
 # Custom Winget Management Menu in PowerShell
 
-# Path to the JSON file
-$jsonFilePath = ".\config\apps.json"
+# Define paths for the JSON file
+$tempJsonFilePath = [System.IO.Path]::Combine($env:TEMP, "apps.json")
+$jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
+
+# Function to download JSON file
+function Download-JsonFile {
+    try {
+        Write-Host "Downloading JSON file from $jsonFileUrl..." -ForegroundColor Yellow
+        Invoke-WebRequest -Uri $jsonFileUrl -OutFile $tempJsonFilePath
+        Write-Host "Download complete." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to download JSON file: $_" -ForegroundColor Red
+        exit
+    }
+}
+
+# Function to clean up temporary files
+function Cleanup-TempFiles {
+    if (Test-Path $tempJsonFilePath) {
+        Remove-Item -Path $tempJsonFilePath -ErrorAction SilentlyContinue
+        Write-Host "Temporary files have been cleaned up." -ForegroundColor Green
+    }
+}
+
+# Register cleanup function to run on script exit
+trap {
+    Cleanup-TempFiles
+    exit
+}
 
 # Function to read and parse JSON file
 function Get-MenuOptions {
     try {
-        if (Test-Path $jsonFilePath) {
-            $jsonContent = Get-Content -Path $jsonFilePath -Raw | ConvertFrom-Json
+        if (Test-Path $tempJsonFilePath) {
+            $jsonContent = Get-Content -Path $tempJsonFilePath -Raw | ConvertFrom-Json
             return $jsonContent.options
         } else {
-            Write-Host "JSON file not found at $jsonFilePath" -ForegroundColor Red
+            Write-Host "JSON file not found at $tempJsonFilePath" -ForegroundColor Red
             return @()
         }
     } catch {
@@ -109,6 +136,9 @@ function Handle-Option {
     }
 }
 
+# Main execution
+Download-JsonFile
+
 # Main loop
 while ($true) {
     Show-Header
@@ -133,3 +163,6 @@ while ($true) {
     Write-Host "`nPress Enter to continue..." -ForegroundColor Yellow
     Read-Host
 }
+
+# Cleanup on script exit
+Cleanup-TempFiles

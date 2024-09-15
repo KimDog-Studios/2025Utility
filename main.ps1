@@ -1,5 +1,35 @@
 # Custom Main Menu in PowerShell
 
+# URL of the winget menu script
+$wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/winget.ps1"
+$wingetMenuPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "winget.ps1")
+
+# Function to download winget menu script
+function Download-WingetMenu {
+    try {
+        Write-Host "Downloading winget menu script from $wingetMenuUrl..." -ForegroundColor Yellow
+        Invoke-WebRequest -Uri $wingetMenuUrl -OutFile $wingetMenuPath
+        Write-Host "Download complete." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to download winget menu script: $_" -ForegroundColor Red
+        exit
+    }
+}
+
+# Function to clean up temporary files
+function Cleanup-TempFiles {
+    if (Test-Path $wingetMenuPath) {
+        Remove-Item -Path $wingetMenuPath -ErrorAction SilentlyContinue
+        Write-Host "Temporary files have been cleaned up." -ForegroundColor Green
+    }
+}
+
+# Register cleanup function to run on script exit
+trap {
+    Cleanup-TempFiles
+    exit
+}
+
 # Function to check if winget is installed
 function Check-Winget {
     $wingetCommand = "winget"
@@ -105,6 +135,20 @@ function Show-MainMenu {
     Write-Host "`n"  # Reduced gap
 }
 
+# Function to download and run the winget menu script
+function Run-WingetMenu {
+    Download-WingetMenu
+    try {
+        Write-Host "Running winget menu..." -ForegroundColor Green
+        Start-Process powershell -ArgumentList "-File `"$wingetMenuPath`"" -NoNewWindow -Wait
+    } catch {
+        Write-Host "Failed to run winget menu script: $_" -ForegroundColor Red
+    } finally {
+        # Clean up temporary file
+        Cleanup-TempFiles
+    }
+}
+
 # Function for Option 1
 function Option1 {
     Clear-Host
@@ -116,14 +160,7 @@ function Option1 {
 function Option2 {
     Clear-Host
     Write-Host "You selected Option 2: Application Manager" -ForegroundColor Green
-
-    # Launch the winget menu script
-    $wingetMenuPath = ".\functions\private\winget.ps1"
-    if (Test-Path $wingetMenuPath) {
-        Start-Process powershell -ArgumentList "-File `"$wingetMenuPath`"" -NoNewWindow -Wait
-    } else {
-        Write-Host "Winget menu script not found at $wingetMenuPath" -ForegroundColor Red
-    }
+    Run-WingetMenu
 }
 
 # Function for invalid option

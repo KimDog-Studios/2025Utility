@@ -40,14 +40,21 @@ function Show-Header {
     $HeaderWidth = 30
 
     Write-Host (Align-Header "KimDog's Winget Menu" $HeaderWidth) -ForegroundColor Yellow
-    Write-Host (Align-Header "Last Updated: 2024-09-15" $HeaderWidth) -ForegroundColor Cyan
+    Write-Host (Align-Header "Last Updated: 2024-09-16" $HeaderWidth) -ForegroundColor Cyan
     Write-Host (Align-Header "=" $HeaderWidth) -ForegroundColor Cyan
     Write-Host "`n"
 }
 
 function Show-CategoryMenu {
     $categories = Get-JsonData
+    Write-Host "Raw Categories Data:" -ForegroundColor Yellow
+    $categories | ForEach-Object { Write-Host "$($_.name)" -ForegroundColor White }
+    
     $sortedCategories = $categories | Sort-Object { $_.name.ToLower() }
+    
+    Write-Host "`nSorted Categories Data:" -ForegroundColor Yellow
+    $sortedCategories | ForEach-Object { Write-Host "$($_.name)" -ForegroundColor White }
+    
     $counter = 1
     foreach ($category in $sortedCategories) {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
@@ -66,7 +73,14 @@ function Show-AppsInCategory {
 
     if ($selectedCategory) {
         $apps = $selectedCategory.options
+        Write-Host "Raw Apps Data:" -ForegroundColor Yellow
+        $apps | ForEach-Object { Write-Host "$($_.name)" -ForegroundColor White }
+        
         $sortedApps = $apps | Sort-Object { $_.name.ToLower() }
+        
+        Write-Host "`nSorted Apps Data:" -ForegroundColor Yellow
+        $sortedApps | ForEach-Object { Write-Host "$($_.name)" -ForegroundColor White }
+        
         $totalApps = $sortedApps.Count
         $itemsPerPage = 5
         $page = 1

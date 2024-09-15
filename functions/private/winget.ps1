@@ -122,10 +122,10 @@ function Show-AppsInCategory {
     if ($selectedCategory) {
         $apps = $selectedCategory.options
         $totalApps = $apps.Count
-        $itemsPerPage = 5
+        $itemsPerPage = 4
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
-        $descriptionWidth = 60  # Set description width to 50 characters
+        $descriptionWidth = 80  # Set description width to 50 characters
         $borderChar = "_"
 
         while ($true) {

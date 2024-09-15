@@ -1,14 +1,13 @@
 # Custom Winget Management Menu in PowerShell
 
-$tomlFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.toml"
+$jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
 
-function Get-TomlData {
+function Get-JsonData {
     try {
-        # Download and parse TOML file
-        $tomlData = Invoke-RestMethod -Uri $tomlFileUrl -Method Get
-        return $tomlData.categories
+        $jsonData = Invoke-RestMethod -Uri $jsonFileUrl -Method Get
+        return $jsonData.categories
     } catch {
-        Write-Host "Failed to fetch TOML data: $_" -ForegroundColor Red
+        Write-Host "Failed to fetch JSON data: $_" -ForegroundColor Red
         exit
     }
 }
@@ -37,7 +36,7 @@ function Show-Header {
 }
 
 function Show-CategoryMenu {
-    $categories = Get-TomlData
+    $categories = Get-JsonData
     
     Write-Host "`nCategories:" -ForegroundColor Yellow
     $counter = 1
@@ -53,7 +52,7 @@ function Show-AppsInCategory {
         [int]$categoryIndex
     )
 
-    $categories = Get-TomlData
+    $categories = Get-JsonData
     $selectedCategory = $categories[$categoryIndex - 1]
 
     if ($selectedCategory) {
@@ -154,7 +153,7 @@ function Handle-AppSelection {
         [int]$categoryIndex
     )
 
-    $categories = Get-TomlData
+    $categories = Get-JsonData
     $selectedCategory = $categories[$categoryIndex - 1]
     $selectedApp = $selectedCategory.options[$appIndex - 1]
 

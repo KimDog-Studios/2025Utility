@@ -75,7 +75,7 @@ function Show-Header {
     Clear-Host
     $HeaderWidth = 30
 
-    Write-Host (Align-Header "KimDog's Winget Menu" $HeaderWidth) -ForegroundColor Yellow
+    Write-Host (Align-Header "Application Manager Menu" $HeaderWidth) -ForegroundColor Yellow
     Write-Host (Align-Header "Last Updated: 2024-09-15" $HeaderWidth) -ForegroundColor Cyan
     Write-Host (Align-Header "=" $HeaderWidth) -ForegroundColor Cyan
     Write-Host "`n"  # Reduced gap
@@ -113,7 +113,7 @@ function Show-AppsInCategory {
             Write-Host "" # Add extra line for readability
             $counter++
         }
-        Write-Host "[0] Back to Category Menu" -ForegroundColor Red
+        Write-Host "[0] Back to Category Menu (or press Backspace)" -ForegroundColor Red
     } else {
         Write-Host "Invalid category selection." -ForegroundColor Red
     }
@@ -186,6 +186,15 @@ while ($true) {
             # Show the selected category apps
             while ($true) {
                 Show-AppsInCategory -categoryId $categorySelection
+
+                # Check for input (key detection)
+                $keyInfo = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+
+                if ($keyInfo.VirtualKeyCode -eq 8) { # Detect Backspace key (ASCII 8)
+                    Write-Host "Going back to the Category Menu..." -ForegroundColor Yellow
+                    break
+                }
+
                 $appSelection = Read-Host "Please enter the App to Install (or 0 to go back): "
 
                 if ($appSelection -match '^\d+$') {
@@ -212,8 +221,8 @@ while ($true) {
     }
 
     # Wait for user input to continue
-    # Write-Host "`nPress Enter to continue..." -ForegroundColor Yellow
-    # Read-Host
+    Write-Host "`nPress Enter to continue..." -ForegroundColor Yellow
+    Read-Host
 }
 
 # Cleanup on script exit

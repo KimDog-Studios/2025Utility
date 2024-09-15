@@ -25,8 +25,18 @@
         },
         {
           "name": "Brave",
-          "description": "Brave is a privacy-focused web browser.",
+          "description": "The new Brave browser blocks ads and trackers that slow you down and invade your privacy. Discover a new way of thinking about how the web can work.",
           "wingetId": "Brave.Brave"
+        },
+        {
+          "name": "Opera",
+          "description": "Opera is a multi-platform web browser developed by Opera Software. Opera is a Chromium-based browser. It distinguishes itself from other browsers through its user interface, functionality, and other features.",
+          "wingetId": "Opera.Opera"
+        },
+        {
+          "name": "OperaGX",
+          "description": "Opera GX is a special version of the Opera browser which, on top of Opera’s great features for privacy, security and efficiency, includes special features designed to complement gaming.",
+          "wingetId": "Opera.OperaGX"
         }
       ]
     },

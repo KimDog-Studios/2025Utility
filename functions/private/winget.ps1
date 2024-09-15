@@ -1,8 +1,26 @@
 # Main-Menu.ps1
 
-# Import functions from the other scripts
-. .\Get-CategoryData.ps1
-. .\Install-Application.ps1
+# Function to download and execute a script from a URL
+function Invoke-RemoteScript {
+    param (
+        [string]$url
+    )
+
+    try {
+        $scriptContent = Invoke-RestMethod -Uri $url -Method Get
+        Invoke-Expression $scriptContent
+    } catch {
+        Write-Host "Failed to fetch or execute script from $url: $_" -ForegroundColor Red
+    }
+}
+
+# URLs of the scripts
+$categoryScriptUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/Get-CategoryData.ps1"
+$installScriptUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/Install-Application.ps1"
+
+# Import functions from the remote scripts
+Invoke-RemoteScript -url $categoryScriptUrl
+Invoke-RemoteScript -url $installScriptUrl
 
 # Function to maximize the PowerShell window
 function Set-FullScreenWindow {

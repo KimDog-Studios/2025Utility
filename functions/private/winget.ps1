@@ -118,7 +118,7 @@ function Show-AppsInCategory {
             }
 
             Write-Host "Page $page of $totalPages"
-            Write-Host "[0] Back to Category Menu" -ForegroundColor Red
+            Write-Host "[B] Back to Category Menu" -ForegroundColor Red
             Write-Host "[N] Next Page" -ForegroundColor Cyan
             Write-Host "[P] Previous Page" -ForegroundColor Cyan
 

@@ -105,14 +105,20 @@ function Show-AppsInCategory {
     if ($selectedCategory) {
         Clear-Host
         Write-Host "=== $($selectedCategory.name) ===" -ForegroundColor Yellow
-        $counter = 1
-        foreach ($app in $selectedCategory.options) {
-            Write-Host "$counter. $($app.name)" -ForegroundColor Green
-            Write-Host "   Description: $($app.description)" -ForegroundColor Gray
-            Write-Host "   Winget ID: $($app.wingetId)" -ForegroundColor Cyan
-            Write-Host "" # Add extra line for readability
-            $counter++
+
+        if ($selectedCategory.options.Count -eq 0) {
+            Write-Host "No apps available in this category." -ForegroundColor Red
+        } else {
+            $counter = 1
+            foreach ($app in $selectedCategory.options) {
+                Write-Host "$counter. $($app.name)" -ForegroundColor Green
+                Write-Host "   Description: $($app.description)" -ForegroundColor Gray
+                Write-Host "   Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+                Write-Host "" # Add extra line for readability
+                $counter++
+            }
         }
+
         Write-Host "[0] Back to Category Menu" -ForegroundColor Red
     } else {
         Write-Host "Invalid category selection." -ForegroundColor Red

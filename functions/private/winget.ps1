@@ -212,8 +212,8 @@ while ($true) {
     }
 
     # Wait for user input to continue
-    Write-Host "`nPress Enter to continue..." -ForegroundColor Yellow
-    Read-Host
+    # Write-Host "`nPress Enter to continue..." -ForegroundColor Yellow
+    # Read-Host
 }
 
 # Cleanup on script exit

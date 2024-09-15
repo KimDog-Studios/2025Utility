@@ -128,7 +128,6 @@ function Show-MainMenu {
 # Function to fetch and execute the winget menu script from GitHub
 function Run-WingetMenu {
     try {
-        Write-Host "Fetching winget menu script from $wingetMenuUrl..." -ForegroundColor Yellow
         $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl
         Write-Host "Execution of winget menu script..." -ForegroundColor Green
         

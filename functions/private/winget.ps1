@@ -23,8 +23,6 @@ $jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/mai
 # Function to fetch and parse JSON data from GitHub
 function Get-JsonData {
     try {
-        Write-Host "Fetching JSON data from $jsonFileUrl..." -ForegroundColor Yellow
-
         # Fetch and parse JSON data
         $jsonData = Invoke-RestMethod -Uri $jsonFileUrl -Method Get
         return $jsonData.categories

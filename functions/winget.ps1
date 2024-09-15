@@ -46,7 +46,7 @@ function Show-Header {
 }
 
 function Show-CategoryMenu {
-    $categories = Get-JsonData
+    $categories = Get-JsonData | Sort-Object name
     $counter = 1
     foreach ($category in $categories) {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
@@ -64,7 +64,7 @@ function Show-AppsInCategory {
     $selectedCategory = $categories[$categoryIndex - 1]
 
     if ($selectedCategory) {
-        $apps = $selectedCategory.options
+        $apps = $selectedCategory.options | Sort-Object name
         $totalApps = $apps.Count
         $itemsPerPage = 5
         $page = 1

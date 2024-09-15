@@ -1,7 +1,7 @@
 # Custom Main Menu in PowerShell
 
 # URL of the winget menu script
-$wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/winget.ps1"
+$wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
 
 # Function to maximize the PowerShell window
 function Set-FullScreenWindow {

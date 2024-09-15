@@ -1,75 +1,52 @@
 # Custom Winget Management Menu in PowerShell
 
-# Define paths for the JSON file and winget menu script
-$tempFolderPath = [System.IO.Path]::Combine($env:TEMP, "KimDog Studios")
-$appsJsonFilePath = [System.IO.Path]::Combine($tempFolderPath, "apps.json")
-$wingetMenuPath = [System.IO.Path]::Combine($tempFolderPath, "winget.ps1")
-$appsJsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
-$wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/winget.ps1"
+# Define paths for the JSON file and folder
+$kimDogFolder = [System.IO.Path]::Combine($env:TEMP, "KimDog Studios")
+$tempJsonFilePath = [System.IO.Path]::Combine($kimDogFolder, "apps.json")
+$jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
 
-# Ensure the temp folder exists
-if (-not (Test-Path $tempFolderPath)) {
-    Write-Host "Creating directory: $tempFolderPath" -ForegroundColor Yellow
-    New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
-} else {
-    Write-Host "Directory already exists: $tempFolderPath" -ForegroundColor Green
+# Function to create the KimDog Studios folder
+function Create-KimDogFolder {
+    if (-not (Test-Path $kimDogFolder)) {
+        New-Item -Path $kimDogFolder -ItemType Directory | Out-Null
+    }
 }
 
 # Function to download JSON file
 function Download-JsonFile {
     try {
-        Write-Host "Downloading JSON file from $appsJsonUrl..." -ForegroundColor Yellow
-        Invoke-WebRequest -Uri $appsJsonUrl -OutFile $appsJsonFilePath
-        Write-Host "Download complete. File saved at $appsJsonFilePath" -ForegroundColor Green
+        Create-KimDogFolder
+        Write-Host "Downloading JSON file from $jsonFileUrl..." -ForegroundColor Yellow
+        Invoke-WebRequest -Uri $jsonFileUrl -OutFile $tempJsonFilePath
+        Write-Host "Download complete." -ForegroundColor Green
     } catch {
         Write-Host "Failed to download JSON file: $_" -ForegroundColor Red
         exit
     }
 }
 
-# Function to download winget menu script
-function Download-WingetMenu {
-    try {
-        Write-Host "Downloading winget menu script from $wingetMenuUrl..." -ForegroundColor Yellow
-        Invoke-WebRequest -Uri $wingetMenuUrl -OutFile $wingetMenuPath
-        Write-Host "Download complete. File saved at $wingetMenuPath" -ForegroundColor Green
-    } catch {
-        Write-Host "Failed to download winget menu script: $_" -ForegroundColor Red
-        exit
+# Function to clean up KimDog Studios folder
+function Cleanup-KimDogFolder {
+    if (Test-Path $kimDogFolder) {
+        Remove-Item -Path $kimDogFolder -Recurse -Force -ErrorAction SilentlyContinue
+        Write-Host "KimDog Studios folder and its contents have been cleaned up." -ForegroundColor Green
     }
-}
-
-# Function to clean up temporary files
-function Cleanup-TempFiles {
-    if (Test-Path $appsJsonFilePath) {
-        Remove-Item -Path $appsJsonFilePath -ErrorAction SilentlyContinue
-        Write-Host "Deleted file: $appsJsonFilePath" -ForegroundColor Green
-    }
-    if (Test-Path $wingetMenuPath) {
-        Remove-Item -Path $wingetMenuPath -ErrorAction SilentlyContinue
-        Write-Host "Deleted file: $wingetMenuPath" -ForegroundColor Green
-    }
-    if (Test-Path $tempFolderPath) {
-        Remove-Item -Path $tempFolderPath -Recurse -ErrorAction SilentlyContinue
-        Write-Host "Deleted folder: $tempFolderPath" -ForegroundColor Green
-    }
-    Write-Host "Temporary files have been cleaned up." -ForegroundColor Green
 }
 
 # Register cleanup function to run on script exit
 trap {
-    Cleanup-TempFiles
+    Cleanup-KimDogFolder
     exit
 }
 
 # Function to read and parse JSON file
 function Get-MenuOptions {
     try {
-        if (Test-Path $appsJsonFilePath) {
-            $jsonContent = Get-Content -Path $appsJsonFilePath -Raw | ConvertFrom-Json
+        if (Test-Path $tempJsonFilePath) {
+            $jsonContent = Get-Content -Path $tempJsonFilePath -Raw | ConvertFrom-Json
             return $jsonContent.options
         } else {
-            Write-Host "JSON file not found at $appsJsonFilePath" -ForegroundColor Red
+            Write-Host "JSON file not found at $tempJsonFilePath" -ForegroundColor Red
             return @()
         }
     } catch {
@@ -170,7 +147,6 @@ function Handle-Option {
 
 # Main execution
 Download-JsonFile
-Download-WingetMenu
 
 # Main loop
 while ($true) {
@@ -198,4 +174,4 @@ while ($true) {
 }
 
 # Cleanup on script exit
-Cleanup-TempFiles
+Cleanup-KimDogFolder

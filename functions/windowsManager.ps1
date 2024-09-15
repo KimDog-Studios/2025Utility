@@ -35,9 +35,9 @@ function Show-Header {
 # Function to show the main menu
 function Show-Menu {
     Clear-Host
-    Write-Host "1. Copy KimDog's On Screen Desktop Settings[MSI Afterburner]" -ForegroundColor Cyan
-    Write-Host "2. Run Script 2" -ForegroundColor Cyan
-    Write-Host "3. Run Script 3" -ForegroundColor Cyan
+    Write-Host "1. Activate and Add Ultimate Power Plan" -ForegroundColor Cyan
+    Write-Host "2. Chnage Display Settings to Performance" -ForegroundColor Cyan
+    Write-Host "3. Change Theme to Dark Mode" -ForegroundColor Cyan
     Write-Host "4. Exit" -ForegroundColor Red
     Write-Host "`n"
 }

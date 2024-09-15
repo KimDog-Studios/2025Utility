@@ -7,6 +7,16 @@
           "name": "Microsoft Edge",
           "description": "World-class performance with more privacy, more productivity, and more value while you browse.",
           "wingetId": "Microsoft.Edge"
+        },
+        {
+          "name": "Google Chrome",
+          "description": "Google Chrome is a popular and secure web browser.",
+          "wingetId": "Google.Chrome"
+        },
+        {
+          "name": "Mozilla Firefox",
+          "description": "Mozilla Firefox is a free and open-source web browser.",
+          "wingetId": "Mozilla.Firefox"
         }
       ]
     },

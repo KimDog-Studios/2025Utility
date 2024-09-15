@@ -108,9 +108,8 @@ function Show-AppsInCategory {
         $itemsPerPage = 5
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
-        $descriptionWidth = 60  # Adjust this value as needed
+        $descriptionWidth = 50  # Set description width to 50 characters
         $borderChar = "_"
-        $padding = 2
 
         while ($true) {
             Clear-Host
@@ -131,7 +130,8 @@ function Show-AppsInCategory {
                 Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
                 
                 foreach ($line in $wrappedDescription) {
-                    Write-Host $line -ForegroundColor Gray
+                    $paddedLine = $line.PadLeft($descriptionWidth + 2) # Align text with padding
+                    Write-Host $paddedLine -ForegroundColor Gray
                 }
 
                 Write-Host "$($borderChar * $descriptionWidth)" -ForegroundColor Gray
@@ -222,7 +222,7 @@ function Handle-AppSelection {
         Install-Application -wingetId $selectedApp.wingetId
         
     } else {
-        Write-Host "Invalid app selection, please try again." -ForegroundColor Red
+        Write-Host "Invalid application selection." -ForegroundColor Red
     }
 }
 

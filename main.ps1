@@ -184,4 +184,8 @@ while ($true) {
         "3" { Write-Host "Exiting..." -ForegroundColor Red; break }
         default { Show-InvalidOption }
     }
+
+    if ($selection -eq "3") {
+        break
+    }
 }

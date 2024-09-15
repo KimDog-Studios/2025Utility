@@ -57,8 +57,11 @@ function Show-AppsInCategory {
 
     if ($selectedCategory) {
         $apps = $selectedCategory.options
-        $sortedApps = $apps | Sort-Object { $_.name.ToLower() }
-        
+
+        # Track original indexes
+        $indexedApps = $apps | ForEach-Object { [PSCustomObject]@{ OriginalIndex = [array]::IndexOf($apps, $_); App = $_ } }
+        $sortedApps = $indexedApps | Sort-Object { $_.App.name.ToLower() }
+
         $totalApps = $sortedApps.Count
         $itemsPerPage = 5
         $page = 1
@@ -73,8 +76,8 @@ function Show-AppsInCategory {
 
             for ($i = $startIndex; $i -lt $endIndex; $i++) {
                 $app = $sortedApps[$i]
-                Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
-                Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+                Write-Host "$($i + 1). $($app.App.name)" -ForegroundColor Green
+                Write-Host "Winget ID: $($app.App.wingetId)" -ForegroundColor Cyan
                 Write-Host ""
             }
 
@@ -107,7 +110,8 @@ function Show-AppsInCategory {
                     if ($input -match '^\d+$') {
                         $selectedAppIndex = [int]$input - 1
                         if ($selectedAppIndex -ge 0 -and $selectedAppIndex -lt $totalApps) {
-                            Handle-AppSelection -appIndex ($selectedAppIndex + 1) -categoryIndex $categoryIndex
+                            $originalIndex = $sortedApps[$selectedAppIndex].OriginalIndex
+                            Handle-AppSelection -appIndex ($originalIndex + 1) -categoryIndex $categoryIndex
                         } else {
                             Write-Host "Invalid app selection, please try again." -ForegroundColor Red
                         }

@@ -230,7 +230,7 @@ function Show-SearchResults {
 
         for ($i = $startIndex; $i -lt $endIndex; $i++) {
             $result = $searchResults[$i]
-            Write-Host "[$($i + 1)] $($result.Name)" -ForegroundColor Cyan
+            Write-Host "$($i + 1). $($result.Name)" -ForegroundColor Green
             Write-Host "Description: $($result.Description)" -ForegroundColor White
             Write-Host "Winget ID: $($result.WingetId)" -ForegroundColor Cyan
             Write-Host "Chocolatey ID: $($result.ChocolateyId)" -ForegroundColor Cyan
@@ -277,10 +277,9 @@ function Show-SearchResults {
                 if ($input -match '^\d+$') {
                     $selectedResultIndex = [int]$input - 1
                     if ($selectedResultIndex -ge 0 -and $selectedResultIndex -lt $totalResults) {
-                        $result = $searchResults[$selectedResultIndex]
-                        Handle-AppSelection -appIndex ($selectedResultIndex + 1) -categoryIndex $null
+                        Handle-AppSelection -appIndex ($selectedResultIndex + 1)
                     } else {
-                        Write-Host "Invalid selection, please try again." -ForegroundColor Red
+                        Write-Host "Invalid result selection, please try again." -ForegroundColor Red
                     }
                 } else {
                     Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red
@@ -290,85 +289,92 @@ function Show-SearchResults {
     }
 }
 
+function Upgrade-InstalledApps {
+    cls # Alternative console clearing
+
+    Write-Host "Upgrading installed apps..." -ForegroundColor Cyan
+
+    # Upgrade Winget apps
+    $wingetApps = & winget list
+    $wingetApps | ForEach-Object {
+        if ($_ -match "([^\s]+)\s+\d+\.\d+\.\d+") {
+            $appName = $matches[1]
+            & winget upgrade $appName
+        }
+    }
+
+    # Upgrade Chocolatey apps
+    $chocoApps = & choco list --local-only
+    $chocoApps | ForEach-Object {
+        if ($_ -match "([^\s]+)\s+\d+\.\d+\.\d+") {
+            $packageName = $matches[1]
+            & choco upgrade $packageName
+        }
+    }
+
+    Write-Host "Upgrade process completed." -ForegroundColor Green
+}
+
 function Handle-AppSelection {
     param (
         [int]$appIndex,
-        [int]$categoryIndex
+        [int]$categoryIndex = 0
     )
 
     $categories = Get-JsonData
-    if ($categoryIndex -ne $null) {
-        $category = $categories[$categoryIndex - 1]
-        $app = $category.options[$appIndex - 1]
-    } else {
-        $app = $categories | ForEach-Object { $_.options[$appIndex - 1] } | Where-Object { $_ }
-    }
+    $app = $categories[$categoryIndex - 1].options[$appIndex - 1]
 
     if ($app) {
-        Write-Host "`nSelected App:" -ForegroundColor Green
-        Write-Host "Name: $($app.name)" -ForegroundColor Cyan
+        Write-Host "`nApp: $($app.name)" -ForegroundColor Green
         Write-Host "Description: $($app.description)" -ForegroundColor White
-        Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
-        Write-Host "Chocolatey ID: $($app.chocoId)" -ForegroundColor Cyan
-        Write-Host "`n[W] Install with Winget" -ForegroundColor Green
-        Write-Host "[C] Install with Chocolatey" -ForegroundColor Green
-        Write-Host "[B] Back to Results" -ForegroundColor Red
 
-        $input = Read-Host "Choose an option"
+        if ($app.wingetId) {
+            Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+            Write-Host "Running Winget Install..."
+            & winget install $app.wingetId
+        }
 
-        switch ($input) {
-            'W' {
-                Start-Process "winget" -ArgumentList "install $($app.wingetId)"
-            }
-            'C' {
-                if ($app.chocoId) {
-                    Start-Process "choco" -ArgumentList "install $($app.chocoId) -y"
-                } else {
-                    Write-Host "Chocolatey ID not found for $($app.name)." -ForegroundColor Red
-                }
-            }
-            'B' {
-                return
-            }
-            default {
-                Write-Host "Invalid option, please try again." -ForegroundColor Red
-            }
+        if ($app.chocoId) {
+            Write-Host "Chocolatey ID: $($app.chocoId)" -ForegroundColor Cyan
+            Write-Host "Running Chocolatey Install..."
+            & choco install $app.chocoId
         }
     } else {
         Write-Host "Invalid app selection." -ForegroundColor Red
     }
 }
 
-# Main menu loop
-Show-Header
+function Main-Menu {
+    Show-Header
 
-while ($true) {
-    Show-CategoryMenu
+    while ($true) {
+        Show-CategoryMenu
+        $input = Read-Host "Choose an option"
 
-    $choice = Read-Host "Select an option"
-
-    switch ($choice) {
-        'X' {
-            exit
-        }
-        'F' {
-            $searchTerm = Read-Host "Enter search term"
-            Show-SearchResults -searchTerm $searchTerm
-        }
-        'U' {
-            Write-Host "Upgrade functionality not implemented yet." -ForegroundColor Yellow
-        }
-        default {
-            if ($choice -match '^\d+$') {
-                $categoryIndex = [int]$choice
-                if ($categoryIndex -ge 1 -and $categoryIndex -le (Get-JsonData).Count) {
-                    Show-AppsInCategory -categoryIndex $categoryIndex
+        switch ($input) {
+            'U' {
+                Upgrade-InstalledApps
+            }
+            'F' {
+                $searchTerm = Read-Host "Enter search term"
+                Show-SearchResults -searchTerm $searchTerm
+            }
+            [int] {
+                if ($input -ge 1 -and $input -le 10) {
+                    Show-AppsInCategory -categoryIndex $input
                 } else {
-                    Write-Host "Invalid category selection, please try again." -ForegroundColor Red
+                    Write-Host "Invalid category selection." -ForegroundColor Red
                 }
-            } else {
-                Write-Host "Invalid option, please try again." -ForegroundColor Red
+            }
+            'X' {
+                Write-Host "Exiting script." -ForegroundColor Red
+                break
+            }
+            default {
+                Write-Host "Invalid option. Please try again." -ForegroundColor Red
             }
         }
     }
 }
+
+Main-Menu

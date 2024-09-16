@@ -13,11 +13,6 @@ function Restart-WithAdminPrivileges {
     exit  # Exit the current non-elevated process
 }
 
-# Check if running with admin privileges; if not, restart with admin
-if (-not (Check-AdminPrivileges)) {
-    Restart-WithAdminPrivileges
-}
-
 # URL of the winget menu script
 $wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
 
@@ -41,52 +36,6 @@ function Check-Winget {
     } catch {
         Write-Host "Error checking winget installation: $_" -ForegroundColor Red
         return $false
-    }
-}
-
-# Function to get the latest winget release URL
-function Get-Latest-Winget-Release-Url {
-    $githubApiUrl = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
-    
-    try {
-        $response = Invoke-RestMethod -Uri $githubApiUrl -Headers @{ "User-Agent" = "PowerShell" }
-        $latestRelease = $response.assets | Where-Object { $_.name -like "*AppInstaller*.msixbundle" }
-        if ($latestRelease) {
-            $downloadUrl = $latestRelease.browser_download_url
-            Write-Host "Latest winget release URL: $downloadUrl" -ForegroundColor Cyan
-            return $downloadUrl
-        } else {
-            Write-Host "No suitable release found." -ForegroundColor Red
-            return $null
-        }
-    } catch {
-        Write-Host "Failed to fetch latest release URL: $_" -ForegroundColor Red
-        return $null
-    }
-}
-
-# Function to install winget
-function Install-Winget {
-    $downloadUrl = Get-Latest-Winget-Release-Url
-    if (-not $downloadUrl) {
-        Write-Host "Cannot proceed with installation. Exiting..." -ForegroundColor Red
-        return
-    }
-    
-    Write-Host "Downloading winget from $downloadUrl..." -ForegroundColor Yellow
-
-    $tempFile = [System.IO.Path]::GetTempFileName()
-    try {
-        Invoke-WebRequest -Uri $downloadUrl -OutFile $tempFile
-        Write-Host "Download complete. Installing..." -ForegroundColor Green
-
-        Start-Process -FilePath $tempFile -ArgumentList "/quiet" -Wait
-        Write-Host "winget installation process has started." -ForegroundColor Green
-    } catch {
-        Write-Host "Failed to download or install winget: $_" -ForegroundColor Red
-    } finally {
-        # Clean up temporary file
-        Remove-Item -Path $tempFile -ErrorAction SilentlyContinue
     }
 }
 
@@ -129,14 +78,13 @@ function Show-MainHeader {
     Write-Host "`n"  # Reduced gap
 }
 
-
 # Function to show the main menu
 function Show-MainMenu {
     $MenuWidth = 30
 
     Write-Host (Align-Header "Main Menu" $MenuWidth) -ForegroundColor Yellow
     Write-Host "1. Windows Manager" -ForegroundColor Green
-    Write-Host "2. Application Manager" -ForegroundColor Green
+    Write-Host "2. Application Manager (Admin Required)" -ForegroundColor Green
     Write-Host "3. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
     Write-Host "`n"  # Reduced gap
@@ -175,10 +123,15 @@ function Option1 {
     Run-WindowsManager
 }
 
-# Function for Option 2
+# Function for Option 2 (requires admin)
 function Option2 {
+    # Check if running with admin privileges; if not, restart with admin
+    if (-not (Check-AdminPrivileges)) {
+        Restart-WithAdminPrivileges
+    }
+
     Clear-Host
-    Write-Host "You selected Option 2: Application Manager" -ForegroundColor Green
+    Write-Host "You selected Option 2: Application Manager (Admin Required)" -ForegroundColor Green
     Run-WingetMenu
 }
 

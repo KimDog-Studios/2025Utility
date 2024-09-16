@@ -1,50 +1,3 @@
-# Function to check if winget is installed
-function Check-Winget {
-    $wingetCommand = "winget"
-    
-    try {
-        # Check if winget command is available
-        $wingetPath = Get-Command $wingetCommand -ErrorAction SilentlyContinue
-        return $wingetPath -ne $null
-    } catch {
-        Write-Host "Error checking winget installation: $_" -ForegroundColor Red
-        return $false
-    }
-}
-
-# Function to check if Chocolatey is installed
-function Check-Chocolatey {
-    $chocoCommand = "choco"
-    
-    try {
-        # Check if Chocolatey command is available
-        $chocoPath = Get-Command $chocoCommand -ErrorAction SilentlyContinue
-        return $chocoPath -ne $null
-    } catch {
-        Write-Host "Error checking Chocolatey installation: $_" -ForegroundColor Red
-        return $false
-    }
-}
-
-# Function to install Chocolatey
-function Install-Chocolatey {
-    if (-not (Check-Chocolatey)) {
-        Write-Host "Chocolatey is not installed. Installing Chocolatey..." -ForegroundColor Yellow
-        try {
-            # Download and execute Chocolatey installation script
-            $chocoInstallUrl = "https://chocolatey.org/install.ps1"
-            Invoke-WebRequest -Uri $chocoInstallUrl -UseBasicP -OutFile "$env:TEMP\install-choco.ps1"
-            & "$env:TEMP\install-choco.ps1"
-            Remove-Item "$env:TEMP\install-choco.ps1" -Force
-            Write-Host "Chocolatey installed successfully." -ForegroundColor Green
-        } catch {
-            Write-Host "Failed to install Chocolatey: $_" -ForegroundColor Red
-        }
-    } else {
-        Write-Host "Chocolatey is already installed." -ForegroundColor Green
-    }
-}
-
 # Function to align header text
 function Align-Header {
     param (
@@ -86,7 +39,10 @@ function Show-MainHeader {
 
 # Function to show a message if winget is installed
 function Show-WingetMessage {
-    if (Check-Winget) {
+    $wingetCommand = "winget"
+    $wingetPath = Get-Command $wingetCommand -ErrorAction SilentlyContinue
+
+    if ($wingetPath -ne $null) {
         Write-Host "[INFO] WinGet is Installed." -ForegroundColor Green
     } else {
         Write-Host "[INFO] WinGet is not installed." -ForegroundColor Yellow
@@ -140,9 +96,6 @@ function Show-InvalidOption {
     Clear-Host
     Write-Host "Invalid selection, please try again." -ForegroundColor Red
 }
-
-# Install Chocolatey if not present
-Install-Chocolatey
 
 # Main loop
 do {

@@ -1,3 +1,23 @@
+# Function to check if winget is installed
+function Check-Winget {
+    $wingetCommand = "winget"
+    
+    try {
+        # Check if winget command is available
+        $wingetPath = Get-Command $wingetCommand -ErrorAction SilentlyContinue
+        if ($wingetPath) {
+            Write-Host "winget is installed." -ForegroundColor Green
+            return $true
+        } else {
+            Write-Host "winget is not installed." -ForegroundColor Red
+            return $false
+        }
+    } catch {
+        Write-Host "Error checking winget installation: $_" -ForegroundColor Red
+        return $false
+    }
+}
+
 # Function to align header text
 function Align-Header {
     param (
@@ -35,6 +55,13 @@ function Show-MainHeader {
 
     Draw-Box -Text "KimDog's Windows Utility | Last Updated: 2024-09-15"
     Write-Host "`n"
+}
+
+# Function to show a message if winget is installed
+function Show-WingetMessage {
+    if (Check-Winget) {
+        Write-Host "winget is installed. You can use the Application Manager to manage packages." -ForegroundColor Green
+    }
 }
 
 # Function to show the main menu
@@ -111,6 +138,7 @@ Run-WingetManager
 # Main loop
 while ($true) {
     Show-MainHeader
+    Show-WingetMessage
     Show-MainMenu
     $selection = Read-Host "Please enter your choice"
 

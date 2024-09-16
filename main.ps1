@@ -8,8 +8,11 @@ function Check-AdminPrivileges {
 
 # Function to restart the script with elevated privileges
 function Restart-WithAdminPrivileges {
+    param (
+        [string]$Selection
+    )
     Write-Host "Restarting script with administrative privileges..." -ForegroundColor Yellow
-    Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`" -ArgumentList $Selection" -Verb RunAs
     exit  # Exit the current non-elevated process
 }
 
@@ -107,7 +110,7 @@ function Run-WindowsManager {
 function Run-WingetMenu {
     try {
         $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl
-        Write-Host "Execution of winget menu script..." -ForegroundColor Green
+        Write-Host "Executing winget menu script..." -ForegroundColor Green
         
         # Execute the fetched script content
         Invoke-Expression $scriptContent
@@ -127,7 +130,7 @@ function Option1 {
 function Option2 {
     # Check if running with admin privileges; if not, restart with admin
     if (-not (Check-AdminPrivileges)) {
-        Restart-WithAdminPrivileges
+        Restart-WithAdminPrivileges -Selection "2"
     }
 
     Clear-Host
@@ -143,6 +146,15 @@ function Show-InvalidOption {
 
 # Main loop
 while ($true) {
+    # If there is an argument passed (e.g., after restarting as admin)
+    if ($args.Length -gt 0) {
+        switch ($args[0]) {
+            "1" { Option1; exit }
+            "2" { Option2; exit }
+            "3" { Write-Host "Exiting..." -ForegroundColor Red; exit }
+        }
+    }
+
     Show-MainHeader
     Show-MainMenu
     $selection = Read-Host "Please enter your choice"
@@ -150,7 +162,7 @@ while ($true) {
     switch ($selection) {
         "1" { Option1 }
         "2" { Option2 }
-        "3" { Write-Host "Exiting..." -ForegroundColor Red; break }
+        "3" { Write-Host "Exiting..." -ForegroundColor Red; exit }
         default { Show-InvalidOption }
     }
 

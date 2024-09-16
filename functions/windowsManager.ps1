@@ -49,39 +49,17 @@ function Show-MainMenu {
     Write-Host "`n"  # Reduced gap
 }
 
-# Function to fetch and execute the Windows Manager script from GitHub
-function Run-WindowsManager {
-    try {
-        $scriptContent = Invoke-RestMethod -Uri $windowsManagerUrl
-        Write-Host "Executing Windows Manager script..." -ForegroundColor Green
-        Invoke-Expression $scriptContent
-    } catch {
-        Write-Host "Failed to fetch or execute Windows Manager script: $_" -ForegroundColor Red
-    }
-}
-
-# Function to fetch and execute the winget menu script from GitHub
-function Run-WingetMenu {
-    try {
-        $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl
-        Write-Host "Executing winget menu script..." -ForegroundColor Green
-        Invoke-Expression $scriptContent
-    } catch {
-        Write-Host "Failed to fetch or execute winget menu script: $_" -ForegroundColor Red
-    }
-}
-
 # Function for Option 1
 function Option1 {
     Clear-Host
-    Write-Host "You selected Option 1: Windows Manager" -ForegroundColor Green
+    Write-Host "You selected Option 1: Optimize for Gaming" -ForegroundColor Green
     Run-WindowsManager
 }
 
 # Function for Option 2
 function Option2 {
     Clear-Host
-    Write-Host "You selected Option 2: Application Manager" -ForegroundColor Green
+    Write-Host "You selected Option 2: Remove Bloatware" -ForegroundColor Green
     Run-WingetMenu
 }
 

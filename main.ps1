@@ -169,6 +169,6 @@ while ($true) {
     }
 
     if ($selection -eq "3") {
-        break
+        exit
     }
 }

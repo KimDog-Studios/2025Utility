@@ -237,7 +237,7 @@ function Handle-AppSelection {
 
     if ($selectedApp) {
         Write-Host "You have selected $($selectedApp.name)."
-        $action = Read-Host "Do you want to [I]nstall or [U]ninstall this app? (Press any other key to cancel)"
+        $action = Read-Host "Do you want to [I]nstall or [U]ninstall this app? (Type 'I' for install or 'U' for uninstall)"
 
         switch ($action.ToUpper()) {
             'I' {
@@ -247,7 +247,7 @@ function Handle-AppSelection {
                 Uninstall-Application -wingetId $selectedApp.wingetId
             }
             default {
-                Write-Host "Action cancelled." -ForegroundColor Yellow
+                Write-Host "Invalid action. Returning to the category menu." -ForegroundColor Red
             }
         }
     } else {
@@ -256,24 +256,33 @@ function Handle-AppSelection {
 }
 
 function Show-Menu {
-    Show-Header
-    Show-CategoryMenu
+    while ($true) {
+        Show-Header
+        Show-CategoryMenu
 
-    $choice = Read-Host "Select an option"
+        $choice = Read-Host "Select an option"
 
-    switch ($choice.ToUpper()) {
-        'U' {
-            Upgrade-AllApps
-        }
-        'X' {
-            exit
-        }
-        default {
-            if ($choice -match '^\d+$') {
-                $categoryIndex = [int]$choice
-                Show-AppsInCategory -categoryIndex $categoryIndex
-            } else {
-                Write-Host "Invalid option, please try again." -ForegroundColor Red
+        switch ($choice.ToUpper()) {
+            'U' {
+                Upgrade-AllApps
+                Write-Host "Upgrade process initiated. Press any key to return to the category menu..." -ForegroundColor Green
+                [void][System.Console]::ReadKey($true)
+            }
+            'X' {
+                Write-Host "Exiting script." -ForegroundColor Red
+                exit
+            }
+            default {
+                if ($choice -match '^\d+$') {
+                    $categoryIndex = [int]$choice
+                    if ($categoryIndex -ge 1 -and $categoryIndex -le (Get-JsonData).Count) {
+                        Show-AppsInCategory -categoryIndex $categoryIndex
+                    } else {
+                        Write-Host "Invalid category selection. Please try again." -ForegroundColor Red
+                    }
+                } else {
+                    Write-Host "Invalid input. Please select a valid option." -ForegroundColor Red
+                }
             }
         }
     }

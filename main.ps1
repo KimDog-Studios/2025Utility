@@ -1,92 +1,92 @@
-# This script is designed to be run directly from GitHub
-# It will download itself and the required scripts, then execute locally
+# URL of the winget menu script
+$wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
 
-# Create the KimDog Studios folder in temp directory
-$tempDir = Join-Path $env:TEMP "KimDog Studios"
-if (-not (Test-Path $tempDir)) {
-    New-Item -ItemType Directory -Path $tempDir | Out-Null
-    Write-Host "Created temporary directory: $tempDir" -ForegroundColor Green
-} else {
-    Write-Host "Using existing temporary directory: $tempDir" -ForegroundColor Green
+# URL of the Windows Manager script
+$windowsManagerUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/windowsManager.ps1"
+
+# Function to check if winget is installed
+function Check-Winget {
+    $wingetCommand = "winget"
+    
+    try {
+        # Check if winget command is available
+        $wingetPath = Get-Command $wingetCommand -ErrorAction SilentlyContinue
+        if ($wingetPath) {
+            Write-Host "winget is already installed." -ForegroundColor Green
+            return $true
+        } else {
+            Write-Host "winget is not installed." -ForegroundColor Red
+            return $false
+        }
+    } catch {
+        Write-Host "Error checking winget installation: $_" -ForegroundColor Red
+        return $false
+    }
 }
 
-# URLs of the scripts
-$mainScriptUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/main.ps1"
-$wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
-$windowsManagerUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/windowsManager.ps1"
-$appJsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
-
-# Function to download a script
-function Download-Script {
-    param (
-        [string]$Url,
-        [string]$FileName
-    )
-    $filePath = Join-Path $tempDir $FileName
+# Function to get the latest winget release URL
+function Get-Latest-Winget-Release-Url {
+    $githubApiUrl = "https://github.com/microsoft/winget-cli/releases/tag/v1.8.1911"
+    
     try {
-        Write-Host "Downloading $FileName from $Url..." -ForegroundColor Yellow
-        Invoke-WebRequest -Uri $Url -OutFile $filePath -ErrorAction Stop
-        Write-Host "Downloaded $FileName successfully to $filePath" -ForegroundColor Green
-        return $filePath
+        $response = Invoke-RestMethod -Uri $githubApiUrl -Headers @{ "User-Agent" = "PowerShell" }
+        $latestRelease = $response.assets | Where-Object { $_.name -like "*AppInstaller*.msixbundle" }
+        if ($latestRelease) {
+            $downloadUrl = $latestRelease.browser_download_url
+            Write-Host "Latest winget release URL: $downloadUrl" -ForegroundColor Cyan
+            return $downloadUrl
+        } else {
+            Write-Host "No suitable release found." -ForegroundColor Red
+            return $null
+        }
     } catch {
-        $errorMessage = $_.Exception.Message
-        Write-Host "Failed to download $FileName`: $errorMessage" -ForegroundColor Red
+        Write-Host "Failed to fetch latest release URL: $_" -ForegroundColor Red
         return $null
     }
 }
 
-# Download scripts
-Write-Host "Attempting to download scripts..." -ForegroundColor Cyan
-$mainScriptPath = Download-Script -Url $mainScriptUrl -FileName "main.ps1"
-$wingetMenuPath = Download-Script -Url $wingetMenuUrl -FileName "winget.ps1"
-$windowsManagerPath = Download-Script -Url $windowsManagerUrl -FileName "windowsManager.ps1"
-$appJsonPath = Download-Script -Url $appJsonUrl -FileName "apps.json"
-
-if (-not $mainScriptPath -or -not $wingetMenuPath -or -not $windowsManagerPath -or -not $appJsonPath) {
-    Write-Host "Failed to download one or more scripts. Please check your internet connection and try again." -ForegroundColor Red
-    exit
-}
-
-# Restart using the downloaded main script
-Write-Host "Restarting with the downloaded main script..." -ForegroundColor Cyan
-& $mainScriptPath
-exit
-
-# The code below this point will only run when the script is restarted
-
-# Modify the winget.ps1 script to use the local apps.json file
-$wingetContent = Get-Content $wingetMenuPath -Raw
-$wingetContent = $wingetContent -replace '\$jsonFilePath\s*=\s*[^\r\n]+', "`$jsonFilePath = `"$appJsonPath`"" 
-$wingetContent | Set-Content $wingetMenuPath
-
-# Function to check if a command is available
-function Test-Command {
-    param ([string]$Command)
-    
-    try {
-        if (Get-Command $Command -ErrorAction SilentlyContinue) {
-            Write-Host "$Command is already installed." -ForegroundColor Green
-            return $true
-        }
-    } catch {}
-    
-    Write-Host "$Command is not installed." -ForegroundColor Red
-    return $false
-}
-
 # Function to install winget
 function Install-Winget {
-    $downloadUrl = "https://github.com/microsoft/winget-cli/releases/download/v1.8.1911/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
-    $tempFile = Join-Path $tempDir "winget_installer.msixbundle"
+    $downloadUrl = Get-Latest-Winget-Release-Url
+    if (-not $downloadUrl) {
+        Write-Host "Cannot proceed with installation. Exiting..." -ForegroundColor Red
+        return
+    }
     
+    Write-Host "Downloading winget from $downloadUrl..." -ForegroundColor Yellow
+
+    $tempFile = [System.IO.Path]::GetTempFileName()
     try {
         Invoke-WebRequest -Uri $downloadUrl -OutFile $tempFile
-        Write-Host "Installing winget..." -ForegroundColor Green
+        Write-Host "Download complete. Installing..." -ForegroundColor Green
+
         Start-Process -FilePath $tempFile -ArgumentList "/quiet" -Wait
+        Write-Host "winget installation process has started." -ForegroundColor Green
     } catch {
         Write-Host "Failed to download or install winget: $_" -ForegroundColor Red
     } finally {
+        # Clean up temporary file
         Remove-Item -Path $tempFile -ErrorAction SilentlyContinue
+    }
+}
+
+# Function to check if Chocolatey is installed
+function Check-Chocolatey {
+    $chocoCommand = "choco"
+    
+    try {
+        # Check if choco command is available
+        $chocoPath = Get-Command $chocoCommand -ErrorAction SilentlyContinue
+        if ($chocoPath) {
+            Write-Host "Chocolatey is already installed." -ForegroundColor Green
+            return $true
+        } else {
+            Write-Host "Chocolatey is not installed." -ForegroundColor Red
+            return $false
+        }
+    } catch {
+        Write-Host "Error checking Chocolatey installation: $_" -ForegroundColor Red
+        return $false
     }
 }
 
@@ -94,92 +94,144 @@ function Install-Winget {
 function Install-Chocolatey {
     $chocoInstallScriptUrl = "https://chocolatey.org/install.ps1"
     
+    Write-Host "Downloading Chocolatey installation script from $chocoInstallScriptUrl..." -ForegroundColor Yellow
+
+    $tempFile = [System.IO.Path]::GetTempFileName()
     try {
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString($chocoInstallScriptUrl))
+        Invoke-WebRequest -Uri $chocoInstallScriptUrl -OutFile $tempFile
+        Write-Host "Download complete. Installing Chocolatey..." -ForegroundColor Green
+
+        Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File $tempFile" -Wait
+        Write-Host "Chocolatey installation process has started." -ForegroundColor Green
     } catch {
-        Write-Host "Failed to install Chocolatey: $_" -ForegroundColor Red
+        Write-Host "Failed to download or install Chocolatey: $_" -ForegroundColor Red
+    } finally {
+        # Clean up temporary file
+        Remove-Item -Path $tempFile -ErrorAction SilentlyContinue
     }
+}
+
+# Function to align header text
+function Align-Header {
+    param (
+        [string]$Text,
+        [int]$Width = 30
+    )
+
+    $TextLength = $Text.Length
+    $Padding = $Width - $TextLength
+    $LeftPadding = [math]::Floor($Padding / 2)
+    $RightPadding = [math]::Ceiling($Padding / 2)
+    
+    $AlignedText = ("=" * $LeftPadding) + $Text + ("=" * $RightPadding)
+    $AlignedText
 }
 
 function Show-MainHeader {
     Clear-Host
-    $headerText = "KimDog's Windows Utility | Last Updated: 2024-09-15"
-    $boxWidth = $headerText.Length + 4
-    $border = "+$("-" * ($boxWidth - 2))+"
-    $emptyLine = "|$(" " * ($boxWidth - 2))|"
-    
-    Write-Host "$border`n$emptyLine`n| $headerText |`n$emptyLine`n$border" -ForegroundColor Cyan
-    Write-Host
+
+    function Draw-Box {
+        param (
+            [string]$Text
+        )
+
+        $boxWidth = $Text.Length + 4
+        $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
+        $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
+
+        Write-Host "$topBottomBorder" -ForegroundColor Cyan
+        Write-Host "$emptyLine" -ForegroundColor Cyan
+        Write-Host "| $Text |" -ForegroundColor Cyan
+        Write-Host "$emptyLine" -ForegroundColor Cyan
+        Write-Host "$topBottomBorder" -ForegroundColor Cyan
+    }
+
+    Draw-Box -Text "KimDog's Windows Utility | Last Updated: 2024-09-15"
+    Write-Host "`n"  # Reduced gap
 }
 
+# Function to show the main menu
 function Show-MainMenu {
-    $menuItems = @(
-        "Windows Manager",
-        "Application Manager",
-        "Exit"
-    )
-    
-    $menuWidth = ($menuItems | Measure-Object -Property Length -Maximum).Maximum + 4
-    $header = "Main Menu".PadLeft(($menuWidth + "Main Menu".Length) / 2).PadRight($menuWidth)
-    
-    Write-Host ("=" * $menuWidth) -ForegroundColor Yellow
-    Write-Host $header -ForegroundColor Yellow
-    Write-Host ("=" * $menuWidth) -ForegroundColor Yellow
-    
-    for ($i = 0; $i -lt $menuItems.Count; $i++) {
-        $color = if ($i -eq $menuItems.Count - 1) { "Red" } else { "Green" }
-        Write-Host "$($i + 1). $($menuItems[$i])" -ForegroundColor $color
+    $MenuWidth = 30
+
+    Write-Host (Align-Header "Main Menu" $MenuWidth) -ForegroundColor Yellow
+    Write-Host "1. Windows Manager" -ForegroundColor Green
+    Write-Host "2. Application Manager" -ForegroundColor Green
+    Write-Host "3. Exit" -ForegroundColor Red
+    Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
+    Write-Host "`n"  # Reduced gap
+}
+
+# Function to fetch and execute the Windows Manager script from GitHub
+function Run-WindowsManager {
+    try {
+        $scriptContent = Invoke-RestMethod -Uri $windowsManagerUrl
+        Write-Host "Executing Windows Manager script..." -ForegroundColor Green
+        
+        # Execute the fetched script content
+        Invoke-Expression $scriptContent
+    } catch {
+        Write-Host "Failed to fetch or execute Windows Manager script: $_" -ForegroundColor Red
     }
-    
-    Write-Host ("=" * $menuWidth) -ForegroundColor Yellow
-    Write-Host
+}
+
+# Function to fetch and execute the winget menu script from GitHub
+function Run-WingetMenu {
+    try {
+        $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl
+        Write-Host "Execution of winget menu script..." -ForegroundColor Green
+        
+        # Execute the fetched script content
+        Invoke-Expression $scriptContent
+    } catch {
+        Write-Host "Failed to fetch or execute winget menu script: $_" -ForegroundColor Red
+    }
+}
+
+# Function for Option 1
+function Option1 {
+    Clear-Host
+    Write-Host "You selected Option 1: Windows Manager" -ForegroundColor Green
+    Run-WindowsManager
+}
+
+# Function for Option 2
+function Option2 {
+    Clear-Host
+    Write-Host "You selected Option 2: Application Manager" -ForegroundColor Green
+    Run-WingetMenu
+}
+
+# Function for invalid option
+function Show-InvalidOption {
+    Clear-Host
+    Write-Host "Invalid selection, please try again." -ForegroundColor Red
 }
 
 # Main loop
 while ($true) {
-    if (-not (Test-Command "winget")) { Install-Winget }
-    if (-not (Test-Command "choco")) { Install-Chocolatey }
+    # Check and install winget if necessary
+    if (-not (Check-Winget)) {
+        Install-Winget
+    }
+
+    # Check and install Chocolatey if necessary
+    if (-not (Check-Chocolatey)) {
+        Install-Chocolatey
+    }
 
     Show-MainHeader
     Show-MainMenu
     $selection = Read-Host "Please enter your choice"
 
     switch ($selection) {
-        "1" {
-            if (Test-Path $windowsManagerPath) {
-                Write-Host "Executing Windows Manager script from $windowsManagerPath..." -ForegroundColor Green
-                & $windowsManagerPath
-            } else {
-                Write-Host "Windows Manager script is not available at $windowsManagerPath." -ForegroundColor Red
-            }
-            pause
-        }
-        "2" {
-            if (Test-Path $wingetMenuPath) {
-                Write-Host "Executing Application Manager script from $wingetMenuPath..." -ForegroundColor Green
-                & $wingetMenuPath
-            } else {
-                Write-Host "Application Manager script is not available at $wingetMenuPath." -ForegroundColor Red
-            }
-            pause
-        }
-        "3" { 
-            Write-Host "Exiting..." -ForegroundColor Red
-            Write-Host "Cleaning up temporary directory: $tempDir" -ForegroundColor Yellow
-            Remove-Item -Path $tempDir -Recurse -Force -ErrorAction SilentlyContinue
-            if (-not (Test-Path $tempDir)) {
-                Write-Host "Temporary directory removed successfully." -ForegroundColor Green
-            } else {
-                Write-Host "Failed to remove temporary directory." -ForegroundColor Red
-            }
-            exit 
-        }
-        default { 
-            Write-Host "Invalid selection, please try again." -ForegroundColor Red 
-            pause
-        }
+        "1" { Option1 }
+        "2" { Option2 }
+        "3" { Write-Host "Exiting..." -ForegroundColor Red; break }
+        default { Show-InvalidOption }
+    }
+
+    if ($selection -eq "3") {
+        exit
     }
 }
-

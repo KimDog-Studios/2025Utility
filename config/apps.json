@@ -186,6 +186,12 @@
           "wingetId": "RevoUninstaller.RevoUninstaller",
           "chocoId": "revo-uninstaller",
           "description": "RevoUninstaller is a powerful and advanced software for managing software installations."
+        },
+        {
+          "name": "TeamViewer",
+          "wingetId": "TeamViewer.TeamViewer",
+          "chocoId": "teamviewer9",
+          "description": "TeamViewer is a powerful and advanced software for remote desktop and virtual meeting."
         }
       ]
     }  

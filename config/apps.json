@@ -103,6 +103,53 @@
           "wingetId": "Git.Git",
           "chocoId": "git",
           "description": "Git is a distributed version control system for tracking changes in source code."
+        },
+        {
+          "name": "Visual Studio 2022 Community",
+          "wingetId": "Microsoft.VisualStudio.2022.Community",
+          "chocoId": "visualstudio2022community",
+          "description": "Visual Studio 2022 Community Edition is a comprehensive development environment for building modern web and cloud applications."
+        },
+        {
+          "name": "Visual Studio 2022 Enterprise",
+          "wingetId": "Microsoft.VisualStudio.2022.Enterprise",
+          "chocoId": "visualstudio2022enterprise",
+          "description": "Visual Studio 2022 Enterprise Edition is a comprehensive development environment for building modern web and cloud applications."
+        },
+        {
+          "name": "Visual Studio 2022 Professional",
+          "wingetId": "Microsoft.VisualStudio.2022.Professional",
+          "chocoId": "visualstudio2022professional",
+          "description": "Visual Studio 2022 Professional Edition is a comprehensive development environment for building modern web and cloud applications."
+        }
+      ]
+    },
+    {
+      "name": "Utilities",
+      "options": [
+        {
+          "name": "7ZIP",
+          "wingetId": "7zip.7zip",
+          "chocoId": "7zip",
+          "description": "7-Zip is a file archiver with a high compression ratio."
+        },
+        {
+          "name": "Nvidia GeForce Experience",
+          "wingetId": "NVIDIA.GeForceExperience",
+          "chocoId": "nvidia-geforce-experience",
+          "description": "NVIDIA GeForce Experience is a powerful and advanced graphics application for gamers."
+        },
+        {
+          "name": "Corsair iCUE",
+          "wingetId": "Corsair.iCUE.5",
+          "chocoId": "icue",
+          "description": "Corsair iCUE is a powerful and advanced software for managing game controllers and peripherals."
+        },
+        {
+          "name": "Fan Control",
+          "wingetId": "Rem0o.FanControl",
+          "chocoId": "",
+          "description": "Fan Control is a powerful and advanced software for controlling fans and air purifiers."
         }
       ]
     }  

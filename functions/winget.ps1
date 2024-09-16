@@ -55,7 +55,7 @@ function Show-CategoryMenu {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
         $counter++
     }
-    Write-Host "[F] Search for an App" -ForegroundColor Cyan
+    Write-Host "[F] Search All Apps" -ForegroundColor Green
     Write-Host "[U] Upgrade All Installed Apps & Drivers" -ForegroundColor Green
     Write-Host "[X] Exit Script" -ForegroundColor Red
     Write-Host "`n"
@@ -172,36 +172,62 @@ function Show-AppsInCategory {
 
 function Show-SearchResults {
     param (
-        [int]$categoryIndex,
         [string]$searchTerm
     )
 
     $categories = Get-JsonData
-    $selectedCategory = $categories[$categoryIndex - 1]
+    $searchResults = @()
 
-    if ($selectedCategory) {
-        $apps = $selectedCategory.options
-        $matchingApps = $apps | Where-Object { $_.name -match $searchTerm }
-
-        Clear-Host
-
-        if ($matchingApps.Count -eq 0) {
-            Write-Host "No apps found matching '$searchTerm'." -ForegroundColor Red
-            return
+    foreach ($category in $categories) {
+        foreach ($app in $category.options) {
+            if ($app.name -match $searchTerm -or $app.description -match $searchTerm) {
+                $searchResults += [PSCustomObject]@{
+                    Name = $app.name
+                    Description = $app.description
+                    WingetId = $app.wingetId
+                }
+            }
         }
+    }
 
-        Write-Host "`nSearch Results:" -ForegroundColor Yellow
-        $counter = 1
-        foreach ($app in $matchingApps) {
-            Write-Host "[$counter] $($app.name)" -ForegroundColor Green
-            Write-Host "Description: $($app.description)" -ForegroundColor White
-            Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
-            Write-Host ""
-            $counter++
+    if ($searchResults.Count -eq 0) {
+        Write-Host "No results found for '$searchTerm'." -ForegroundColor Red
+        return
+    }
+
+    Write-Host "`nSearch Results:" -ForegroundColor Yellow
+
+    $counter = 1
+    foreach ($result in $searchResults) {
+        Write-Host "[$counter] $($result.Name)" -ForegroundColor Cyan
+        Write-Host "Description: $($result.Description)" -ForegroundColor White
+        Write-Host "Winget ID: $($result.WingetId)" -ForegroundColor Cyan
+        Write-Host ""
+        $counter++
+    }
+
+    # Ask user to select a result for installation
+    $selection = Read-Host "Enter the number of the app you want to install, or [B] to go back"
+
+    if ($selection -eq 'B') {
+        return
+    }
+
+    if ($selection -match '^\d+$') {
+        $selectedIndex = [int]$selection - 1
+        if ($selectedIndex -ge 0 -and $selectedIndex -lt $searchResults.Count) {
+            $selectedApp = $searchResults[$selectedIndex]
+            $confirmation = Read-Host "Do you want to install $($selectedApp.Name)? (Y/N)"
+            if ($confirmation -eq 'Y') {
+                Install-Application -wingetId $selectedApp.WingetId
+            } else {
+                Write-Host "Installation canceled." -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "Invalid selection, returning to search results." -ForegroundColor Red
         }
-        Write-Host "[B] Back to Category Menu" -ForegroundColor Red
     } else {
-        Write-Host "Invalid category selection." -ForegroundColor Red
+        Write-Host "Invalid input, returning to search results." -ForegroundColor Red
     }
 }
 
@@ -215,36 +241,9 @@ function Install-Application {
         return
     }
 
-    Write-Host "Starting installation of $wingetId..." -ForegroundColor Yellow
-
-    try {
-        $cmdCommand = "winget install --id $wingetId --silent"
-        Start-Process -FilePath "cmd.exe" -ArgumentList "/c $cmdCommand" -NoNewWindow -Wait
-        Write-Host "Installation process for $wingetId has started." -ForegroundColor Green
-    } catch {
-        Write-Host "Failed to start the installation process: $_" -ForegroundColor Red
-    }
-}
-
-function Uninstall-Application {
-    param (
-        [string]$wingetId
-    )
-
-    if (-not $wingetId) {
-        Write-Host "No Winget ID provided. Exiting..." -ForegroundColor Red
-        return
-    }
-
-    Write-Host "Starting uninstallation of $wingetId..." -ForegroundColor Yellow
-
-    try {
-        $cmdCommand = "winget uninstall --id $wingetId --silent"
-        Start-Process -FilePath "cmd.exe" -ArgumentList "/c $cmdCommand" -NoNewWindow -Wait
-        Write-Host "Uninstallation process for $wingetId has started." -ForegroundColor Green
-    } catch {
-        Write-Host "Failed to start the uninstallation process: $_" -ForegroundColor Red
-    }
+    Write-Host "Installing $wingetId..." -ForegroundColor Green
+    Start-Process "winget" -ArgumentList "install $wingetId" -NoNewWindow -Wait
+    Write-Host "Installation of $wingetId completed." -ForegroundColor Green
 }
 
 function Handle-AppSelection {
@@ -255,84 +254,56 @@ function Handle-AppSelection {
 
     $categories = Get-JsonData
     $selectedCategory = $categories[$categoryIndex - 1]
-    $app = $selectedCategory.options[$appIndex - 1]
 
-    if ($app) {
-        Write-Host "`nYou selected: $($app.name)" -ForegroundColor Green
-        Write-Host "Description: $($app.description)" -ForegroundColor White
-        Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+    if ($selectedCategory) {
+        $apps = $selectedCategory.options
+        $app = $apps[$appIndex - 1]
 
-        Write-Host "`n[1] Install" -ForegroundColor Cyan
-        Write-Host "[2] Uninstall" -ForegroundColor Red
-        Write-Host "[B] Back to App List" -ForegroundColor Red
-
-        $choice = Read-Host "Select an option"
-
-        switch ($choice) {
-            '1' {
+        if ($app) {
+            Write-Host "You selected: $($app.name)" -ForegroundColor Yellow
+            $confirmation = Read-Host "Do you want to install $($app.name)? (Y/N)"
+            if ($confirmation -eq 'Y') {
                 Install-Application -wingetId $app.wingetId
-            }
-            '2' {
-                Uninstall-Application -wingetId $app.wingetId
-            }
-            'B' {
-                return
-            }
-            default {
-                Write-Host "Invalid option selected." -ForegroundColor Red
-            }
-        }
-    } else {
-        Write-Host "Invalid app selection." -ForegroundColor Red
-    }
-}
-
-function Show-Menu {
-    $searchMode = $false
-    $currentCategoryIndex = 0
-
-    Show-Header
-
-    while ($true) {
-        if (-not $searchMode) {
-            Show-CategoryMenu
-        }
-
-        if ($searchMode) {
-            $searchTerm = Read-Host "Enter search term (or type [B] to go back)"
-            if ($searchTerm -eq 'B') {
-                $searchMode = $false
             } else {
-                Show-SearchResults -categoryIndex $currentCategoryIndex -searchTerm $searchTerm
+                Write-Host "Installation canceled." -ForegroundColor Yellow
             }
         } else {
-            $input = Read-Host "Select an option"
+            Write-Host "Invalid app selection." -ForegroundColor Red
+        }
+    } else {
+        Write-Host "Invalid category selection." -ForegroundColor Red
+    }
+}
 
-            switch ($input) {
-                'F' {
-                    $searchMode = $true
-                    $currentCategoryIndex = Read-Host "Enter category number to search within"
+Show-Header
+while ($true) {
+    Show-CategoryMenu
+    $option = Read-Host "Choose an option"
+
+    switch ($option) {
+        'F' {
+            $searchTerm = Read-Host "Enter search term"
+            Show-SearchResults -searchTerm $searchTerm
+        }
+        'U' {
+            Write-Host "Upgrading all installed apps and drivers..." -ForegroundColor Green
+            # Add upgrade logic here
+        }
+        'X' {
+            Write-Host "Exiting script." -ForegroundColor Red
+            break
+        }
+        default {
+            if ($option -match '^\d+$') {
+                $categoryIndex = [int]$option
+                if ($categoryIndex -ge 1) {
+                    Show-AppsInCategory -categoryIndex $categoryIndex
+                } else {
+                    Write-Host "Invalid category selection." -ForegroundColor Red
                 }
-                'U' {
-                    Write-Host "Upgrading all installed apps & drivers..." -ForegroundColor Green
-                    # You can add your upgrade logic here
-                }
-                'X' {
-                    Write-Host "Exiting script..." -ForegroundColor Red
-                    exit
-                }
-                default {
-                    if ($input -match '^\d+$') {
-                        $categoryIndex = [int]$input
-                        $currentCategoryIndex = $categoryIndex
-                        Show-AppsInCategory -categoryIndex $categoryIndex
-                    } else {
-                        Write-Host "Invalid input. Please try again." -ForegroundColor Red
-                    }
-                }
+            } else {
+                Write-Host "Invalid option, please try again." -ForegroundColor Red
             }
         }
     }
 }
-
-Show-Menu

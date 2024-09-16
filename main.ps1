@@ -16,18 +16,38 @@ function Restart-WithAdminPrivileges {
     exit  # Exit the current non-elevated process
 }
 
-# URL of the winget menu script
+# Define the Temp directory and KimDog Studios subfolder
+$TempFolderPath = [System.IO.Path]::Combine($env:TEMP, "KimDog Studios")
 $wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
+$wingetScriptPath = [System.IO.Path]::Combine($TempFolderPath, "winget.ps1")
 
-# URL of the Windows Manager script
-$windowsManagerUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/windowsManager.ps1"
+# Function to create the KimDog Studios folder in the Temp directory
+function Create-TempFolder {
+    if (-not (Test-Path -Path $TempFolderPath)) {
+        New-Item -Path $TempFolderPath -ItemType Directory | Out-Null
+        Write-Host "Created Temp folder: $TempFolderPath" -ForegroundColor Green
+    } else {
+        Write-Host "Temp folder already exists: $TempFolderPath" -ForegroundColor Green
+    }
+}
+
+# Function to download the winget script into the Temp directory
+function Download-WingetScript {
+    try {
+        Write-Host "Downloading winget script to: $wingetScriptPath" -ForegroundColor Green
+        Invoke-RestMethod -Uri $wingetMenuUrl -OutFile $wingetScriptPath
+        Write-Host "winget script downloaded successfully." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to download winget script: $_" -ForegroundColor Red
+        exit 1
+    }
+}
 
 # Function to check if winget is installed
 function Check-Winget {
     $wingetCommand = "winget"
     
     try {
-        # Check if winget command is available
         $wingetPath = Get-Command $wingetCommand -ErrorAction SilentlyContinue
         if ($wingetPath) {
             Write-Host "winget is already installed." -ForegroundColor Green
@@ -78,7 +98,7 @@ function Show-MainHeader {
     }
 
     Draw-Box -Text "KimDog's Windows Utility | Last Updated: 2024-09-15"
-    Write-Host "`n"  # Reduced gap
+    Write-Host "`n"
 }
 
 # Function to show the main menu
@@ -90,32 +110,28 @@ function Show-MainMenu {
     Write-Host "2. Application Manager (Admin Required)" -ForegroundColor Green
     Write-Host "3. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
-    Write-Host "`n"  # Reduced gap
+    Write-Host "`n"
 }
 
-# Function to fetch and execute the Windows Manager script from GitHub
+# Function to fetch and execute the Windows Manager script
 function Run-WindowsManager {
+    $windowsManagerUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/windowsManager.ps1"
     try {
         $scriptContent = Invoke-RestMethod -Uri $windowsManagerUrl
         Write-Host "Executing Windows Manager script..." -ForegroundColor Green
-        
-        # Execute the fetched script content
         Invoke-Expression $scriptContent
     } catch {
         Write-Host "Failed to fetch or execute Windows Manager script: $_" -ForegroundColor Red
     }
 }
 
-# Function to fetch and execute the winget menu script from GitHub
+# Function to run the winget menu script from the downloaded file
 function Run-WingetMenu {
     try {
-        $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl
-        Write-Host "Executing winget menu script..." -ForegroundColor Green
-        
-        # Execute the fetched script content
-        Invoke-Expression $scriptContent
+        Write-Host "Running winget script from: $wingetScriptPath" -ForegroundColor Green
+        . $wingetScriptPath
     } catch {
-        Write-Host "Failed to fetch or execute winget menu script: $_" -ForegroundColor Red
+        Write-Host "Failed to execute winget script: $_" -ForegroundColor Red
     }
 }
 
@@ -128,13 +144,14 @@ function Option1 {
 
 # Function for Option 2 (requires admin)
 function Option2 {
-    # Check if running with admin privileges; if not, restart with admin
     if (-not (Check-AdminPrivileges)) {
         Restart-WithAdminPrivileges -Selection "2"
     }
 
     Clear-Host
     Write-Host "You selected Option 2: Application Manager (Admin Required)" -ForegroundColor Green
+    Create-TempFolder
+    Download-WingetScript
     Run-WingetMenu
 }
 
@@ -146,7 +163,6 @@ function Show-InvalidOption {
 
 # Main loop
 while ($true) {
-    # If there is an argument passed (e.g., after restarting as admin)
     if ($args.Length -gt 0) {
         switch ($args[0]) {
             "1" { Option1; exit }

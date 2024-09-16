@@ -44,6 +44,8 @@ function Show-CategoryMenu {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
         $counter++
     }
+    Write-Host "[U] Upgrade All Installed Apps" -ForegroundColor Green
+    Write-Host "[X] Exit Script" -ForegroundColor Red
     Write-Host "`n"
 }
 
@@ -86,6 +88,8 @@ function Show-AppsInCategory {
             Write-Host "[B] Back to Category Menu" -ForegroundColor Red
             Write-Host "[N] Next Page" -ForegroundColor Cyan
             Write-Host "[P] Previous Page" -ForegroundColor Cyan
+            Write-Host "[U] Upgrade All Installed Apps" -ForegroundColor Green
+            Write-Host "[X] Exit Script" -ForegroundColor Red
 
             $input = Read-Host "Choose an option"
 
@@ -106,6 +110,13 @@ function Show-AppsInCategory {
                 }
                 'B' {
                     return
+                }
+                'U' {
+                    Upgrade-AllApps
+                }
+                'X' {
+                    Write-Host "Exiting script." -ForegroundColor Green
+                    exit
                 }
                 default {
                     if ($input -match '^\d+$') {
@@ -148,6 +159,39 @@ function Install-Application {
     }
 }
 
+function Uninstall-Application {
+    param (
+        [string]$wingetId
+    )
+
+    if (-not $wingetId) {
+        Write-Host "No Winget ID provided. Exiting..." -ForegroundColor Red
+        return
+    }
+
+    Write-Host "Starting uninstallation of $wingetId..." -ForegroundColor Yellow
+
+    try {
+        $cmdCommand = "winget uninstall --id $wingetId --silent"
+        Start-Process -FilePath "cmd.exe" -ArgumentList "/c $cmdCommand" -NoNewWindow -Wait
+        Write-Host "Uninstallation process for $wingetId has started." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to start the uninstallation process: $_" -ForegroundColor Red
+    }
+}
+
+function Upgrade-AllApps {
+    Write-Host "Starting upgrade for all installed apps..." -ForegroundColor Yellow
+
+    try {
+        $cmdCommand = "winget upgrade --all --silent"
+        Start-Process -FilePath "cmd.exe" -ArgumentList "/c $cmdCommand" -NoNewWindow -Wait
+        Write-Host "Upgrade process for all installed apps has started." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to start the upgrade process: $_" -ForegroundColor Red
+    }
+}
+
 function Handle-AppSelection {
     param (
         [int]$appIndex,
@@ -160,8 +204,18 @@ function Handle-AppSelection {
 
     if ($selectedApp) {
         Write-Host "You have selected $($selectedApp.name)."
-        if (Read-Host "Do you want to install this application? (Y/N)" -match '^[Yy]$') {
-            Install-Application -wingetId $selectedApp.wingetId
+        $action = Read-Host "Do you want to [I]nstall or [U]ninstall this application? (I/U)"
+
+        switch ($action.ToUpper()) {
+            'I' {
+                Install-Application -wingetId $selectedApp.wingetId
+            }
+            'U' {
+                Uninstall-Application -wingetId $selectedApp.wingetId
+            }
+            default {
+                Write-Host "Invalid option, please enter 'I' to install or 'U' to uninstall." -ForegroundColor Red
+            }
         }
     } else {
         Write-Host "Invalid application selection." -ForegroundColor Red
@@ -172,19 +226,24 @@ while ($true) {
     Show-Header
     Show-CategoryMenu
 
-    $selection = Read-Host "Select a category"
+    $selection = Read-Host "Select a category or option"
 
     if ($selection -match '^\d+$') {
         $categoryIndex = [int]$selection
-        if ($categoryIndex -eq 0) {
+        if ($categoryIndex -gt 0) {
+            Show-AppsInCategory -categoryIndex $categoryIndex
+        } elseif ($categoryIndex -eq 0) {
             Write-Host "Exiting script." -ForegroundColor Green
             exit
-        } elseif ($categoryIndex -gt 0) {
-            Show-AppsInCategory -categoryIndex $categoryIndex
         } else {
             Write-Host "Invalid category selection, please try again." -ForegroundColor Red
         }
+    } elseif ($selection.ToUpper() -eq 'U') {
+        Upgrade-AllApps
+    } elseif ($selection.ToUpper() -eq 'X') {
+        Write-Host "Exiting script." -ForegroundColor Green
+        exit
     } else {
-        Write-Host "Invalid input, please enter a number." -ForegroundColor Red
+        Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red
     }
 }

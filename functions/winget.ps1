@@ -44,7 +44,7 @@ function Show-CategoryMenu {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
         $counter++
     }
-    Write-Host "[U] Upgrade All Installed Apps" -ForegroundColor Green
+    Write-Host "[U] Upgrade All Installed Apps & Drivers" -ForegroundColor Green
     Write-Host "[X] Exit Script" -ForegroundColor Red
     Write-Host "`n"
 }

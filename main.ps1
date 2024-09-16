@@ -5,14 +5,43 @@ function Check-Winget {
     try {
         # Check if winget command is available
         $wingetPath = Get-Command $wingetCommand -ErrorAction SilentlyContinue
-        if ($wingetPath) {
-            return $true
-        } else {
-            return $false
-        }
+        return $wingetPath -ne $null
     } catch {
         Write-Host "Error checking winget installation: $_" -ForegroundColor Red
         return $false
+    }
+}
+
+# Function to check if Chocolatey is installed
+function Check-Chocolatey {
+    $chocoCommand = "choco"
+    
+    try {
+        # Check if Chocolatey command is available
+        $chocoPath = Get-Command $chocoCommand -ErrorAction SilentlyContinue
+        return $chocoPath -ne $null
+    } catch {
+        Write-Host "Error checking Chocolatey installation: $_" -ForegroundColor Red
+        return $false
+    }
+}
+
+# Function to install Chocolatey
+function Install-Chocolatey {
+    if (-not (Check-Chocolatey)) {
+        Write-Host "Chocolatey is not installed. Installing Chocolatey..." -ForegroundColor Yellow
+        try {
+            # Download and execute Chocolatey installation script
+            $chocoInstallUrl = "https://chocolatey.org/install.ps1"
+            Invoke-WebRequest -Uri $chocoInstallUrl -UseBasicP -OutFile "$env:TEMP\install-choco.ps1"
+            & "$env:TEMP\install-choco.ps1"
+            Remove-Item "$env:TEMP\install-choco.ps1" -Force
+            Write-Host "Chocolatey installed successfully." -ForegroundColor Green
+        } catch {
+            Write-Host "Failed to install Chocolatey: $_" -ForegroundColor Red
+        }
+    } else {
+        Write-Host "Chocolatey is already installed." -ForegroundColor Green
     }
 }
 
@@ -52,13 +81,15 @@ function Show-MainHeader {
     }
 
     Draw-Box -Text "KimDog's Windows Utility | Last Updated: 2024-09-15"
-    Write-Host "n"
+    Write-Host "`n"
 }
 
 # Function to show a message if winget is installed
 function Show-WingetMessage {
     if (Check-Winget) {
-        Write-Host "[INFO] WinGet is Installed. " -ForegroundColor Green
+        Write-Host "[INFO] WinGet is Installed." -ForegroundColor Green
+    } else {
+        Write-Host "[INFO] WinGet is not installed." -ForegroundColor Yellow
     }
 }
 
@@ -71,19 +102,7 @@ function Show-MainMenu {
     Write-Host "2. Application Manager" -ForegroundColor Green
     Write-Host "3. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
-    Write-Host "n"
-}
-
-# Function to fetch and execute the wingetManager script
-function Run-WingetManager {
-    $wingetManagerUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/wingetManager.ps1"
-    try {
-        $scriptContent = Invoke-RestMethod -Uri $wingetManagerUrl
-        Write-Host "Executing wingetManager script..." -ForegroundColor Green
-        Invoke-Expression $scriptContent
-    } catch {
-        Write-Host "Failed to fetch or execute wingetManager script: $_" -ForegroundColor Red
-    }
+    Write-Host "`n"
 }
 
 # Function to fetch and execute the winget menu script
@@ -130,8 +149,8 @@ function Show-InvalidOption {
     Write-Host "Invalid selection, please try again." -ForegroundColor Red
 }
 
-# Run wingetManager script at the start
-Run-WingetManager
+# Install Chocolatey if not present
+Install-Chocolatey
 
 # Main loop
 while ($true) {

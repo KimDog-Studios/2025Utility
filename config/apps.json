@@ -5,95 +5,35 @@
       "options": [
         {
           "name": "Microsoft Edge",
-          "wingetId": "Microsoft.Edge"
+          "wingetId": "Microsoft.Edge",
+          "chocoId": "microsoft-edge",
+          "description": "Microsoft Edge browser, based on the Chromium open source browser."
         },
         {
           "name": "Google Chrome",
-          "wingetId": "Google.Chrome"
+          "wingetId": "Google.Chrome",
+          "chocoId": "googlechrome",
+          "description": "Google Chrome browser, based on the Chromium open source browser."
         },
         {
-          "name": "Mozilla Firefox",
-          "wingetId": "Mozilla.Firefox"
+          "name": "Brave Browser",
+          "wingetId": "Brave.Brave",
+          "chocoId": "brave",
+          "description": "Brave browser, based on the Chromium open source browser."
         },
         {
-          "name": "Vivaldi",
-          "wingetId": "Vivaldi.Vivaldi"
-        },
-        {
-          "name": "Brave",
-          "wingetId": "Brave.Brave"
+          "name": "Vivaldi Browser",
+          "wingetId": "VivaldiTechnologies.Vivaldi",
+          "chocoId": "vivaldi",
+          "description": "The new Vivaldi browser protects you from trackers, blocks unwanted ads, and puts you in control with unique built-in features. Get Vivaldi and browse fast."
         },
         {
           "name": "Opera",
-          "wingetId": "Opera.Opera"
-        },
-        {
-          "name": "OperaGX",
-          "wingetId": "Opera.OperaGX"
+          "wingetId": "Opera.Opera",
+          "chocoId": "opera",
+          "description": "Opera browser, based on the Chromium open source browser."
         }
       ]
-    },
-    
-    {
-      "name": "Text Editors",
-      "options": [
-        {
-          "name": "Notepad++",
-          "wingetId": "Notepad++.Notepad++"
-        },
-        {
-          "name": "Visual Studio Code",
-          "wingetId": "Microsoft.VisualStudioCode"
-        },
-        {
-          "name": "Sublime Text 4",
-          "wingetId": "SublimeHQ.SublimeText.4"
-        },
-        {
-          "name": "Atom",
-          "wingetId": "GitHub.Atom"
-        },
-        {
-          "name": "Visual Studio Community 2022 Preview",
-          "wingetId": "Microsoft.VisualStudio.2022.Community.Preview"
-        }
-      ]
-    },
-
-    {
-      "name": "Utilities",
-      "options": [
-        {
-          "name": "7-Zip",
-          "wingetId": "7zip.7zip"
-        },
-        {
-          "name": "WinRAR",
-          "wingetId": "Rarlab.WinRAR"
-        },
-        {
-          "name": "CCleaner",
-          "wingetId": "Piriform.CCleaner"
-        }
-      ]
-    },
-    
-    {
-      "name": "Communication",
-      "options": [
-        {
-          "name": "Discord",
-          "wingetId": "Discord.Discord"
-        },
-        {
-          "name": "Slack",
-          "wingetId": "SlackTechnologies.Slack"
-        },
-        {
-          "name": "Microsoft Teams",
-          "wingetId": "Microsoft.Teams"
-        }
-      ]
-    }
+    }  
   ]
 }

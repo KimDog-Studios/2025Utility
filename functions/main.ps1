@@ -54,8 +54,8 @@ function Show-MainMenu {
     $MenuWidth = 30
 
     Write-Host (Align-Header "Main Menu" $MenuWidth) -ForegroundColor Yellow
-    Write-Host "1. Windows Manager" -ForegroundColor Green
-    Write-Host "2. Application Manager" -ForegroundColor Green
+    Write-Host "1. Windows Manager [Work In Progress]" -ForegroundColor Green
+    Write-Host "2. Application Manager [May Ask for ADMIN Privileges]" -ForegroundColor Green
     Write-Host "3. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
     Write-Host "`n"

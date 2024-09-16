@@ -47,8 +47,10 @@ function Show-Header {
 }
 
 function Show-CategoryMenu {
+    Clear-Host
+
     $categories = Get-JsonData
-    
+
     Write-Host "`nCategories:" -ForegroundColor Yellow
     $counter = 1
     foreach ($category in $categories) {
@@ -65,6 +67,8 @@ function Show-AppsInCategory {
     param (
         [int]$categoryIndex
     )
+
+    Clear-Host
 
     $categories = Get-JsonData
     $selectedCategory = $categories[$categoryIndex - 1]
@@ -175,6 +179,8 @@ function Show-SearchResults {
         [string]$searchTerm
     )
 
+    Clear-Host
+
     $categories = Get-JsonData
     $searchResults = @()
 
@@ -237,7 +243,7 @@ function Install-Application {
     )
 
     if (-not $wingetId) {
-        Write-Host "No Winget ID provided. Exiting..." -ForegroundColor Red
+        Write-Host "No Winget ID provided. Cannot install application." -ForegroundColor Red
         return
     }
 

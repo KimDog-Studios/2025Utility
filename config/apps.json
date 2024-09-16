@@ -79,24 +79,6 @@
           "wingetId": "Microsoft.VisualStudioCode",
           "chocoId": "vscode",
           "description": "Visual Studio Code is a lightweight and powerful code editor."
-        },
-        {
-          "name": "Sublime Text",
-          "wingetId": "SublimeText.SublimeText",
-          "chocoId": "sublimetext",
-          "description": "Sublime Text is a sophisticated text editor."
-        },
-        {
-          "name": "Atom",
-          "wingetId": "Microsoft.Atom",
-          "chocoId": "atom",
-          "description": "Atom is a hackable text editor."
-        },
-        {
-          "name": "Brackets",
-          "wingetId": "Brackets.Brackets",
-          "chocoId": "brackets",
-          "description": "Brackets is an open source code editor."
         }
       ]
     }  

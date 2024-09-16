@@ -67,4 +67,5 @@ if ($servicesToProcess.Count -eq 0) {
 Write-Host "Specified services have been processed. Check logs for any issues." -ForegroundColor Green
 
 # Pause the script until user input
-Read-Host -Prompt "Press Enter to exit"
+Write-Host "Press Enter to exit..." -ForegroundColor Yellow
+[void][System.Console]::ReadLine()

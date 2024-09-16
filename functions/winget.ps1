@@ -1,191 +1,237 @@
-# Custom Winget Management Menu in PowerShell
+# URL of the winget menu script
+$wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
 
-# Function to maximize the PowerShell window
-function Set-FullScreenWindow {
-    $console = $Host.UI.RawUI
-    $console.WindowSize = $console.MaxWindowSize
-    $console.BufferSize = $console.MaxWindowSize
-    $console.WindowPosition = New-Object System.Management.Automation.Host.Coordinates -ArgumentList 0,0
-}
+# URL of the Windows Manager script
+$windowsManagerUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/windowsManager.ps1"
 
-Set-FullScreenWindow
-
-$jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
-
-function Get-JsonData {
+# Function to check if winget is installed
+function Check-Winget {
+    $wingetCommand = "winget"
+    
     try {
-        $jsonData = Invoke-RestMethod -Uri $jsonFileUrl -Method Get
-        return $jsonData.categories
+        # Check if winget command is available
+        $wingetPath = Get-Command $wingetCommand -ErrorAction SilentlyContinue
+        if ($wingetPath) {
+            Write-Host "winget is already installed." -ForegroundColor Green
+            return $true
+        } else {
+            Write-Host "winget is not installed." -ForegroundColor Red
+            return $false
+        }
     } catch {
-        Write-Host "Failed to fetch JSON data: $_" -ForegroundColor Red
-        exit
+        Write-Host "Error checking winget installation: $_" -ForegroundColor Red
+        return $false
     }
 }
 
+# Function to get the latest winget release URL
+function Get-Latest-Winget-Release-Url {
+    $githubApiUrl = "https://github.com/microsoft/winget-cli/releases/tag/v1.8.1911"
+    
+    try {
+        $response = Invoke-RestMethod -Uri $githubApiUrl -Headers @{ "User-Agent" = "PowerShell" }
+        $latestRelease = $response.assets | Where-Object { $_.name -like "*AppInstaller*.msixbundle" }
+        if ($latestRelease) {
+            $downloadUrl = $latestRelease.browser_download_url
+            Write-Host "Latest winget release URL: $downloadUrl" -ForegroundColor Cyan
+            return $downloadUrl
+        } else {
+            Write-Host "No suitable release found." -ForegroundColor Red
+            return $null
+        }
+    } catch {
+        Write-Host "Failed to fetch latest release URL: $_" -ForegroundColor Red
+        return $null
+    }
+}
+
+# Function to install winget
+function Install-Winget {
+    $downloadUrl = Get-Latest-Winget-Release-Url
+    if (-not $downloadUrl) {
+        Write-Host "Cannot proceed with installation. Exiting..." -ForegroundColor Red
+        return
+    }
+    
+    Write-Host "Downloading winget from $downloadUrl..." -ForegroundColor Yellow
+
+    $tempFile = [System.IO.Path]::GetTempFileName()
+    try {
+        Invoke-WebRequest -Uri $downloadUrl -OutFile $tempFile
+        Write-Host "Download complete. Installing..." -ForegroundColor Green
+
+        Start-Process -FilePath $tempFile -ArgumentList "/quiet" -Wait
+        Write-Host "winget installation process has started." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to download or install winget: $_" -ForegroundColor Red
+    } finally {
+        # Clean up temporary file
+        Remove-Item -Path $tempFile -ErrorAction SilentlyContinue
+    }
+}
+
+# Function to check if Chocolatey is installed
+function Check-Chocolatey {
+    $chocoCommand = "choco"
+    
+    try {
+        # Check if choco command is available
+        $chocoPath = Get-Command $chocoCommand -ErrorAction SilentlyContinue
+        if ($chocoPath) {
+            Write-Host "Chocolatey is already installed." -ForegroundColor Green
+            return $true
+        } else {
+            Write-Host "Chocolatey is not installed." -ForegroundColor Red
+            return $false
+        }
+    } catch {
+        Write-Host "Error checking Chocolatey installation: $_" -ForegroundColor Red
+        return $false
+    }
+}
+
+# Function to install Chocolatey
+function Install-Chocolatey {
+    $chocoInstallScriptUrl = "https://chocolatey.org/install.ps1"
+    
+    Write-Host "Downloading Chocolatey installation script from $chocoInstallScriptUrl..." -ForegroundColor Yellow
+
+    $tempFile = [System.IO.Path]::GetTempFileName()
+    try {
+        Invoke-WebRequest -Uri $chocoInstallScriptUrl -OutFile $tempFile
+        Write-Host "Download complete. Installing Chocolatey..." -ForegroundColor Green
+
+        Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File $tempFile" -Wait
+        Write-Host "Chocolatey installation process has started." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to download or install Chocolatey: $_" -ForegroundColor Red
+    } finally {
+        # Clean up temporary file
+        Remove-Item -Path $tempFile -ErrorAction SilentlyContinue
+    }
+}
+
+# Function to align header text
 function Align-Header {
     param (
         [string]$Text,
         [int]$Width = 30
     )
 
-    $Padding = $Width - $Text.Length
+    $TextLength = $Text.Length
+    $Padding = $Width - $TextLength
     $LeftPadding = [math]::Floor($Padding / 2)
     $RightPadding = [math]::Ceiling($Padding / 2)
-
-    return ("=" * $LeftPadding) + $Text + ("=" * $RightPadding)
+    
+    $AlignedText = ("=" * $LeftPadding) + $Text + ("=" * $RightPadding)
+    $AlignedText
 }
 
-function Show-Header {
+function Show-MainHeader {
     Clear-Host
-    $HeaderWidth = 30
 
-    Write-Host (Align-Header "KimDog's Winget Menu" $HeaderWidth) -ForegroundColor Yellow
-    Write-Host (Align-Header "Last Updated: 2024-09-15" $HeaderWidth) -ForegroundColor Cyan
-    Write-Host (Align-Header "=" $HeaderWidth) -ForegroundColor Cyan
-    Write-Host "`n"
-}
+    function Draw-Box {
+        param (
+            [string]$Text
+        )
 
-function Show-CategoryMenu {
-    $categories = Get-JsonData
-    $counter = 1
-    foreach ($category in $categories) {
-        Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
-        $counter++
-    }
-    Write-Host "`n"
-}
+        $boxWidth = $Text.Length + 4
+        $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
+        $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
 
-function Show-AppsInCategory {
-    param (
-        [int]$categoryIndex
-    )
-
-    $categories = Get-JsonData
-    $selectedCategory = $categories[$categoryIndex - 1]
-
-    if ($selectedCategory) {
-        $apps = $selectedCategory.options
-        $totalApps = $apps.Count
-        $itemsPerPage = 5
-        $page = 1
-        $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
-        
-        while ($true) {
-            Clear-Host
-            Write-Host "=== $($selectedCategory.name) ===" -ForegroundColor Yellow
-
-            $startIndex = ($page - 1) * $itemsPerPage
-            $endIndex = [math]::Min($startIndex + $itemsPerPage, $totalApps)
-
-            for ($i = $startIndex; $i -lt $endIndex; $i++) {
-                $app = $apps[$i]
-                Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
-                Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
-                Write-Host ""
-            }
-
-            Write-Host "Page $page of $totalPages"
-            Write-Host "[B] Back to Category Menu" -ForegroundColor Red
-            Write-Host "[N] Next Page" -ForegroundColor Cyan
-            Write-Host "[P] Previous Page" -ForegroundColor Cyan
-
-            $input = Read-Host "Choose an option"
-
-            switch ($input) {
-                'N' {
-                    if ($page -lt $totalPages) {
-                        $page++
-                    } else {
-                        Write-Host "You are already on the last page." -ForegroundColor Red
-                    }
-                }
-                'P' {
-                    if ($page -gt 1) {
-                        $page--
-                    } else {
-                        Write-Host "You are already on the first page." -ForegroundColor Red
-                    }
-                }
-                'B' {
-                    return
-                }
-                default {
-                    if ($input -match '^\d+$') {
-                        $selectedAppIndex = [int]$input - 1
-                        if ($selectedAppIndex -ge 0 -and $selectedAppIndex -lt $totalApps) {
-                            Handle-AppSelection -appIndex ($selectedAppIndex + 1) -categoryIndex $categoryIndex
-                        } else {
-                            Write-Host "Invalid app selection, please try again." -ForegroundColor Red
-                        }
-                    } else {
-                        Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red
-                    }
-                }
-            }
-        }
-    } else {
-        Write-Host "Invalid category selection." -ForegroundColor Red
-    }
-}
-
-function Install-Application {
-    param (
-        [string]$wingetId
-    )
-
-    if (-not $wingetId) {
-        Write-Host "No Winget ID provided. Exiting..." -ForegroundColor Red
-        return
+        Write-Host "$topBottomBorder" -ForegroundColor Cyan
+        Write-Host "$emptyLine" -ForegroundColor Cyan
+        Write-Host "| $Text |" -ForegroundColor Cyan
+        Write-Host "$emptyLine" -ForegroundColor Cyan
+        Write-Host "$topBottomBorder" -ForegroundColor Cyan
     }
 
-    Write-Host "Starting installation of $wingetId..." -ForegroundColor Yellow
+    Draw-Box -Text "KimDog's Windows Utility | Last Updated: 2024-09-15"
+    Write-Host "`n"  # Reduced gap
+}
 
+# Function to show the main menu
+function Show-MainMenu {
+    $MenuWidth = 30
+
+    Write-Host (Align-Header "Main Menu" $MenuWidth) -ForegroundColor Yellow
+    Write-Host "1. Windows Manager" -ForegroundColor Green
+    Write-Host "2. Application Manager" -ForegroundColor Green
+    Write-Host "3. Exit" -ForegroundColor Red
+    Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
+    Write-Host "`n"  # Reduced gap
+}
+
+# Function to fetch and execute the Windows Manager script from GitHub
+function Run-WindowsManager {
     try {
-        $cmdCommand = "winget install --id $wingetId --silent"
-        Start-Process -FilePath "cmd.exe" -ArgumentList "/c $cmdCommand" -NoNewWindow -Wait
-        Write-Host "Installation process for $wingetId has started." -ForegroundColor Green
+        $scriptContent = Invoke-RestMethod -Uri $windowsManagerUrl
+        Write-Host "Executing Windows Manager script..." -ForegroundColor Green
+        
+        # Execute the fetched script content
+        Invoke-Expression $scriptContent
     } catch {
-        Write-Host "Failed to start the installation process: $_" -ForegroundColor Red
+        Write-Host "Failed to fetch or execute Windows Manager script: $_" -ForegroundColor Red
     }
 }
 
-function Handle-AppSelection {
-    param (
-        [int]$appIndex,
-        [int]$categoryIndex
-    )
-
-    $categories = Get-JsonData
-    $selectedCategory = $categories[$categoryIndex - 1]
-    $selectedApp = $selectedCategory.options[$appIndex - 1]
-
-    if ($selectedApp) {
-        Write-Host "You have selected $($selectedApp.name)."
-        if (Read-Host "Do you want to install this application? (Y/N)" -match '^[Yy]$') {
-            Install-Application -wingetId $selectedApp.wingetId
-        }
-    } else {
-        Write-Host "Invalid application selection." -ForegroundColor Red
+# Function to fetch and execute the winget menu script from GitHub
+function Run-WingetMenu {
+    try {
+        $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl
+        Write-Host "Execution of winget menu script..." -ForegroundColor Green
+        
+        # Execute the fetched script content
+        Invoke-Expression $scriptContent
+    } catch {
+        Write-Host "Failed to fetch or execute winget menu script: $_" -ForegroundColor Red
     }
 }
 
+# Function for Option 1
+function Option1 {
+    Clear-Host
+    Write-Host "You selected Option 1: Windows Manager" -ForegroundColor Green
+    Run-WindowsManager
+}
+
+# Function for Option 2
+function Option2 {
+    Clear-Host
+    Write-Host "You selected Option 2: Application Manager" -ForegroundColor Green
+    Run-WingetMenu
+}
+
+# Function for invalid option
+function Show-InvalidOption {
+    Clear-Host
+    Write-Host "Invalid selection, please try again." -ForegroundColor Red
+}
+
+# Main loop
 while ($true) {
-    Show-Header
-    Show-CategoryMenu
+    # Check and install winget if necessary
+    if (-not (Check-Winget)) {
+        Install-Winget
+    }
 
-    $selection = Read-Host "Select a category"
+    # Check and install Chocolatey if necessary
+    if (-not (Check-Chocolatey)) {
+        Install-Chocolatey
+    }
 
-    if ($selection -match '^\d+$') {
-        $categoryIndex = [int]$selection
-        if ($categoryIndex -eq 0) {
-            Write-Host "Exiting script." -ForegroundColor Green
-            exit
-        } elseif ($categoryIndex -gt 0) {
-            Show-AppsInCategory -categoryIndex $categoryIndex
-        } else {
-            Write-Host "Invalid category selection, please try again." -ForegroundColor Red
-        }
-    } else {
-        Write-Host "Invalid input, please enter a number." -ForegroundColor Red
+    Show-MainHeader
+    Show-MainMenu
+    $selection = Read-Host "Please enter your choice"
+
+    switch ($selection) {
+        "1" { Option1 }
+        "2" { Option2 }
+        "3" { Write-Host "Exiting..." -ForegroundColor Red; break }
+        default { Show-InvalidOption }
+    }
+
+    if ($selection -eq "3") {
+        exit
     }
 }

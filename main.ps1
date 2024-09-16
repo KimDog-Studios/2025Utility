@@ -105,8 +105,24 @@ while ($true) {
     $selection = Read-Host "Please enter your choice"
 
     switch ($selection) {
-        "1" { Invoke-RemoteScript -Url $windowsManagerUrl -Description "Windows Manager" }
-        "2" { Invoke-RemoteScript -Url $wingetMenuUrl -Description "Application Manager" }
+        "1" {
+            try {
+                $scriptContent = Invoke-RestMethod -Uri $windowsManagerUrl
+                Write-Host "Executing Windows Manager script..." -ForegroundColor Green
+                Invoke-Expression $scriptContent
+            } catch {
+                Write-Host "Failed to fetch or execute Windows Manager script: $_" -ForegroundColor Red
+            }
+        }
+        "2" {
+            try {
+                $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl
+                Write-Host "Executing Application Manager script..." -ForegroundColor Green
+                Invoke-Expression $scriptContent
+            } catch {
+                Write-Host "Failed to fetch or execute Application Manager script: $_" -ForegroundColor Red
+            }
+        }
         "3" { Write-Host "Exiting..." -ForegroundColor Red; exit }
         default { 
             Clear-Host

@@ -1,16 +1,22 @@
-# Check if the script is running as Administrator
-function Check-Admin {
-    $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-    if (-not $isAdmin) {
-        Write-Warning "This script is not running as an Administrator."
-        # Relaunch the script with Administrator privileges
-        Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Definition)`"" -Verb RunAs
-        exit
-    }
+# Function to check if the script is running as an administrator
+function Check-AdminPrivileges {
+    $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+    $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+    return $isAdmin
 }
 
-# Run the admin check at the start of the script
-Check-Admin
+# Function to restart the script with elevated privileges
+function Restart-WithAdminPrivileges {
+    Write-Host "Restarting script with administrative privileges..." -ForegroundColor Yellow
+    Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    exit  # Exit the current non-elevated process
+}
+
+# Check if running with admin privileges; if not, restart with admin
+if (-not (Check-AdminPrivileges)) {
+    Restart-WithAdminPrivileges
+}
 
 # URL of the winget menu script
 $wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
@@ -122,6 +128,7 @@ function Show-MainHeader {
     Draw-Box -Text "KimDog's Windows Utility | Last Updated: 2024-09-15"
     Write-Host "`n"  # Reduced gap
 }
+
 
 # Function to show the main menu
 function Show-MainMenu {

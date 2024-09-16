@@ -234,7 +234,7 @@ function Show-SearchResults {
 
         for ($i = $startIndex; $i -lt $endIndex; $i++) {
             $result = $searchResults[$i]
-            Write-Host "[$($i + 1)] $($result.Name) | $searchTerm" -ForegroundColor Cyan
+            Write-Host "[$($i + 1)] $($result.Name)" -ForegroundColor Cyan
             Write-Host "Description: $($result.Description)" -ForegroundColor White
             Write-Host "Winget ID: $($result.WingetId)" -ForegroundColor Cyan
             Write-Host ""

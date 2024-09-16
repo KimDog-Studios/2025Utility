@@ -52,12 +52,6 @@
           "description": "Chromium browser, based on the Chromium open source browser."
         },
         {
-          "name": "Opera Beta",
-          "wingetId": "Opera.Opera.Beta",
-          "chocoId": "",
-          "description": "Opera browser, based on the Chromium open source browser."
-        },
-        {
           "name": "Safari",
           "wingetId": "Apple.Safari",
           "chocoId": "safari",

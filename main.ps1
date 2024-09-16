@@ -1,9 +1,7 @@
-# URLs of the scripts
-$wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
-$windowsManagerUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/windowsManager.ps1"
-$appJsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
+# This script is designed to be run directly from GitHub
+# It will download itself and the required scripts, then execute locally
 
-# Create a temporary directory
+# Create the KimDog Studios folder in temp directory
 $tempDir = Join-Path $env:TEMP "KimDog Studios"
 if (-not (Test-Path $tempDir)) {
     New-Item -ItemType Directory -Path $tempDir | Out-Null
@@ -11,6 +9,12 @@ if (-not (Test-Path $tempDir)) {
 } else {
     Write-Host "Using existing temporary directory: $tempDir" -ForegroundColor Green
 }
+
+# URLs of the scripts
+$mainScriptUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/main.ps1"
+$wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
+$windowsManagerUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/windowsManager.ps1"
+$appJsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
 
 # Function to download a script
 function Download-Script {
@@ -33,14 +37,22 @@ function Download-Script {
 
 # Download scripts
 Write-Host "Attempting to download scripts..." -ForegroundColor Cyan
+$mainScriptPath = Download-Script -Url $mainScriptUrl -FileName "main.ps1"
 $wingetMenuPath = Download-Script -Url $wingetMenuUrl -FileName "winget.ps1"
 $windowsManagerPath = Download-Script -Url $windowsManagerUrl -FileName "windowsManager.ps1"
 $appJsonPath = Download-Script -Url $appJsonUrl -FileName "apps.json"
 
-if (-not $wingetMenuPath -or -not $windowsManagerPath -or -not $appJsonPath) {
+if (-not $mainScriptPath -or -not $wingetMenuPath -or -not $windowsManagerPath -or -not $appJsonPath) {
     Write-Host "Failed to download one or more scripts. Please check your internet connection and try again." -ForegroundColor Red
     exit
 }
+
+# Restart using the downloaded main script
+Write-Host "Restarting with the downloaded main script..." -ForegroundColor Cyan
+& $mainScriptPath
+exit
+
+# The code below this point will only run when the script is restarted
 
 # Modify the winget.ps1 script to use the local apps.json file
 $wingetContent = Get-Content $wingetMenuPath -Raw
@@ -121,7 +133,7 @@ function Show-MainMenu {
         Write-Host "$($i + 1). $($menuItems[$i])" -ForegroundColor $color
     }
     
-    Write-Host ("=" * $menuWidth) -ForegroundColor Cyan
+    Write-Host ("=" * $menuWidth) -ForegroundColor Yellow
     Write-Host
 }
 
@@ -142,6 +154,7 @@ while ($true) {
             } else {
                 Write-Host "Windows Manager script is not available at $windowsManagerPath." -ForegroundColor Red
             }
+            pause
         }
         "2" {
             if (Test-Path $wingetMenuPath) {
@@ -150,6 +163,7 @@ while ($true) {
             } else {
                 Write-Host "Application Manager script is not available at $wingetMenuPath." -ForegroundColor Red
             }
+            pause
         }
         "3" { 
             Write-Host "Exiting..." -ForegroundColor Red
@@ -163,8 +177,8 @@ while ($true) {
             exit 
         }
         default { 
-            Clear-Host
             Write-Host "Invalid selection, please try again." -ForegroundColor Red 
+            pause
         }
     }
 }

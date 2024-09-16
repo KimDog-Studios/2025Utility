@@ -1,5 +1,3 @@
-# Custom Winget Management Menu in PowerShell
-
 $jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
 
 function Get-JsonData {
@@ -57,6 +55,7 @@ function Show-CategoryMenu {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
         $counter++
     }
+    Write-Host "[F] Search for an App" -ForegroundColor Cyan
     Write-Host "[U] Upgrade All Installed Apps & Drivers" -ForegroundColor Green
     Write-Host "[X] Exit Script" -ForegroundColor Red
     Write-Host "`n"
@@ -171,6 +170,40 @@ function Show-AppsInCategory {
     }
 }
 
+function Show-SearchResults {
+    param (
+        [string]$searchTerm
+    )
+
+    $categories = Get-JsonData
+    $apps = $categories | ForEach-Object { $_.options } | Select-Object -ExpandProperty options
+
+    $matchingApps = $apps | Where-Object { $_.name -match $searchTerm }
+
+    if ($matchingApps.Count -eq 0) {
+        Write-Host "No apps found matching '$searchTerm'." -ForegroundColor Red
+        return
+    }
+
+    Write-Host "`nSearch Results:" -ForegroundColor Yellow
+    $counter = 1
+    foreach ($app in $matchingApps) {
+        Write-Host "[$counter] $($app.name)" -ForegroundColor Green
+        Write-Host "Description: $($app.description)" -ForegroundColor White
+        Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+        Write-Host ""
+        $counter++
+    }
+    Write-Host "[B] Back to Main Menu" -ForegroundColor Red
+    $choice = Read-Host "Select an option"
+
+    if ($choice -eq 'B') {
+        return
+    } else {
+        Write-Host "Invalid option. Returning to the search results." -ForegroundColor Red
+    }
+}
+
 function Install-Application {
     param (
         [string]$wingetId
@@ -213,18 +246,6 @@ function Uninstall-Application {
     }
 }
 
-function Upgrade-AllApps {
-    Write-Host "Starting upgrade for all installed apps..." -ForegroundColor Yellow
-
-    try {
-        $cmdCommand = "winget upgrade --all --silent --include-unknown"
-        Start-Process -FilePath "cmd.exe" -ArgumentList "/c $cmdCommand" -NoNewWindow -Wait
-        Write-Host "Upgrade process for all installed apps has started." -ForegroundColor Green
-    } catch {
-        Write-Host "Failed to start the upgrade process: $_" -ForegroundColor Red
-    }
-}
-
 function Handle-AppSelection {
     param (
         [int]$appIndex,
@@ -233,21 +254,31 @@ function Handle-AppSelection {
 
     $categories = Get-JsonData
     $selectedCategory = $categories[$categoryIndex - 1]
-    $selectedApp = $selectedCategory.options[$appIndex - 1]
+    $app = $selectedCategory.options[$appIndex - 1]
 
-    if ($selectedApp) {
-        Write-Host "You have selected $($selectedApp.name)."
-        $action = Read-Host "Do you want to [I]nstall or [U]ninstall this app? (Type 'I' for install or 'U' for uninstall)"
+    if ($app) {
+        Write-Host "`nYou selected: $($app.name)" -ForegroundColor Green
+        Write-Host "Description: $($app.description)" -ForegroundColor White
+        Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
 
-        switch ($action.ToUpper()) {
-            'I' {
-                Install-Application -wingetId $selectedApp.wingetId
+        Write-Host "`n[1] Install" -ForegroundColor Cyan
+        Write-Host "[2] Uninstall" -ForegroundColor Red
+        Write-Host "[B] Back to App List" -ForegroundColor Red
+
+        $choice = Read-Host "Select an option"
+
+        switch ($choice) {
+            '1' {
+                Install-Application -wingetId $app.wingetId
             }
-            'U' {
-                Uninstall-Application -wingetId $selectedApp.wingetId
+            '2' {
+                Uninstall-Application -wingetId $app.wingetId
+            }
+            'B' {
+                return
             }
             default {
-                Write-Host "Invalid action. Returning to the category menu." -ForegroundColor Red
+                Write-Host "Invalid option selected." -ForegroundColor Red
             }
         }
     } else {
@@ -256,32 +287,38 @@ function Handle-AppSelection {
 }
 
 function Show-Menu {
+    $searchMode = $false
+
+    Show-Header
+
     while ($true) {
-        Show-Header
-        Show-CategoryMenu
+        if (-not $searchMode) {
+            Show-CategoryMenu
+        }
 
-        $choice = Read-Host "Select an option"
+        $input = Read-Host "Select an option"
 
-        switch ($choice.ToUpper()) {
-            'U' {
-                Upgrade-AllApps
-                Write-Host "Upgrade process initiated. Press any key to return to the category menu..." -ForegroundColor Green
-                [void][System.Console]::ReadKey($true)
-            }
-            'X' {
-                Write-Host "Exiting script." -ForegroundColor Red
-                exit
-            }
-            default {
-                if ($choice -match '^\d+$') {
-                    $categoryIndex = [int]$choice
-                    if ($categoryIndex -ge 1 -and $categoryIndex -le (Get-JsonData).Count) {
+        if (-not $searchMode) {
+            switch ($input) {
+                'F' {
+                    $searchTerm = Read-Host "Enter search term"
+                    Show-SearchResults -searchTerm $searchTerm
+                }
+                'U' {
+                    Write-Host "Upgrading all installed apps & drivers..." -ForegroundColor Green
+                    # You can add your upgrade logic here
+                }
+                'X' {
+                    Write-Host "Exiting script..." -ForegroundColor Red
+                    exit
+                }
+                default {
+                    if ($input -match '^\d+$') {
+                        $categoryIndex = [int]$input
                         Show-AppsInCategory -categoryIndex $categoryIndex
                     } else {
-                        Write-Host "Invalid category selection. Please try again." -ForegroundColor Red
+                        Write-Host "Invalid input. Please try again." -ForegroundColor Red
                     }
-                } else {
-                    Write-Host "Invalid input. Please select a valid option." -ForegroundColor Red
                 }
             }
         }

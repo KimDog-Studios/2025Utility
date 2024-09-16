@@ -65,4 +65,4 @@ if ($servicesToProcess.Count -eq 0) {
     }
 }
 
-Write-Host "Specified services have been processed. Check logs for any issues." -ForegroundColor Green
+Read-Host "Specified services have been processed. Check logs for any issues." -ForegroundColor Green

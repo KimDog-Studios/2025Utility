@@ -88,7 +88,7 @@ function Show-AppsInCategory {
             Write-Host "[B] Back to Category Menu" -ForegroundColor Red
             Write-Host "[N] Next Page" -ForegroundColor Cyan
             Write-Host "[P] Previous Page" -ForegroundColor Cyan
-            Write-Host "[U] Upgrade All Installed Apps" -ForegroundColor Green
+            Write-Host "[U] Upgrade All Installed Apps & Drivers" -ForegroundColor Green
             Write-Host "[X] Exit Script" -ForegroundColor Red
 
             $input = Read-Host "Choose an option"
@@ -184,7 +184,7 @@ function Upgrade-AllApps {
     Write-Host "Starting upgrade for all installed apps..." -ForegroundColor Yellow
 
     try {
-        $cmdCommand = "winget upgrade --all --silent"
+        $cmdCommand = "winget upgrade --all --silent --include-unknown"
         Start-Process -FilePath "cmd.exe" -ArgumentList "/c $cmdCommand" -NoNewWindow -Wait
         Write-Host "Upgrade process for all installed apps has started." -ForegroundColor Green
     } catch {

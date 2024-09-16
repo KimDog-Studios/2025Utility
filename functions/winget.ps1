@@ -84,7 +84,25 @@ function Show-AppsInCategory {
         
         while ($true) {
             Clear-Host
-            Write-Host "=== $($selectedCategory.name) ===" -ForegroundColor Yellow
+
+            # Draw the category name with a box
+            function Draw-Box {
+                param (
+                    [string]$Text
+                )
+
+                $boxWidth = $Text.Length + 4
+                $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
+                $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
+
+                Write-Host "$topBottomBorder" -ForegroundColor Cyan
+                Write-Host "$emptyLine" -ForegroundColor Cyan
+                Write-Host "| $Text |" -ForegroundColor Cyan
+                Write-Host "$emptyLine" -ForegroundColor Cyan
+                Write-Host "$topBottomBorder" -ForegroundColor Cyan
+            }
+
+            Draw-Box -Text "Category: $($selectedCategory.name)"
 
             $startIndex = ($page - 1) * $itemsPerPage
             $endIndex = [math]::Min($startIndex + $itemsPerPage, $totalApps)
@@ -219,7 +237,7 @@ function Handle-AppSelection {
 
     if ($selectedApp) {
         Write-Host "You have selected $($selectedApp.name)."
-        $action = Read-Host "Do you want to [I]nstall, [U]ninstall, or [C]ancel this action? (I/U/C)"
+        $action = Read-Host "Do you want to [I]nstall or [U]ninstall this app? (Press any other key to cancel)"
 
         switch ($action.ToUpper()) {
             'I' {
@@ -228,40 +246,37 @@ function Handle-AppSelection {
             'U' {
                 Uninstall-Application -wingetId $selectedApp.wingetId
             }
-            'C' {
-                Write-Host "Action cancelled." -ForegroundColor Yellow
-            }
             default {
-                Write-Host "Invalid option, please enter 'I' to install, 'U' to uninstall, or 'C' to cancel." -ForegroundColor Red
+                Write-Host "Action cancelled." -ForegroundColor Yellow
             }
         }
     } else {
-        Write-Host "Invalid application selection." -ForegroundColor Red
+        Write-Host "Invalid app selection." -ForegroundColor Red
     }
 }
 
-while ($true) {
+function Show-Menu {
     Show-Header
     Show-CategoryMenu
 
-    $selection = Read-Host "Select a category or option"
+    $choice = Read-Host "Select an option"
 
-    if ($selection -match '^\d+$') {
-        $categoryIndex = [int]$selection
-        if ($categoryIndex -gt 0) {
-            Show-AppsInCategory -categoryIndex $categoryIndex
-        } elseif ($categoryIndex -eq 0) {
-            Write-Host "Exiting script." -ForegroundColor Green
-            exit
-        } else {
-            Write-Host "Invalid category selection, please try again." -ForegroundColor Red
+    switch ($choice.ToUpper()) {
+        'U' {
+            Upgrade-AllApps
         }
-    } elseif ($selection.ToUpper() -eq 'U') {
-        Upgrade-AllApps
-    } elseif ($selection.ToUpper() -eq 'X') {
-        Write-Host "Exiting script." -ForegroundColor Green
-        exit
-    } else {
-        Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red
+        'X' {
+            exit
+        }
+        default {
+            if ($choice -match '^\d+$') {
+                $categoryIndex = [int]$choice
+                Show-AppsInCategory -categoryIndex $categoryIndex
+            } else {
+                Write-Host "Invalid option, please try again." -ForegroundColor Red
+            }
+        }
     }
 }
+
+Show-Menu

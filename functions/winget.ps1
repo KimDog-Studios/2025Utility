@@ -29,9 +29,25 @@ function Show-Header {
     Clear-Host
     $HeaderWidth = 30
 
-    Write-Host (Align-Header "KimDog's Winget Menu" $HeaderWidth) -ForegroundColor Yellow
-    Write-Host (Align-Header "Last Updated: 2024-09-16" $HeaderWidth) -ForegroundColor Cyan
-    Write-Host (Align-Header "=" $HeaderWidth) -ForegroundColor Cyan
+    function Draw-Box {
+        param (
+            [string]$Text
+        )
+
+        $boxWidth = $Text.Length + 4
+        $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
+        $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
+
+        Write-Host "$topBottomBorder" -ForegroundColor Cyan
+        Write-Host "$emptyLine" -ForegroundColor Cyan
+        Write-Host "| $Text |" -ForegroundColor Cyan
+        Write-Host "$emptyLine" -ForegroundColor Cyan
+        Write-Host "$topBottomBorder" -ForegroundColor Cyan
+    }
+
+    Draw-Box -Text "KimDog's Winget Menu"
+    Draw-Box -Text "Last Updated: 2024-09-16"
+    Draw-Box -Text "=" * $HeaderWidth
     Write-Host "`n"
 }
 

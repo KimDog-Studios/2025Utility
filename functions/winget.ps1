@@ -220,37 +220,76 @@ function Show-SearchResults {
 
     Draw-Box -Text "Search Results | Search Term: $searchTerm"
 
-    $counter = 1
-    foreach ($result in $searchResults) {
-        Write-Host "[$counter] $($result.Name) | $searchTerm" -ForegroundColor Cyan
-        Write-Host "Description: $($result.Description)" -ForegroundColor White
-        Write-Host "Winget ID: $($result.WingetId)" -ForegroundColor Cyan
-        Write-Host ""
-        $counter++
-    }
+    $totalResults = $searchResults.Count
+    $itemsPerPage = 5
+    $page = 1
+    $totalPages = [math]::Ceiling($totalResults / $itemsPerPage)
 
-    # Ask user to select a result for installation
-    $selection = Read-Host "Enter an ID to Install, or [B] to go back"
+    while ($true) {
+        cls # Alternative console clearing
 
-    if ($selection -eq 'B') {
-        return
-    }
+        # Display the current page of search results
+        $startIndex = ($page - 1) * $itemsPerPage
+        $endIndex = [math]::Min($startIndex + $itemsPerPage, $totalResults)
 
-    if ($selection -match '^\d+$') {
-        $selectedIndex = [int]$selection - 1
-        if ($selectedIndex -ge 0 -and $selectedIndex -lt $searchResults.Count) {
-            $selectedApp = $searchResults[$selectedIndex]
-            $confirmation = Read-Host "Do you want to install $($selectedApp.Name)? (Y/N)"
-            if ($confirmation -eq 'Y') {
-                # Execute the installation command
-                Write-Host "Installing $($selectedApp.Name) with Winget ID: $($selectedApp.WingetId)" -ForegroundColor Green
-                Start-Process "cmd.exe" -ArgumentList "/c winget install --id $($selectedApp.WingetId)" -NoNewWindow
-            }
-        } else {
-            Write-Host "Invalid selection." -ForegroundColor Red
+        for ($i = $startIndex; $i -lt $endIndex; $i++) {
+            $result = $searchResults[$i]
+            Write-Host "[$($i + 1)] $($result.Name) | $searchTerm" -ForegroundColor Cyan
+            Write-Host "Description: $($result.Description)" -ForegroundColor White
+            Write-Host "Winget ID: $($result.WingetId)" -ForegroundColor Cyan
+            Write-Host ""
         }
-    } else {
-        Write-Host "Invalid input, please enter a number or [B] to go back." -ForegroundColor Red
+
+        # Page indicator with box
+        $pageIndicator = "Page $page of $totalPages"
+        $boxWidth = $pageIndicator.Length + 4
+        $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
+        $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
+
+        Write-Host "`n$topBottomBorder" -ForegroundColor Cyan
+        Write-Host "$emptyLine" -ForegroundColor Cyan
+        Write-Host "| $pageIndicator |" -ForegroundColor Cyan
+        Write-Host "$emptyLine" -ForegroundColor Cyan
+        Write-Host "$topBottomBorder" -ForegroundColor Cyan
+
+        Write-Host "`n[B] Back to Main Menu" -ForegroundColor Red
+        Write-Host "[N] Next Page" -ForegroundColor Cyan
+        Write-Host "[P] Previous Page" -ForegroundColor Cyan
+
+        $input = Read-Host "Choose an option"
+
+        switch ($input) {
+            'N' {
+                if ($page -lt $totalPages) {
+                    $page++
+                } else {
+                    Write-Host "You are already on the last page." -ForegroundColor Red
+                }
+            }
+            'P' {
+                if ($page -gt 1) {
+                    $page--
+                } else {
+                    Write-Host "You are already on the first page." -ForegroundColor Red
+                }
+            }
+            'B' {
+                return
+            }
+            default {
+                if ($input -match '^\d+$') {
+                    $selectedResultIndex = [int]$input - 1
+                    if ($selectedResultIndex -ge 0 -and $selectedResultIndex -lt $totalResults) {
+                        $result = $searchResults[$selectedResultIndex]
+                        Handle-AppSelection -appIndex ($searchResults.IndexOf($result) + 1) -categoryIndex $null
+                    } else {
+                        Write-Host "Invalid selection, please try again." -ForegroundColor Red
+                    }
+                } else {
+                    Write-Host "Invalid input, please enter a number or an option." -ForegroundColor Red
+                }
+            }
+        }
     }
 }
 
@@ -260,60 +299,69 @@ function Handle-AppSelection {
         [int]$categoryIndex
     )
 
-    cls # Alternative console clearing
-
     $categories = Get-JsonData
-    $selectedCategory = $categories[$categoryIndex - 1]
-    $app = $selectedCategory.options[$appIndex - 1]
+    if ($categoryIndex -ne $null) {
+        $category = $categories[$categoryIndex - 1]
+        $app = $category.options[$appIndex - 1]
+    } else {
+        $app = $categories | ForEach-Object { $_.options[$appIndex - 1] } | Where-Object { $_ }
+    }
 
     if ($app) {
-        $confirmation = Read-Host "Do you want to install $($app.name)? (Y/N)"
-        if ($confirmation -eq 'Y') {
-            Write-Host "Installing $($app.name) with Winget ID: $($app.wingetId)" -ForegroundColor Green
-            Start-Process "cmd.exe" -ArgumentList "/c winget install --id $($app.wingetId)" -NoNewWindow
+        Write-Host "`nSelected App:" -ForegroundColor Green
+        Write-Host "Name: $($app.name)" -ForegroundColor Cyan
+        Write-Host "Description: $($app.description)" -ForegroundColor White
+        Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+        Write-Host "`n[O] Open Winget for $($app.name)" -ForegroundColor Green
+        Write-Host "[B] Back to Results" -ForegroundColor Red
+
+        $input = Read-Host "Choose an option"
+
+        switch ($input) {
+            'O' {
+                Start-Process "winget" -ArgumentList "install $($app.wingetId)"
+            }
+            'B' {
+                return
+            }
+            default {
+                Write-Host "Invalid option, please try again." -ForegroundColor Red
+            }
         }
     } else {
         Write-Host "Invalid app selection." -ForegroundColor Red
     }
 }
 
-function Handle-Upgrades {
-    cls # Alternative console clearing
-
-    Write-Host "Upgrading all installed apps & drivers..." -ForegroundColor Green
-
-    # Placeholder for the upgrade logic
-    Start-Process "cmd.exe" -ArgumentList "/c winget upgrade --all" -NoNewWindow
-}
-
 # Main menu loop
 Show-Header
+
 while ($true) {
     Show-CategoryMenu
-    $input = Read-Host "Choose an option"
 
-    switch ($input) {
+    $choice = Read-Host "Select an option"
+
+    switch ($choice) {
+        'X' {
+            exit
+        }
         'F' {
-            $searchTerm = Read-Host "Enter App Name"
+            $searchTerm = Read-Host "Enter search term"
             Show-SearchResults -searchTerm $searchTerm
         }
         'U' {
-            Handle-Upgrades
-        }
-        'X' {
-            Write-Host "Exiting script." -ForegroundColor Red
-            exit
+            Write-Host "Upgrade functionality not implemented yet." -ForegroundColor Yellow
         }
         default {
-            if ($input -match '^\d+$') {
-                $categoryIndex = [int]$input
+            if ($choice -match '^\d+$') {
+                $categoryIndex = [int]$choice
                 if ($categoryIndex -ge 1 -and $categoryIndex -le (Get-JsonData).Count) {
                     Show-AppsInCategory -categoryIndex $categoryIndex
                 } else {
-                    Write-Host "Invalid category selection." -ForegroundColor Red
+                    Write-Host "Invalid category selection, please try again." -ForegroundColor Red
                 }
             } else {
-                Write-Host "Invalid input, please select a valid option." -ForegroundColor Red
+                Write-Host "Invalid option, please try again." -ForegroundColor Red
             }
         }
     }

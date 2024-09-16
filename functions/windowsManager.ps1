@@ -1,8 +1,9 @@
-# Define the URL of the script to execute for Option 1
+# Define the URLs of the scripts to execute
 $setServicesToManualUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/WPFSetServicesToManual.ps1"
+$removeAppXFilesUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/WPFRemoveAppX.ps1"
 
 # Function to fetch and execute the script from the URL
-function Run-SetServicesToManualScript {
+function Run-ScriptFromUrl {
     param (
         [string]$Url
     )
@@ -77,13 +78,14 @@ function Show-MainMenu {
 function Option1 {
     Clear-Host
     Write-Host "You selected Option 1: Optimize for Gaming" -ForegroundColor Green
-    Run-SetServicesToManualScript -Url $setServicesToManualUrl
+    Run-ScriptFromUrl -Url $setServicesToManualUrl
 }
 
 # Function for Option 2
 function Option2 {
     Clear-Host
     Write-Host "You selected Option 2: Remove Bloatware" -ForegroundColor Green
+    Run-ScriptFromUrl -Url $removeAppXFilesUrl
 }
 
 # Function for invalid option

@@ -27,7 +27,6 @@ function Align-Header {
 
 function Show-Header {
     Clear-Host
-    $HeaderWidth = 30
 
     function Draw-Box {
         param (
@@ -45,9 +44,7 @@ function Show-Header {
         Write-Host "$topBottomBorder" -ForegroundColor Cyan
     }
 
-    Draw-Box -Text "KimDog's Winget Menu"
-    Draw-Box -Text "Last Updated: 2024-09-16"
-    Draw-Box -Text "=" * $HeaderWidth
+    Draw-Box -Text "KimDog's Winget Menu | Last Updated: 2024-09-16"
     Write-Host "`n"
 }
 

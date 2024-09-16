@@ -294,7 +294,7 @@ while ($true) {
 
     switch ($input) {
         'F' {
-            $searchTerm = Read-Host "Enter search term"
+            $searchTerm = Read-Host "Enter App Name:"
             Show-SearchResults -searchTerm $searchTerm
         }
         'U' {

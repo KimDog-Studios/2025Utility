@@ -204,7 +204,7 @@ function Handle-AppSelection {
 
     if ($selectedApp) {
         Write-Host "You have selected $($selectedApp.name)."
-        $action = Read-Host "Do you want to [I]nstall or [U]ninstall this application? (I/U)"
+        $action = Read-Host "Do you want to [I]nstall, [U]ninstall, or [C]ancel this action? (I/U/C)"
 
         switch ($action.ToUpper()) {
             'I' {
@@ -213,8 +213,11 @@ function Handle-AppSelection {
             'U' {
                 Uninstall-Application -wingetId $selectedApp.wingetId
             }
+            'C' {
+                Write-Host "Action cancelled." -ForegroundColor Yellow
+            }
             default {
-                Write-Host "Invalid option, please enter 'I' to install or 'U' to uninstall." -ForegroundColor Red
+                Write-Host "Invalid option, please enter 'I' to install, 'U' to uninstall, or 'C' to cancel." -ForegroundColor Red
             }
         }
     } else {

@@ -17,7 +17,7 @@ Winutil must be run in Admin mode because it performs system-wide tweaks. To ach
 ## 🏅 Thanks to all Contributors
 Thanks a lot for spending your time helping Winutil grow. Thanks a lot! Keep rocking 🍻.
 
-[![Contributors](https://contrib.rocks/image?repo=ChrisTitusTech/winutil)](https://github.com/KimDog-Studios/2025Utility/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=KimDog=Studios/2025Utility)](https://github.com/KimDog-Studios/2025Utility/graphs/contributors)
 
 ## 📊 GitHub Stats
 

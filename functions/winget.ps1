@@ -288,7 +288,7 @@ while ($true) {
 
     switch ($option) {
         'F' {
-            $searchTerm = Read-Host "Enter search term"
+            $searchTerm = Read-Host "What Application are you looking for?"
             Show-SearchResults -searchTerm $searchTerm
         }
         'U' {

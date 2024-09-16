@@ -86,16 +86,32 @@ function Align-Header {
     $AlignedText
 }
 
-# Function to show the header
 function Show-MainHeader {
     Clear-Host
     $HeaderWidth = 30
 
-    Write-Host (Align-Header "KimDog's Windows Utility" $HeaderWidth) -ForegroundColor Yellow
-    Write-Host (Align-Header "Last Updated: 2024-09-15" $HeaderWidth) -ForegroundColor Cyan
-    Write-Host (Align-Header "=" $HeaderWidth) -ForegroundColor Cyan
+    function Draw-Box {
+        param (
+            [string]$Text
+        )
+
+        $boxWidth = $Text.Length + 4
+        $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
+        $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
+
+        Write-Host "$topBottomBorder" -ForegroundColor Cyan
+        Write-Host "$emptyLine" -ForegroundColor Cyan
+        Write-Host "| $Text |" -ForegroundColor Cyan
+        Write-Host "$emptyLine" -ForegroundColor Cyan
+        Write-Host "$topBottomBorder" -ForegroundColor Cyan
+    }
+
+    Draw-Box -Text "KimDog's Windows Utility"
+    Draw-Box -Text "Last Updated: 2024-09-15"
+    Draw-Box -Text "=" * $HeaderWidth
     Write-Host "`n"  # Reduced gap
 }
+
 
 # Function to show the main menu
 function Show-MainMenu {

@@ -32,6 +32,30 @@
           "wingetId": "Opera.Opera",
           "chocoId": "opera",
           "description": "Opera browser, based on the Chromium open source browser."
+        },
+        {
+          "name": "Firefox",
+          "wingetId": "Mozilla.Firefox",
+          "chocoId": "firefox",
+          "description": "Firefox browser, based on the Mozilla open source browser."
+        },
+        {
+          "name": "Tor Browser",
+          "wingetId": "TorProject.TorBrowser",
+          "chocoId": "tor-browser",
+          "description": "Tor Browser, based on the Tor Project open source browser."
+        },
+        {
+          "name": "Chromium",
+          "wingetId": "Hibbiki.Chromium",
+          "chocoId": "chromium",
+          "description": "Chromium browser, based on the Chromium open source browser."
+        },
+        {
+          "name": "Opera Beta",
+          "wingetId": "Opera.Opera.Beta",
+          "chocoId": "",
+          "description": "Opera browser, based on the Chromium open source browser."
         }
       ]
     }  

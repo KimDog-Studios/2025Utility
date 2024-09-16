@@ -108,18 +108,7 @@ function Show-MainMenu {
 # Function to fetch and execute the winget menu script
 function Run-WingetMenu {
     $wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
-    try {
-        $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl
-        Write-Host "Executing winget menu script..." -ForegroundColor Green
-        Invoke-Expression $scriptContent
-    } catch {
-        Write-Host "Failed to fetch or execute winget menu script: $_" -ForegroundColor Red
-    }
-}
-
-# Function to fetch and execute the winget menu script
-function Run-WingetMenu {
-    $wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
+    
     try {
         Write-Host "Fetching winget menu script from $wingetMenuUrl..." -ForegroundColor Cyan
         $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl -ErrorAction Stop

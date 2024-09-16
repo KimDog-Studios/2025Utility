@@ -19,26 +19,31 @@
         {
           "name": "Mozilla Firefox",
           "wingetId": "Mozilla.Firefox",
+          "chocoId": "firefox",
           "description": "Open-source browser with strong privacy features and customization."
         },
         {
           "name": "Vivaldi",
           "wingetId": "Vivaldi.Vivaldi",
+          "chocoId": "vivaldi",
           "description": "Highly customizable browser with advanced tab management features."
         },
         {
           "name": "Brave",
           "wingetId": "Brave.Brave",
+          "chocoId": "brave",
           "description": "Privacy-focused browser with built-in ad and tracker blocking."
         },
         {
           "name": "Opera",
           "wingetId": "Opera.Opera",
+          "chocoId": "opera",
           "description": "Feature-rich browser with built-in VPN and ad blocker."
         },
         {
           "name": "OperaGX",
           "wingetId": "Opera.OperaGX",
+          "chocoId": "opera-gx",
           "description": "Gaming-focused version of Opera with customizable performance settings."
         }
       ]
@@ -50,51 +55,61 @@
         {
           "name": "Notepad++",
           "wingetId": "Notepad++.Notepad++",
+          "chocoId": "notepadplusplus",
           "description": "Free text and source code editor with syntax highlighting and plugin support."
         },
         {
           "name": "Visual Studio Code",
           "wingetId": "Microsoft.VisualStudioCode",
+          "chocoId": "vscode",
           "description": "Popular open-source code editor with extensive extensions and debugging support."
         },
         {
           "name": "Sublime Text 4",
           "wingetId": "SublimeHQ.SublimeText.4",
+          "chocoId": "sublimetext4",
           "description": "A sophisticated text editor for code, markup, and prose with a focus on speed and efficiency."
         },
         {
           "name": "Atom",
           "wingetId": "GitHub.Atom",
+          "chocoId": "atom",
           "description": "Hackable text editor for the 21st century, built by GitHub."
         },
         {
           "name": "Visual Studio Community 2022 Preview",
           "wingetId": "Microsoft.VisualStudio.2022.Community.Preview",
+          "chocoId": "visualstudio2022community-preview",
           "description": "IDE for .NET and C++ development, available for individual developers and small teams."
         },
         {
           "name": "Unity 2022",
           "wingetId": "Unity.Unity.2022",
+          "chocoId": "unity",
           "description": "Powerful game engine for creating 2D and 3D games and interactive experiences."
         },
         {
           "name": "PyCharm Community Edition",
           "wingetId": "JetBrains.PyCharm.Community",
+          "chocoId": "pycharm-community",
           "description": "Free IDE for Python development with essential features and support."
         },
         {
           "name": "Visual Studio Code Insiders",
           "wingetId": "Microsoft.VisualStudioCode.Insiders",
+          "chocoId": "vscode-insiders",
           "description": "Insider build of VS Code for early access to new features and updates."
         },
         {
           "name": "GitHub Desktop",
           "wingetId": "GitHub.GitHubDesktop",
+          "chocoId": "github-desktop",
           "description": "GitHub Desktop is an open-source Electron-based GitHub app. It is written in TypeScript and uses React."
         },
         {
           "name": "Git",
           "wingetId": "Git.Git",
+          "chocoId": "git",
           "description": "Git for Windows focuses on offering a lightweight, native set of tools that bring the full feature set of the Git SCM to Windows."
         },
         {
@@ -105,6 +120,7 @@
         {
           "name": "Visual Studio Enterprise 2022 Preview",
           "wingetId": "Microsoft.VisualStudio.2022.Enterprise.Preview",
+          "chocoId": "visualstudio2022enterprise-preview",
           "description": "IDE for .NET and C++ development, available for enterprise users."
         },
         {
@@ -130,26 +146,31 @@
         {
           "name": "Visual Studio Enterprise 2019",
           "wingetId": "Microsoft.VisualStudio.2019.Enterprise",
+          "chocoId": "visualstudio2019enterprise",
           "description": "IDE for .NET and C++ development, available for enterprise users."
         },
         {
           "name": "Visual Studio Professional 2022",
           "wingetId": "Microsoft.VisualStudio.2022.Professional",
+          "chocoId": "visualstudio2022professional",
           "description": "IDE for .NET and C++ development, available for professional users."
         },
         {
           "name": "Visual Studio Professional 2019",
           "wingetId": "Microsoft.VisualStudio.2019.Professional",
+          "chocoId": "visualstudio2019professional",
           "description": "IDE for .NET and C++ development, available for professional users."
         },
         {
           "name": "Visual Studio Enterprise 2022",
           "wingetId": "Microsoft.VisualStudio.2022.Enterprise",
+          "chocoId": "visualstudio2022enterprise",
           "description": "IDE for .NET and C++ development, available for enterprise users."
         },
         {
           "name": "Visual Studio Community 2022",
           "wingetId": "Microsoft.VisualStudio.2022.Community",
+          "chocoId": "visualstudio2022community",
           "description": "IDE for .NET and C++ development, available for individual developers and small teams."
         }
       ]
@@ -161,76 +182,91 @@
         {
           "name": "7-Zip",
           "wingetId": "7zip.7zip",
+          "chocoId": "7zip",
           "description": "Open-source file archiver with high compression ratio."
         },
         {
           "name": "WinRAR",
           "wingetId": "Rarlab.WinRAR",
+          "chocoId": "winrar",
           "description": "File archiver utility for RAR and ZIP files, offering high compression and recovery options."
         },
         {
           "name": "Corsair iCUE",
           "wingetId": "Corsair.iCUE.5",
+          "chocoId": "icue",
           "description": "Software for managing Corsair peripherals and RGB lighting."
         },
         {
           "name": "MSI Afterburner",
           "wingetId": "Guru3D.Afterburner",
+          "chocoId": "msiafterburner",
           "description": "GPU overclocking utility for performance optimization and monitoring."
         },
         {
           "name": "ShareX",
           "wingetId": "ShareX.ShareX",
+          "chocoId": "sharex",
           "description": "Screen capture, file sharing, and productivity tool with advanced features."
         },
         {
           "name": "TeraCopy",
           "wingetId": "CodeSector.TeraCopy",
+          "chocoId": "teracopy",
           "description": "File copy utility designed to improve the speed and reliability of file transfers."
         },
         {
           "name": "OBS Studio",
           "wingetId": "OBSProject.OBSStudio",
+          "chocoId": "obs-studio",
           "description": "Free and open-source software for video recording and live streaming."
         },
         {
           "name": "StreamLabs OBS",
           "wingetId": "Streamlabs.StreamlabsOBS",
+          "chocoId": "streamlabs-obs",
           "description": "Streaming software with built-in tools for streamers and integrations."
         },
         {
           "name": "Chatterino",
           "wingetId": "ChatterinoTeam.Chatterino",
+          "chocoId": "chatterino",
           "description": "Advanced Twitch chat client with customizability and features for streamers."
         },
         {
           "name": "SteelSeries GG",
           "wingetId": "SteelSeries.GG",
+          "chocoId": "steelseries-engine",
           "description": "Software for SteelSeries peripherals, including customization and configuration options."
         },
         {
           "name": "Logitech G HUB",
           "wingetId": "Logitech.GHUB",
+          "chocoId": "lghub",
           "description": "Software for Logitech gaming peripherals, providing customization and configuration options."
         },
         {
           "name": "Logitech Options",
           "wingetId": "Logitech.Options",
+          "chocoId": "logitech-options",
           "description": "Utility for configuring Logitech mice and keyboards with advanced settings."
         },
         {
           "name": "HWINFO",
           "wingetId": "REALiX.HWiNFO",
+          "chocoId": "hwinfo",
           "description": "Comprehensive hardware monitoring tool providing detailed information on system components."
         },
         {
           "name": "NZXT CAM",
           "wingetId": "NZXT.CAM",
+          "chocoId": "nzxt-cam",
           "description": "System monitoring and management software with customization options for NZXT hardware."
         },
         {
           "name": "Microsoft PowerToys [Preview]",
           "wingetId": "Microsoft.PowerToys",
+          "chocoId": "powertoys",
           "description": "Set of utilities to enhance productivity and customize the Windows experience."
         }
       ]
@@ -242,21 +278,25 @@
         {
           "name": "Discord",
           "wingetId": "Discord.Discord",
+          "chocoId": "discord",
           "description": "Popular communication platform for gamers with voice, video, and text chat."
         },
         {
           "name": "Slack",
           "wingetId": "SlackTechnologies.Slack",
+          "chocoId": "slack",
           "description": "Collaboration hub for teams with messaging, file sharing, and integrations."
         },
         {
           "name": "Microsoft Teams",
           "wingetId": "Microsoft.Teams",
+          "chocoId": "microsoft-teams",
           "description": "Unified communication and collaboration platform with video meetings and chat."
         },
         {
           "name": "Zoom",
           "wingetId": "Zoom.Zoom",
+          "chocoId": "zoom",
           "description": "Video conferencing tool for meetings, webinars, and online collaboration."
         },
         {
@@ -282,6 +322,7 @@
         {
           "name": "Skype",
           "wingetId": "Microsoft.Skype",
+          "chocoId": "skype",
           "description": "Video conferencing tool for meetings, webinars, and online collaboration."
         },
         {
@@ -302,6 +343,7 @@
         {
           "name": "Slack Beta",
           "wingetId": "SlackTechnologies.Slack.Beta",
+          "chocoId": "slack",
           "description": "Collaboration hub for teams with messaging, file sharing, and integrations."
         }
       ]
@@ -313,26 +355,31 @@
         {
           "name": "Steam",
           "wingetId": "Valve.Steam",
+          "chocoId": "steam",
           "description": "Digital distribution platform for games and software, featuring a large library and community features."
         },
         {
           "name": "GOG Galaxy",
           "wingetId": "GOG.Galaxy",
+          "chocoId": "goggalaxy",
           "description": "Game client for managing GOG games and connecting with other platforms."
         },
         {
           "name": "Epic Games Launcher",
           "wingetId": "EpicGames.EpicGamesLauncher",
+          "chocoId": "epicgameslauncher",
           "description": "Game launcher for Epic Games, offering free games and exclusive titles."
         },
         {
           "name": "Ubisoft Connect",
           "wingetId": "Ubisoft.Connect",
+          "chocoId": "ubisoft-connect",
           "description": "Launcher for Ubisoft games with social features and rewards."
         },
         {
           "name": "Bethesda.net Launcher",
           "wingetId": "Bethesda.Launcher",
+          "chocoId": "bethesdanet",
           "description": "Launcher for Bethesda games with access to updates and content."
         }
       ]

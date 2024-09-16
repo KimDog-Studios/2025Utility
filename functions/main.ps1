@@ -77,11 +77,26 @@ function Run-WingetMenu {
     }
 }
 
+function Run-WindowsMenu {
+    $windowsMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/windowsManager.ps1"
+    
+    try {
+        Write-Host "Fetching winget menu script from $windowsMenuUrl..." -ForegroundColor Cyan
+        $scriptContent = Invoke-RestMethod -Uri $windowsMenuUrl -ErrorAction Stop
+        Write-Host "Fetched winget menu script successfully." -ForegroundColor Green
+        
+        Write-Host "Executing winget menu script..." -ForegroundColor Green
+        Invoke-Expression $scriptContent
+    } catch {
+        Write-Host "Failed to fetch or execute winget menu script: $_" -ForegroundColor Red
+    }
+}
+
 # Function for Option 1
 function Option1 {
     Clear-Host
     Write-Host "You selected Option 1: Windows Manager" -ForegroundColor Green
-    # Replace with actual Windows Manager function
+    Run-WindowsMenu
 }
 
 # Function for Option 2

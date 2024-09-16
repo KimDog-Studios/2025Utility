@@ -24,7 +24,9 @@
         { "name": "Visual Studio Community 2022 Preview", "wingetId": "Microsoft.VisualStudio.2022.Community.Preview", "description": "IDE for .NET and C++ development, available for individual developers and small teams." },
         { "name": "Unity 2022", "wingetId": "Unity.Unity.2022", "description": "Powerful game engine for creating 2D and 3D games and interactive experiences." },
         { "name": "PyCharm Community Edition", "wingetId": "JetBrains.PyCharm.Community", "description": "Free IDE for Python development with essential features and support." },
-        { "name": "Visual Studio Code Insiders", "wingetId": "Microsoft.VisualStudioCode.Insiders", "description": "Insider build of VS Code for early access to new features and updates." }
+        { "name": "Visual Studio Code Insiders", "wingetId": "Microsoft.VisualStudioCode.Insiders", "description": "Insider build of VS Code for early access to new features and updates." },
+        { "name": "GitHub Desktop", "wingetId": "GitHub.GitHubDesktop", "description": "GitHub Desktop is an open-source Electron-based GitHub app. It is written in TypeScript and uses React." },
+        { "name": "Git", "wingetId": "Git.Git", "description": "Git for Windows focuses on offering a lightweight, native set of tools that bring the full feature set of the Git SCM to Windows while providing appropriate user interfaces for experienced Git users and novices alike." }
       ]
     },
     {

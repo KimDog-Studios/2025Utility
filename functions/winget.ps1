@@ -218,11 +218,11 @@ function Show-SearchResults {
         Write-Host "$topBottomBorder" -ForegroundColor Cyan
     }
 
-    Draw-Box -Text "Search Results"
+    Draw-Box -Text "Search Results | Search Term: $searchTerm"
 
     $counter = 1
     foreach ($result in $searchResults) {
-        Write-Host "[$counter] $($result.Name)" -ForegroundColor Cyan
+        Write-Host "[$counter] $($result.Name) | $searchTerm" -ForegroundColor Cyan
         Write-Host "Description: $($result.Description)" -ForegroundColor White
         Write-Host "Winget ID: $($result.WingetId)" -ForegroundColor Cyan
         Write-Host ""

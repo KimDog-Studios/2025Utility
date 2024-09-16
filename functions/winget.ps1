@@ -278,7 +278,7 @@ function Handle-AppSelection {
     Write-Host "Name: $($app.Name)" -ForegroundColor Cyan
     Write-Host "Description: $($app.Description)" -ForegroundColor White
     Write-Host "Winget ID: $($app.WingetId)" -ForegroundColor Cyan
-    Write-Host "Chocolatey ID: $($app.ChocolateyId ?? $app.chocoId)" -ForegroundColor Cyan
+    Write-Host "Chocolatey ID: $($app.chocoId)" -ForegroundColor Cyan
     Write-Host "`nOptions:" -ForegroundColor Yellow
     Write-Host "[W] Install with Winget" -ForegroundColor Green
     Write-Host "[C] Install with Chocolatey" -ForegroundColor Green

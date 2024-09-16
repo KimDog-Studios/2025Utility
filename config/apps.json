@@ -56,6 +56,47 @@
           "wingetId": "Opera.Opera.Beta",
           "chocoId": "",
           "description": "Opera browser, based on the Chromium open source browser."
+        },
+        {
+          "name": "Safari",
+          "wingetId": "Apple.Safari",
+          "chocoId": "safari",
+          "description": "Apple Safari browser, based on the WebKit open source browser."
+        },
+        {
+          "name": "Opera GX",
+          "wingetId": "Opera.OperaGX",
+          "chocoId": "opera-gx",
+          "description": "Opera browser, based on the Chromium open source browser."
+        }
+      ]
+    },
+    {
+      "name": "Editors",
+      "options": [
+        {
+          "name": "Visual Studio Code",
+          "wingetId": "Microsoft.VisualStudioCode",
+          "chocoId": "vscode",
+          "description": "Visual Studio Code is a lightweight and powerful code editor."
+        },
+        {
+          "name": "Sublime Text",
+          "wingetId": "SublimeText.SublimeText",
+          "chocoId": "sublimetext",
+          "description": "Sublime Text is a sophisticated text editor."
+        },
+        {
+          "name": "Atom",
+          "wingetId": "Microsoft.Atom",
+          "chocoId": "atom",
+          "description": "Atom is a hackable text editor."
+        },
+        {
+          "name": "Brackets",
+          "wingetId": "Brackets.Brackets",
+          "chocoId": "brackets",
+          "description": "Brackets is an open source code editor."
         }
       ]
     }  

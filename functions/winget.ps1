@@ -47,9 +47,13 @@ function Show-Header {
 }
 
 function Show-CategoryMenu {
-    cls # Alternative console clearing
+    cls # Clear console
 
     $categories = Get-JsonData
+    if (!$categories) {
+        Write-Host "No categories found in the JSON data." -ForegroundColor Red
+        return
+    }
 
     Write-Host "`nCategories:" -ForegroundColor Yellow
     $counter = 1
@@ -57,6 +61,11 @@ function Show-CategoryMenu {
         Write-Host "[$counter] $($category.name)" -ForegroundColor Cyan
         $counter++
     }
+
+    if ($counter -eq 1) {
+        Write-Host "No valid categories found. Please check the JSON structure." -ForegroundColor Red
+    }
+
     Write-Host "[F] Search All Apps" -ForegroundColor Green
     Write-Host "[U] Upgrade All Installed Apps & Drivers" -ForegroundColor Green
     Write-Host "[X] Exit Script" -ForegroundColor Red

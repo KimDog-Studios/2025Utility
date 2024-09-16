@@ -70,6 +70,47 @@ function Install-Winget {
     }
 }
 
+# Function to check if Chocolatey is installed
+function Check-Chocolatey {
+    $chocoCommand = "choco"
+    
+    try {
+        # Check if choco command is available
+        $chocoPath = Get-Command $chocoCommand -ErrorAction SilentlyContinue
+        if ($chocoPath) {
+            Write-Host "Chocolatey is already installed." -ForegroundColor Green
+            return $true
+        } else {
+            Write-Host "Chocolatey is not installed." -ForegroundColor Red
+            return $false
+        }
+    } catch {
+        Write-Host "Error checking Chocolatey installation: $_" -ForegroundColor Red
+        return $false
+    }
+}
+
+# Function to install Chocolatey
+function Install-Chocolatey {
+    $chocoInstallScriptUrl = "https://chocolatey.org/install.ps1"
+    
+    Write-Host "Downloading Chocolatey installation script from $chocoInstallScriptUrl..." -ForegroundColor Yellow
+
+    $tempFile = [System.IO.Path]::GetTempFileName()
+    try {
+        Invoke-WebRequest -Uri $chocoInstallScriptUrl -OutFile $tempFile
+        Write-Host "Download complete. Installing Chocolatey..." -ForegroundColor Green
+
+        Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File $tempFile" -Wait
+        Write-Host "Chocolatey installation process has started." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to download or install Chocolatey: $_" -ForegroundColor Red
+    } finally {
+        # Clean up temporary file
+        Remove-Item -Path $tempFile -ErrorAction SilentlyContinue
+    }
+}
+
 # Function to align header text
 function Align-Header {
     param (
@@ -169,6 +210,16 @@ function Show-InvalidOption {
 
 # Main loop
 while ($true) {
+    # Check and install winget if necessary
+    if (-not (Check-Winget)) {
+        Install-Winget
+    }
+
+    # Check and install Chocolatey if necessary
+    if (-not (Check-Chocolatey)) {
+        Install-Chocolatey
+    }
+
     Show-MainHeader
     Show-MainMenu
     $selection = Read-Host "Please enter your choice"

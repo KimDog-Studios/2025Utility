@@ -110,6 +110,7 @@ function Show-AppsInCategory {
                 Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
                 Write-Host "Description: $($app.description)" -ForegroundColor White
                 Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+                Write-Host "Chocolatey ID: $($app.chocoId)" -ForegroundColor Cyan
                 Write-Host ""
             }
 
@@ -185,6 +186,7 @@ function Show-SearchResults {
                     Name = $app.name
                     Description = $app.description
                     WingetId = $app.wingetId
+                    ChocolateyId = $app.chocoId
                 }
             }
         }
@@ -231,6 +233,7 @@ function Show-SearchResults {
             Write-Host "[$($i + 1)] $($result.Name)" -ForegroundColor Cyan
             Write-Host "Description: $($result.Description)" -ForegroundColor White
             Write-Host "Winget ID: $($result.WingetId)" -ForegroundColor Cyan
+            Write-Host "Chocolatey ID: $($result.ChocolateyId)" -ForegroundColor Cyan
             Write-Host ""
         }
 
@@ -306,14 +309,23 @@ function Handle-AppSelection {
         Write-Host "Name: $($app.name)" -ForegroundColor Cyan
         Write-Host "Description: $($app.description)" -ForegroundColor White
         Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
-        Write-Host "`n[O] Open Winget for $($app.name)" -ForegroundColor Green
+        Write-Host "Chocolatey ID: $($app.chocoId)" -ForegroundColor Cyan
+        Write-Host "`n[W] Install with Winget" -ForegroundColor Green
+        Write-Host "[C] Install with Chocolatey" -ForegroundColor Green
         Write-Host "[B] Back to Results" -ForegroundColor Red
 
         $input = Read-Host "Choose an option"
 
         switch ($input) {
-            'O' {
+            'W' {
                 Start-Process "winget" -ArgumentList "install $($app.wingetId)"
+            }
+            'C' {
+                if ($app.chocoId) {
+                    Start-Process "choco" -ArgumentList "install $($app.chocoId) -y"
+                } else {
+                    Write-Host "Chocolatey ID not found for $($app.name)." -ForegroundColor Red
+                }
             }
             'B' {
                 return

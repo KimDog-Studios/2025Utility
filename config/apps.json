@@ -192,6 +192,12 @@
           "wingetId": "TeamViewer.TeamViewer",
           "chocoId": "teamviewer9",
           "description": "TeamViewer is a powerful and advanced software for remote desktop and virtual meeting."
+        },
+        {
+          "name": "Node.JS LTS",
+          "wingetId": "OpenJS.NodeJS.LTS",
+          "chocoId": "nodejs.install",
+          "description": "Node.JS LTS is a powerful and advanced software for managing software installations."
         }
       ]
     }  

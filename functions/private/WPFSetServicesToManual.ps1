@@ -11,10 +11,6 @@ function Get-ServicesFromJson {
         # Download the JSON file
         Write-Host "Downloading JSON configuration from $Url..." -ForegroundColor Cyan
         $response = Invoke-RestMethod -Uri $Url -Method Get -ErrorAction Stop
-        
-        # Debug: Output the raw JSON response
-        Write-Host "Raw JSON Response:" -ForegroundColor Green
-        Write-Host ($response | ConvertTo-Json -Depth 5)
 
         # Parse the JSON response
         if ($response.WPFTweaksServices -eq $null -or $response.WPFTweaksServices.service -eq $null) {
@@ -60,9 +56,15 @@ if ($servicesToProcess.Count -eq 0) {
         $serviceName = $service.Name
         $serviceStartupType = "Manual"  # Set to "Manual" regardless of the original type
 
+        # Optional: Log current startup type
+        # Log-ServiceStartupType -Name $serviceName
+
         # Set the service startup type
         Set-ServiceStartupType -Name $serviceName -StartupType $serviceStartupType
     }
 }
 
-Read-Host "Specified services have been processed. Check logs for any issues." -ForegroundColor Green
+Write-Host "Specified services have been processed. Check logs for any issues." -ForegroundColor Green
+
+# Pause the script until user input
+Read-Host -Prompt "Press Enter to exit"

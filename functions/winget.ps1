@@ -1,11 +1,17 @@
-$jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
+$tempDir = Join-Path $env:TEMP "KimDog Studios"
+$jsonFilePath = Join-Path $tempDir "apps.json"
 
 function Get-JsonData {
     try {
-        $script:jsonData = $script:jsonData ?? (Invoke-RestMethod -Uri $jsonFileUrl -Method Get).categories
+        if (-not (Test-Path $jsonFilePath)) {
+            Write-Host "Error: apps.json file not found in $tempDir" -ForegroundColor Red
+            exit
+        }
+
+        $script:jsonData = $script:jsonData ?? (Get-Content $jsonFilePath | ConvertFrom-Json).categories
         return $script:jsonData
     } catch {
-        Write-Host "Failed to fetch JSON data: $_" -ForegroundColor Red
+        Write-Host "Failed to read JSON data: $_" -ForegroundColor Red
         exit
     }
 }

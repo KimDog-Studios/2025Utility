@@ -6,10 +6,8 @@ function Check-Winget {
         # Check if winget command is available
         $wingetPath = Get-Command $wingetCommand -ErrorAction SilentlyContinue
         if ($wingetPath) {
-            Write-Host "winget is installed." -ForegroundColor Green
             return $true
         } else {
-            Write-Host "winget is not installed." -ForegroundColor Red
             return $false
         }
     } catch {
@@ -60,7 +58,7 @@ function Show-MainHeader {
 # Function to show a message if winget is installed
 function Show-WingetMessage {
     if (Check-Winget) {
-        Write-Host "winget is installed. You can use the Application Manager to manage packages." -ForegroundColor Green
+        Write-Host "[INFO] WinGet is Installed. " -ForegroundColor Green
     }
 }
 

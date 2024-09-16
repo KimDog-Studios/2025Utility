@@ -84,12 +84,21 @@ function Show-AppsInCategory {
                 Write-Host ""
             }
 
-            Write-Host "Page $page of $totalPages"
-            Write-Host "[B] Back to Category Menu" -ForegroundColor Red
+            # Page indicator with box
+            $pageIndicator = "Page $page of $totalPages"
+            $boxWidth = $pageIndicator.Length + 4
+            $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
+            $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
+
+            Write-Host "`n$topBottomBorder" -ForegroundColor Cyan
+            Write-Host "$emptyLine" -ForegroundColor Cyan
+            Write-Host "| $pageIndicator |" -ForegroundColor Cyan
+            Write-Host "$emptyLine" -ForegroundColor Cyan
+            Write-Host "$topBottomBorder" -ForegroundColor Cyan
+
+            Write-Host "`n[B] Back to Category Menu" -ForegroundColor Red
             Write-Host "[N] Next Page" -ForegroundColor Cyan
             Write-Host "[P] Previous Page" -ForegroundColor Cyan
-            Write-Host "[U] Upgrade All Installed Apps & Drivers" -ForegroundColor Green
-            Write-Host "[X] Exit Script" -ForegroundColor Red
 
             $input = Read-Host "Choose an option"
 
@@ -110,13 +119,6 @@ function Show-AppsInCategory {
                 }
                 'B' {
                     return
-                }
-                'U' {
-                    Upgrade-AllApps
-                }
-                'X' {
-                    Write-Host "Exiting script." -ForegroundColor Green
-                    exit
                 }
                 default {
                     if ($input -match '^\d+$') {

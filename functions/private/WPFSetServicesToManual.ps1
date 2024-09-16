@@ -16,6 +16,8 @@ function Set-ServiceStartupType {
         Write-Host "Service '$Name' set to '$StartupType' successfully." -ForegroundColor Green
     } catch [System.ServiceProcess.ServiceNotFoundException] {
         Write-Warning "Service '$Name' was not found"
+    } catch [System.UnauthorizedAccessException] {
+        Write-Warning "Access denied when trying to modify service '$Name'. Ensure you are running the script as an administrator."
     } catch {
         Write-Warning "Unable to set '$Name' due to unhandled exception"
         Write-Warning $_.Exception.Message
@@ -30,4 +32,4 @@ foreach ($service in $allServices) {
     Set-ServiceStartupType -Name $service.Name -StartupType "Manual"
 }
 
-Write-Host "All services have been set to Manual startup type." -ForegroundColor Green
+Read-Host "All services have been set to Manual startup type." -ForegroundColor Green

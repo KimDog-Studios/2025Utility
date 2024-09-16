@@ -125,7 +125,7 @@ function Run-WingetMenu {
 function Option1 {
     Clear-Host
     Write-Host "You selected Option 1: Windows Manager" -ForegroundColor Green
-    Run-WindowsManager
+    # Replace with actual Windows Manager function
 }
 
 # Function for Option 2
@@ -145,7 +145,7 @@ function Show-InvalidOption {
 Install-Chocolatey
 
 # Main loop
-while ($true) {
+do {
     Show-MainHeader
     Show-WingetMessage
     Show-MainMenu
@@ -154,11 +154,8 @@ while ($true) {
     switch ($selection) {
         "1" { Option1 }
         "2" { Option2 }
-        "3" { Write-Host "Exiting..." -ForegroundColor Red; exit }
+        "3" { Write-Host "Exiting..." -ForegroundColor Red; break }
         default { Show-InvalidOption }
     }
 
-    if ($selection -eq "3") {
-        exit
-    }
-}
+} while ($true)

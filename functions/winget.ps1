@@ -24,7 +24,7 @@ function Align-Header {
 }
 
 function Show-Header {
-    Clear-Host
+    cls # Alternative console clearing
 
     function Draw-Box {
         param (
@@ -47,7 +47,7 @@ function Show-Header {
 }
 
 function Show-CategoryMenu {
-    Clear-Host
+    cls # Alternative console clearing
 
     $categories = Get-JsonData
 
@@ -68,7 +68,7 @@ function Show-AppsInCategory {
         [int]$categoryIndex
     )
 
-    Clear-Host
+    cls # Alternative console clearing
 
     $categories = Get-JsonData
     $selectedCategory = $categories[$categoryIndex - 1]
@@ -86,7 +86,7 @@ function Show-AppsInCategory {
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
         
         while ($true) {
-            Clear-Host
+            cls # Alternative console clearing
 
             # Draw the category name with a box
             function Draw-Box {
@@ -179,7 +179,7 @@ function Show-SearchResults {
         [string]$searchTerm
     )
 
-    Clear-Host
+    cls # Alternative console clearing
 
     $categories = Get-JsonData
     $searchResults = @()
@@ -213,7 +213,7 @@ function Show-SearchResults {
     }
 
     # Ask user to select a result for installation
-    $selection = Read-Host "Enter the number of the app you want to install, or [B] to go back"
+    $selection = Read-Host "Enter and ID to Install, or [B] to go back"
 
     if ($selection -eq 'B') {
         return
@@ -230,10 +230,10 @@ function Show-SearchResults {
                 Write-Host "Installation canceled." -ForegroundColor Yellow
             }
         } else {
-            Write-Host "Invalid selection, returning to search results." -ForegroundColor Red
+            Write-Host "Invalid selection." -ForegroundColor Red
         }
     } else {
-        Write-Host "Invalid input, returning to search results." -ForegroundColor Red
+        Write-Host "Invalid input, please enter a number or 'B'." -ForegroundColor Red
     }
 }
 

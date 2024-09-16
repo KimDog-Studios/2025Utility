@@ -150,6 +150,18 @@
           "wingetId": "Rem0o.FanControl",
           "chocoId": "",
           "description": "Fan Control is a powerful and advanced software for controlling fans and air purifiers."
+        },
+        {
+          "name": "MSI Afterburner",
+          "wingetId": "MSI Afterburner",
+          "chocoId": "msiafterburner",
+          "description": "MSI Afterburner is a powerful and advanced software for managing GPUs."
+        },
+        {
+          "name": "MSI Afterburner Beta",
+          "wingetId": "Guru3D.Afterburner.Beta",
+          "chocoId": "",
+          "description": "MSI Afterburner is a powerful and advanced software for managing GPUs."
         }
       ]
     }  

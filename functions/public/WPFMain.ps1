@@ -63,7 +63,7 @@ function Show-MainMenu {
 
 # Function to fetch and execute the winget menu script
 function Run-WingetMenu {
-    $wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
+    $wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/WPFWinGetMenu.ps1"
     
     try {
         Write-Host "Fetching winget menu script from $wingetMenuUrl..." -ForegroundColor Cyan
@@ -78,7 +78,7 @@ function Run-WingetMenu {
 }
 
 function Run-WindowsMenu {
-    $windowsMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/windowsManager.ps1"
+    $windowsMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/WPFWindowsManager.ps1"
     
     try {
         Write-Host "Fetching winget menu script from $windowsMenuUrl..." -ForegroundColor Cyan

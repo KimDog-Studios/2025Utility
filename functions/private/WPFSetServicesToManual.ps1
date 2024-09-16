@@ -1,48 +1,33 @@
-# Define the URL of the JSON configuration file
-$jsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/tweaks.json"
-
-# Function to download and parse JSON file
-function Get-ServicesFromJson {
+# Function to set a service to a specific startup type
+function Set-ServiceStartupType {
     param (
-        [string]$Url
+        [string]$Name,
+        [string]$StartupType
     )
-
+    
     try {
-        # Download the JSON file
-        $response = Invoke-RestMethod -Uri $Url -Method Get -ErrorAction Stop
-        
-        # Parse the JSON response
-        $services = $response.services
-        return $services
+        Write-Host "Setting Service '$Name' to '$StartupType'..." -ForegroundColor Cyan
+
+        # Check if the service exists
+        $service = Get-Service -Name $Name -ErrorAction Stop
+
+        # Service exists, proceed with changing properties
+        $service | Set-Service -StartupType $StartupType -ErrorAction Stop
+        Write-Host "Service '$Name' set to '$StartupType' successfully." -ForegroundColor Green
+    } catch [System.ServiceProcess.ServiceNotFoundException] {
+        Write-Warning "Service '$Name' was not found"
     } catch {
-        Write-Host "Failed to download or parse JSON file: $_" -ForegroundColor Red
-        return @()
+        Write-Warning "Unable to set '$Name' due to unhandled exception"
+        Write-Warning $_.Exception.Message
     }
 }
 
-# Function to set services to manual
-function Set-ServicesToManual {
-    param (
-        [string[]]$Services
-    )
+# Get a list of all services
+$allServices = Get-Service
 
-    foreach ($service in $Services) {
-        try {
-            Write-Host "Setting service '$service' to manual..." -ForegroundColor Cyan
-            # Set the service startup type to Manual
-            Set-Service -Name $service -StartupType Manual
-            Write-Host "Service '$service' set to manual." -ForegroundColor Green
-        } catch {
-            Write-Host "Failed to set service '$service': $_" -ForegroundColor Red
-        }
-    }
+# Set each service to manual
+foreach ($service in $allServices) {
+    Set-ServiceStartupType -Name $service.Name -StartupType "Manual"
 }
 
-# Main script logic
-$services = Get-ServicesFromJson -Url $jsonUrl
-
-if ($services.Count -eq 0) {
-    Write-Host "No services to process." -ForegroundColor Yellow
-} else {
-    Set-ServicesToManual -Services $services
-}
+Write-Host "All services have been set to Manual startup type." -ForegroundColor Green

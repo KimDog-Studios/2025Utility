@@ -290,27 +290,12 @@ function Show-SearchResults {
 }
 
 function Upgrade-InstalledApps {
-    cls # Alternative console clearing
+    cls # Clear the console screen
 
-    Write-Host "Upgrading installed apps..." -ForegroundColor Cyan
+    Write-Host "Upgrading all installed apps using Winget..." -ForegroundColor Cyan
 
-    # Upgrade Winget apps
-    $wingetApps = & winget list
-    $wingetApps | ForEach-Object {
-        if ($_ -match "([^\s]+)\s+\d+\.\d+\.\d+") {
-            $appName = $matches[1]
-            & winget upgrade $appName
-        }
-    }
-
-    # Upgrade Chocolatey apps
-    $chocoApps = & choco list --local-only
-    $chocoApps | ForEach-Object {
-        if ($_ -match "([^\s]+)\s+\d+\.\d+\.\d+") {
-            $packageName = $matches[1]
-            & choco upgrade $packageName
-        }
-    }
+    # Upgrade all apps using Winget
+    & winget upgrade --all
 
     Write-Host "Upgrade process completed." -ForegroundColor Green
 }

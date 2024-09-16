@@ -180,6 +180,12 @@
           "wingetId": "Wagnardsoft.DisplayDriverUninstaller",
           "chocoId": "ddu",
           "description": "DDU[Display Driver Uninstaller] is a powerful and advanced software for managing NVIDIA GeForce Driver packages."
+        },
+        {
+          "name": "Revo Uninstaller",
+          "wingetId": "RevoUninstaller.RevoUninstaller",
+          "chocoId": "revo-uninstaller",
+          "description": "RevoUninstaller is a powerful and advanced software for managing software installations."
         }
       ]
     }  

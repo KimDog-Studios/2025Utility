@@ -26,11 +26,11 @@ function Check-Winget {
 
 # Function to get the latest winget release URL
 function Get-Latest-Winget-Release-Url {
-    $githubApiUrl = "https://github.com/microsoft/winget-cli/releases/tag/v1.8.1911"
+    $githubApiUrl = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
     
     try {
-        $response = Invoke-RestMethod -Uri $githubApiUrl -Headers @{ "User-Agent" = "PowerShell" }
-        $latestRelease = $response.assets | Where-Object { $_.name -like "*AppInstaller*.msixbundle" }
+        $response = Invoke-RestMethod -Uri $githubApiUrl -Headers @{ "Accept" = "application/vnd.github.v3+json" }
+        $latestRelease = $response.assets | Where-Object { $_.name -like "*msixbundle" -and $_.name -notlike "*License*" }
         if ($latestRelease) {
             $downloadUrl = $latestRelease.browser_download_url
             Write-Host "Latest winget release URL: $downloadUrl" -ForegroundColor Cyan
@@ -162,30 +162,28 @@ function Show-MainMenu {
     Write-Host "`n"  # Reduced gap
 }
 
-# Function to fetch and execute the Windows Manager script from GitHub
-function Run-WindowsManager {
+# Function to fetch and execute remote scripts
+function Execute-RemoteScript {
+    param (
+        [string]$Url,
+        [string]$ScriptName
+    )
     try {
-        $scriptContent = Invoke-RestMethod -Uri $windowsManagerUrl
-        Write-Host "Executing Windows Manager script..." -ForegroundColor Green
-        
-        # Execute the fetched script content
+        $scriptContent = Invoke-RestMethod -Uri $Url
+        Write-Host "Executing $ScriptName script..." -ForegroundColor Green
         Invoke-Expression $scriptContent
     } catch {
-        Write-Host "Failed to fetch or execute Windows Manager script: $_" -ForegroundColor Red
+        Write-Host "Failed to fetch or execute $ScriptName script: $_" -ForegroundColor Red
     }
 }
 
-# Function to fetch and execute the winget menu script from GitHub
+# Update these functions to use Execute-RemoteScript
+function Run-WindowsManager {
+    Execute-RemoteScript -Url $windowsManagerUrl -ScriptName "Windows Manager"
+}
+
 function Run-WingetMenu {
-    try {
-        $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl
-        Write-Host "Execution of winget menu script..." -ForegroundColor Green
-        
-        # Execute the fetched script content
-        Invoke-Expression $scriptContent
-    } catch {
-        Write-Host "Failed to fetch or execute winget menu script: $_" -ForegroundColor Red
-    }
+    Execute-RemoteScript -Url $wingetMenuUrl -ScriptName "Winget Menu"
 }
 
 # Function for Option 1
@@ -235,3 +233,4 @@ while ($true) {
         exit
     }
 }
+

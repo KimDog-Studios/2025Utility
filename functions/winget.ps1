@@ -2,8 +2,8 @@ $jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/mai
 
 function Get-JsonData {
     try {
-        $jsonData = Invoke-RestMethod -Uri $jsonFileUrl -Method Get
-        return $jsonData.categories
+        $script:jsonData = $script:jsonData ?? (Invoke-RestMethod -Uri $jsonFileUrl -Method Get).categories
+        return $script:jsonData
     } catch {
         Write-Host "Failed to fetch JSON data: $_" -ForegroundColor Red
         exit
@@ -32,14 +32,10 @@ function Show-Header {
         )
 
         $boxWidth = $Text.Length + 4
-        $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
-        $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
+        $topBottomBorder = "+$("-" * ($boxWidth - 2))+"
+        $emptyLine = "|$(" " * ($boxWidth - 2))|"
 
-        Write-Host "$topBottomBorder" -ForegroundColor Cyan
-        Write-Host "$emptyLine" -ForegroundColor Cyan
-        Write-Host "| $Text |" -ForegroundColor Cyan
-        Write-Host "$emptyLine" -ForegroundColor Cyan
-        Write-Host "$topBottomBorder" -ForegroundColor Cyan
+        Write-Host "$topBottomBorder`n$emptyLine`n| $Text |`n$emptyLine`n$topBottomBorder" -ForegroundColor Cyan
     }
 
     Draw-Box -Text "KimDog's Winget Menu | Last Updated: 2024-09-16"
@@ -83,48 +79,19 @@ function Show-AppsInCategory {
         while ($true) {
             cls # Alternative console clearing
 
-            # Draw the category name with a box
-            function Draw-Box {
-                param (
-                    [string]$Text
-                )
-
-                $boxWidth = $Text.Length + 4
-                $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
-                $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
-
-                Write-Host "$topBottomBorder" -ForegroundColor Cyan
-                Write-Host "$emptyLine" -ForegroundColor Cyan
-                Write-Host "| $Text |" -ForegroundColor Cyan
-                Write-Host "$emptyLine" -ForegroundColor Cyan
-                Write-Host "$topBottomBorder" -ForegroundColor Cyan
-            }
-
             Draw-Box -Text "Category: $($selectedCategory.name)"
 
             $startIndex = ($page - 1) * $itemsPerPage
             $endIndex = [math]::Min($startIndex + $itemsPerPage, $totalApps)
 
-            for ($i = $startIndex; $i -lt $endIndex; $i++) {
-                $app = $apps[$i]
-                Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
-                Write-Host "Description: $($app.description)" -ForegroundColor White
-                Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
-                Write-Host "Chocolatey ID: $($app.chocoId)" -ForegroundColor Cyan
-                Write-Host ""
+            $apps[$startIndex..($endIndex-1)] | ForEach-Object {
+                Write-Host "$($_.name)" -ForegroundColor Green
+                Write-Host "Description: $($_.description)" -ForegroundColor White
+                Write-Host "Winget ID: $($_.wingetId)" -ForegroundColor Cyan
+                Write-Host "Chocolatey ID: $($_.chocoId)`n" -ForegroundColor Cyan
             }
 
-            # Page indicator with box
-            $pageIndicator = "Page $page of $totalPages"
-            $boxWidth = $pageIndicator.Length + 4
-            $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
-            $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
-
-            Write-Host "`n$topBottomBorder" -ForegroundColor Cyan
-            Write-Host "$emptyLine" -ForegroundColor Cyan
-            Write-Host "| $pageIndicator |" -ForegroundColor Cyan
-            Write-Host "$emptyLine" -ForegroundColor Cyan
-            Write-Host "$topBottomBorder" -ForegroundColor Cyan
+            Draw-Box -Text "Page $page of $totalPages"
 
             Write-Host "`n[B] Back to Category Menu" -ForegroundColor Red
             Write-Host "[N] Next Page" -ForegroundColor Cyan
@@ -177,41 +144,13 @@ function Show-SearchResults {
     cls # Alternative console clearing
 
     $categories = Get-JsonData
-    $searchResults = @()
-
-    foreach ($category in $categories) {
-        foreach ($app in $category.options) {
-            if ($app.name -match $searchTerm -or $app.description -match $searchTerm) {
-                $searchResults += [PSCustomObject]@{
-                    Name = $app.name
-                    Description = $app.description
-                    WingetId = $app.wingetId
-                    ChocolateyId = $app.chocoId
-                }
-            }
-        }
+    $searchResults = $categories | ForEach-Object {
+        $_.options | Where-Object { $_.name -match $searchTerm -or $_.description -match $searchTerm }
     }
 
     if ($searchResults.Count -eq 0) {
         Write-Host "No results found for '$searchTerm'." -ForegroundColor Red
         return
-    }
-
-    # Draw the search results header with a box
-    function Draw-Box {
-        param (
-            [string]$Text
-        )
-
-        $boxWidth = $Text.Length + 4
-        $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
-        $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
-
-        Write-Host "$topBottomBorder" -ForegroundColor Cyan
-        Write-Host "$emptyLine" -ForegroundColor Cyan
-        Write-Host "| $Text |" -ForegroundColor Cyan
-        Write-Host "$emptyLine" -ForegroundColor Cyan
-        Write-Host "$topBottomBorder" -ForegroundColor Cyan
     }
 
     Draw-Box -Text "Search Results | Search Term: $searchTerm"
@@ -228,26 +167,14 @@ function Show-SearchResults {
         $startIndex = ($page - 1) * $itemsPerPage
         $endIndex = [math]::Min($startIndex + $itemsPerPage, $totalResults)
 
-        for ($i = $startIndex; $i -lt $endIndex; $i++) {
-            $result = $searchResults[$i]
-            Write-Host "[$($i + 1)] $($result.Name)" -ForegroundColor Cyan
-            Write-Host "Description: $($result.Description)" -ForegroundColor White
-            Write-Host "Winget ID: $($result.WingetId)" -ForegroundColor Cyan
-            Write-Host "Chocolatey ID: $($result.ChocolateyId)" -ForegroundColor Cyan
-            Write-Host ""
+        $searchResults[$startIndex..($endIndex-1)] | ForEach-Object {
+            Write-Host "$($_.name)" -ForegroundColor Cyan
+            Write-Host "Description: $($_.description)" -ForegroundColor White
+            Write-Host "Winget ID: $($_.wingetId)" -ForegroundColor Cyan
+            Write-Host "Chocolatey ID: $($_.chocoId)`n" -ForegroundColor Cyan
         }
 
-        # Page indicator with box
-        $pageIndicator = "Page $page of $totalPages"
-        $boxWidth = $pageIndicator.Length + 4
-        $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
-        $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
-
-        Write-Host "`n$topBottomBorder" -ForegroundColor Cyan
-        Write-Host "$emptyLine" -ForegroundColor Cyan
-        Write-Host "| $pageIndicator |" -ForegroundColor Cyan
-        Write-Host "$emptyLine" -ForegroundColor Cyan
-        Write-Host "$topBottomBorder" -ForegroundColor Cyan
+        Draw-Box -Text "Page $page of $totalPages"
 
         Write-Host "`n[B] Back to Main Menu" -ForegroundColor Red
         Write-Host "[N] Next Page" -ForegroundColor Cyan

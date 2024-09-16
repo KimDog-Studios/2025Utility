@@ -26,7 +26,18 @@
         { "name": "PyCharm Community Edition", "wingetId": "JetBrains.PyCharm.Community", "description": "Free IDE for Python development with essential features and support." },
         { "name": "Visual Studio Code Insiders", "wingetId": "Microsoft.VisualStudioCode.Insiders", "description": "Insider build of VS Code for early access to new features and updates." },
         { "name": "GitHub Desktop", "wingetId": "GitHub.GitHubDesktop", "description": "GitHub Desktop is an open-source Electron-based GitHub app. It is written in TypeScript and uses React." },
-        { "name": "Git", "wingetId": "Git.Git", "description": "Git for Windows focuses on offering a lightweight, native set of tools that bring the full feature set of the Git SCM to Windows while providing appropriate user interfaces for experienced Git users and novices alike." }
+        { "name": "Git", "wingetId": "Git.Git", "description": "Git for Windows focuses on offering a lightweight, native set of tools that bring the full feature set of the Git SCM to Windows while providing appropriate user interfaces for experienced Git users and novices alike." },
+        { "name": "Visual Studio Community 2022 Preview", "wingetId": "Microsoft.VisualStudio.2022.Community.Preview", "description": "IDE for .NET and C++ development, available for individual developers and small teams." },
+        { "name": "Visual Studio Enterprise 2022 Preview", "wingetId": "Microsoft.VisualStudio.2022.Enterprise.Preview", "description": "IDE for .NET and C++ development, available for enterprise users." },
+        { "name": "Android Studio", "wingetId": "Google.AndroidStudio", "description": "An open-source integrated development environment (IDE) for Android." },
+        { "name": "Android Studio Canary", "wingetId": "Google.AndroidStudio.Canary", "description": "An open-source integrated development environment (IDE) for Android." },
+        { "name": "Android Studio Beta", "wingetId": "Google.AndroidStudio.Beta", "description": "An open-source integrated development environment (IDE) for Android." },
+        { "name": "Minecraft Note Block Studio", "wingetId": "OpenNoteBlockStudio.MinecraftNoteBlockStudio", "description": "Installer for Minecraft Note Block Studio" },
+        { "name": "Visual Studio Enterprise 2019", "wingetId": "Microsoft.VisualStudio.2019.Enterprise", "description": "IDE for .NET and C++ development, available for enterprise users." },
+        { "name": "Visual Studio Professional 2022", "wingetId": "Microsoft.VisualStudio.2022.Professional", "description": "IDE for .NET and C++ development, available for professional users." },
+        { "name": "Visual Studio Professional 2019", "wingetId": "Microsoft.VisualStudio.2019.Professional", "description": "IDE for .NET and C++ development, available for professional users." },
+        { "name": "Visual Studio Enterprise 2022", "wingetId": "Microsoft.VisualStudio.2022.Enterprise", "description": "IDE for .NET and C++ development, available for enterprise users." },
+        { "name": "Visual Studio Community 2022", "wingetId": "Microsoft.VisualStudio.2022.Community", "description": "IDE for .NET and C++ development, available for individual developers and small teams." }
       ]
     },
     {

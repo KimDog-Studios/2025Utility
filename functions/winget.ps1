@@ -77,6 +77,7 @@ function Show-AppsInCategory {
             for ($i = $startIndex; $i -lt $endIndex; $i++) {
                 $app = $sortedApps[$i]
                 Write-Host "$($i + 1). $($app.App.name)" -ForegroundColor Green
+                Write-Host "Description: $($app.App.description)" -ForegroundColor White
                 Write-Host "Winget ID: $($app.App.wingetId)" -ForegroundColor Cyan
                 Write-Host ""
             }

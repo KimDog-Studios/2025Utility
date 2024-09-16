@@ -2,187 +2,71 @@
   "categories": [
     {
       "name": "Browsers",
+      "description": "Web browsers for internet browsing.",
       "options": [
-        {
-          "name": "Microsoft Edge",
-          "wingetId": "Microsoft.Edge"
-        },
-        {
-          "name": "Google Chrome",
-          "wingetId": "Google.Chrome"
-        },
-        {
-          "name": "Mozilla Firefox",
-          "wingetId": "Mozilla.Firefox"
-        },
-        {
-          "name": "Vivaldi",
-          "wingetId": "Vivaldi.Vivaldi"
-        },
-        {
-          "name": "Brave",
-          "wingetId": "Brave.Brave"
-        },
-        {
-          "name": "Opera",
-          "wingetId": "Opera.Opera"
-        },
-        {
-          "name": "OperaGX",
-          "wingetId": "Opera.OperaGX"
-        }
+        { "name": "Microsoft Edge", "wingetId": "Microsoft.Edge", "description": "Microsoft's flagship browser, featuring built-in Microsoft services and security." },
+        { "name": "Google Chrome", "wingetId": "Google.Chrome", "description": "Popular web browser known for its speed and extensive extension support." },
+        { "name": "Mozilla Firefox", "wingetId": "Mozilla.Firefox", "description": "Open-source browser with strong privacy features and customization." },
+        { "name": "Vivaldi", "wingetId": "Vivaldi.Vivaldi", "description": "Highly customizable browser with advanced tab management features." },
+        { "name": "Brave", "wingetId": "Brave.Brave", "description": "Privacy-focused browser with built-in ad and tracker blocking." },
+        { "name": "Opera", "wingetId": "Opera.Opera", "description": "Feature-rich browser with built-in VPN and ad blocker." },
+        { "name": "OperaGX", "wingetId": "Opera.OperaGX", "description": "Gaming-focused version of Opera with customizable performance settings." }
       ]
     },
-    
     {
       "name": "Development",
+      "description": "Development tools and code editors.",
       "options": [
-        {
-          "name": "Notepad++",
-          "wingetId": "Notepad++.Notepad++"
-        },
-        {
-          "name": "Visual Studio Code",
-          "wingetId": "Microsoft.VisualStudioCode"
-        },
-        {
-          "name": "Sublime Text 4",
-          "wingetId": "SublimeHQ.SublimeText.4"
-        },
-        {
-          "name": "Atom",
-          "wingetId": "GitHub.Atom"
-        },
-        {
-          "name": "Visual Studio Community 2022 Preview",
-          "wingetId": "Microsoft.VisualStudio.2022.Community.Preview"
-        },
-        {
-          "name": "Unity 2022",
-          "wingetId": "Unity.Unity.2022"
-        },
-        {
-          "name": "PyCharm Community Edition",
-          "wingetId": "JJetBrains.PyCharm.Community"
-        },
-        {
-          "name": "Visual Studio Code Insiders",
-          "wingetId": "Microsoft.VisualStudioCode.Insiders"
-        }
+        { "name": "Notepad++", "wingetId": "Notepad++.Notepad++", "description": "Free text and source code editor with syntax highlighting and plugin support." },
+        { "name": "Visual Studio Code", "wingetId": "Microsoft.VisualStudioCode", "description": "Popular open-source code editor with extensive extensions and debugging support." },
+        { "name": "Sublime Text 4", "wingetId": "SublimeHQ.SublimeText.4", "description": "A sophisticated text editor for code, markup, and prose with a focus on speed and efficiency." },
+        { "name": "Atom", "wingetId": "GitHub.Atom", "description": "Hackable text editor for the 21st century, built by GitHub." },
+        { "name": "Visual Studio Community 2022 Preview", "wingetId": "Microsoft.VisualStudio.2022.Community.Preview", "description": "IDE for .NET and C++ development, available for individual developers and small teams." },
+        { "name": "Unity 2022", "wingetId": "Unity.Unity.2022", "description": "Powerful game engine for creating 2D and 3D games and interactive experiences." },
+        { "name": "PyCharm Community Edition", "wingetId": "JetBrains.PyCharm.Community", "description": "Free IDE for Python development with essential features and support." },
+        { "name": "Visual Studio Code Insiders", "wingetId": "Microsoft.VisualStudioCode.Insiders", "description": "Insider build of VS Code for early access to new features and updates." }
       ]
     },
-
     {
       "name": "Utilities",
+      "description": "Utilities for various system and software needs.",
       "options": [
-        {
-          "name": "7-Zip",
-          "wingetId": "7zip.7zip"
-        },
-        {
-          "name": "WinRAR",
-          "wingetId": "Rarlab.WinRAR"
-        },
-        {
-          "name": "Corsair iCUE",
-          "wingetId": "Corsair.iCUE.5"
-        },
-        {
-          "name": "MSI Afterburner",
-          "wingetId": "Guru3D.Afterburner"
-        },
-        {
-          "name": "ShareX",
-          "wingetId": "ShareX.ShareX"
-        },
-        {
-          "name": "TeraCopy",
-          "wingetId": "CodeSector.TeraCopy"
-        },
-        {
-          "name": "OBS Studio",
-          "wingetId": "OBSProject.OBSStudio"
-        },
-        {
-          "name": "StreamLabs OBS",
-          "wingetId": "Streamlabs.StreamlabsOBS"
-        },
-        {
-          "name": "Chatterino",
-          "wingetId": "ChatterinoTeam.Chatterino"
-        },
-        {
-          "name": "SteelSeries GG",
-          "wingetId": "SteelSeries.GG"
-        },
-        {
-          "name": "Logitech G HUB",
-          "wingetId": "Logitech.GHUB"
-        },
-        {
-          "name": "Logitech Options",
-          "wingetId": "Logitech.Options"
-        },
-        {
-          "name": "HWINFO",
-          "wingetId": "REALiX.HWiNFO"
-        },
-        {
-          "name": "NZXT CAM",
-          "wingetId": "NZXT.CAM"
-        },
-        {
-          "name": "Microssoft PowerToys [Preview]",
-          "wingetId": "Microsoft.PowerToys"
-        }
+        { "name": "7-Zip", "wingetId": "7zip.7zip", "description": "Open-source file archiver with high compression ratio." },
+        { "name": "WinRAR", "wingetId": "Rarlab.WinRAR", "description": "File archiver utility for RAR and ZIP files, offering high compression and recovery options." },
+        { "name": "Corsair iCUE", "wingetId": "Corsair.iCUE.5", "description": "Software for managing Corsair peripherals and RGB lighting." },
+        { "name": "MSI Afterburner", "wingetId": "Guru3D.Afterburner", "description": "GPU overclocking utility for performance optimization and monitoring." },
+        { "name": "ShareX", "wingetId": "ShareX.ShareX", "description": "Screen capture, file sharing, and productivity tool with advanced features." },
+        { "name": "TeraCopy", "wingetId": "CodeSector.TeraCopy", "description": "File copy utility designed to improve the speed and reliability of file transfers." },
+        { "name": "OBS Studio", "wingetId": "OBSProject.OBSStudio", "description": "Free and open-source software for video recording and live streaming." },
+        { "name": "StreamLabs OBS", "wingetId": "Streamlabs.StreamlabsOBS", "description": "Streaming software with built-in tools for streamers and integrations." },
+        { "name": "Chatterino", "wingetId": "ChatterinoTeam.Chatterino", "description": "Advanced Twitch chat client with customizability and features for streamers." },
+        { "name": "SteelSeries GG", "wingetId": "SteelSeries.GG", "description": "Software for SteelSeries peripherals, including customization and configuration options." },
+        { "name": "Logitech G HUB", "wingetId": "Logitech.GHUB", "description": "Software for Logitech gaming peripherals, providing customization and configuration options." },
+        { "name": "Logitech Options", "wingetId": "Logitech.Options", "description": "Utility for configuring Logitech mice and keyboards with advanced settings." },
+        { "name": "HWINFO", "wingetId": "REALiX.HWiNFO", "description": "Comprehensive hardware monitoring tool providing detailed information on system components." },
+        { "name": "NZXT CAM", "wingetId": "NZXT.CAM", "description": "System monitoring and management software with customization options for NZXT hardware." },
+        { "name": "Microsoft PowerToys [Preview]", "wingetId": "Microsoft.PowerToys", "description": "Set of utilities to enhance productivity and customize the Windows experience." }
       ]
     },
-    
     {
       "name": "Communication",
+      "description": "Communication tools for messaging and video conferencing.",
       "options": [
-        {
-          "name": "Discord",
-          "wingetId": "Discord.Discord"
-        },
-        {
-          "name": "Slack",
-          "wingetId": "SlackTechnologies.Slack"
-        },
-        {
-          "name": "Microsoft Teams",
-          "wingetId": "Microsoft.Teams"
-        },
-        {
-          "name": "Zooms",
-          "wingetId": "Zoom.Zoom"
-        }
+        { "name": "Discord", "wingetId": "Discord.Discord", "description": "Popular communication platform for gamers with voice, video, and text chat." },
+        { "name": "Slack", "wingetId": "SlackTechnologies.Slack", "description": "Collaboration hub for teams with messaging, file sharing, and integrations." },
+        { "name": "Microsoft Teams", "wingetId": "Microsoft.Teams", "description": "Unified communication and collaboration platform with video meetings and chat." },
+        { "name": "Zoom", "wingetId": "Zoom.Zoom", "description": "Video conferencing tool for meetings, webinars, and online collaboration." }
       ]
     },
-
     {
       "name": "Game Launchers",
+      "description": "Launchers for managing and accessing games from various platforms.",
       "options": [
-        {
-          "name": "Steam",
-          "wingetId": "Valve.Steam"
-        },
-        {
-          "name": "GOG Galaxy",
-          "wingetId": "GOG.Galaxy"
-        },
-        {
-          "name": "Epic Games Launcher",
-          "wingetId": "EpicGames.EpicGamesLauncher"
-        },
-        {
-          "name": "Ubisoft Connect",
-          "wingetId": "Ubisoft.Connect"
-        },
-        {
-          "name": "Bethesda.net Launcher",
-          "wingetId": "Bethesda.Launcher"
-        }
+        { "name": "Steam", "wingetId": "Valve.Steam", "description": "Digital distribution platform for games and software, featuring a large library and community features." },
+        { "name": "GOG Galaxy", "wingetId": "GOG.Galaxy", "description": "Game client for managing GOG games and connecting with other platforms." },
+        { "name": "Epic Games Launcher", "wingetId": "EpicGames.EpicGamesLauncher", "description": "Game launcher for Epic Games, offering free games and exclusive titles." },
+        { "name": "Ubisoft Connect", "wingetId": "Ubisoft.Connect", "description": "Launcher for Ubisoft games with social features and rewards." },
+        { "name": "Bethesda.net Launcher", "wingetId": "Bethesda.Launcher", "description": "Launcher for Bethesda games with access to updates and content." }
       ]
     }
   ]

@@ -1,3 +1,23 @@
+# Check if the script is running as Administrator
+function Check-Admin {
+    $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    if (-not $isAdmin) {
+        Write-Warning "This script is not running as an Administrator."
+        # Relaunch the script with Administrator privileges
+        Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Definition)`"" -Verb RunAs
+        exit
+    }
+}
+
+# Run the admin check at the start of the script
+Check-Admin
+
+# URL of the winget menu script
+$wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
+
+# URL of the Windows Manager script
+$windowsManagerUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/windowsManager.ps1"
+
 # Function to check if winget is installed
 function Check-Winget {
     $wingetCommand = "winget"
@@ -6,13 +26,61 @@ function Check-Winget {
         # Check if winget command is available
         $wingetPath = Get-Command $wingetCommand -ErrorAction SilentlyContinue
         if ($wingetPath) {
+            Write-Host "winget is already installed." -ForegroundColor Green
             return $true
         } else {
+            Write-Host "winget is not installed." -ForegroundColor Red
             return $false
         }
     } catch {
         Write-Host "Error checking winget installation: $_" -ForegroundColor Red
         return $false
+    }
+}
+
+# Function to get the latest winget release URL
+function Get-Latest-Winget-Release-Url {
+    $githubApiUrl = "https://github.com/microsoft/winget-cli/releases/tag/v1.8.1911"
+    
+    try {
+        $response = Invoke-RestMethod -Uri $githubApiUrl -Headers @{ "User-Agent" = "PowerShell" }
+        $latestRelease = $response.assets | Where-Object { $_.name -like "*AppInstaller*.msixbundle" }
+        if ($latestRelease) {
+            $downloadUrl = $latestRelease.browser_download_url
+            Write-Host "Latest winget release URL: $downloadUrl" -ForegroundColor Cyan
+            return $downloadUrl
+        } else {
+            Write-Host "No suitable release found." -ForegroundColor Red
+            return $null
+        }
+    } catch {
+        Write-Host "Failed to fetch latest release URL: $_" -ForegroundColor Red
+        return $null
+    }
+}
+
+# Function to install winget
+function Install-Winget {
+    $downloadUrl = Get-Latest-Winget-Release-Url
+    if (-not $downloadUrl) {
+        Write-Host "Cannot proceed with installation. Exiting..." -ForegroundColor Red
+        return
+    }
+    
+    Write-Host "Downloading winget from $downloadUrl..." -ForegroundColor Yellow
+
+    $tempFile = [System.IO.Path]::GetTempFileName()
+    try {
+        Invoke-WebRequest -Uri $downloadUrl -OutFile $tempFile
+        Write-Host "Download complete. Installing..." -ForegroundColor Green
+
+        Start-Process -FilePath $tempFile -ArgumentList "/quiet" -Wait
+        Write-Host "winget installation process has started." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to download or install winget: $_" -ForegroundColor Red
+    } finally {
+        # Clean up temporary file
+        Remove-Item -Path $tempFile -ErrorAction SilentlyContinue
     }
 }
 
@@ -52,14 +120,7 @@ function Show-MainHeader {
     }
 
     Draw-Box -Text "KimDog's Windows Utility | Last Updated: 2024-09-15"
-    Write-Host "`n"
-}
-
-# Function to show a message if winget is installed
-function Show-WingetMessage {
-    if (Check-Winget) {
-        Write-Host "[INFO] WinGet is Installed. " -ForegroundColor Green
-    }
+    Write-Host "`n"  # Reduced gap
 }
 
 # Function to show the main menu
@@ -71,42 +132,32 @@ function Show-MainMenu {
     Write-Host "2. Application Manager" -ForegroundColor Green
     Write-Host "3. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
-    Write-Host "`n"
+    Write-Host "`n"  # Reduced gap
 }
 
-# Function to fetch and execute the wingetManager script
-function Run-WingetManager {
-    $wingetManagerUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/wingetManager.ps1"
-    try {
-        $scriptContent = Invoke-RestMethod -Uri $wingetManagerUrl
-        Write-Host "Executing wingetManager script..." -ForegroundColor Green
-        Invoke-Expression $scriptContent
-    } catch {
-        Write-Host "Failed to fetch or execute wingetManager script: $_" -ForegroundColor Red
-    }
-}
-
-# Function to fetch and execute the winget menu script
-function Run-WingetMenu {
-    $wingetMenuUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/winget.ps1"
-    try {
-        $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl
-        Write-Host "Executing winget menu script..." -ForegroundColor Green
-        Invoke-Expression $scriptContent
-    } catch {
-        Write-Host "Failed to fetch or execute winget menu script: $_" -ForegroundColor Red
-    }
-}
-
-# Function to fetch and execute the Windows Manager script
+# Function to fetch and execute the Windows Manager script from GitHub
 function Run-WindowsManager {
-    $windowsManagerUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/windowsManager.ps1"
     try {
         $scriptContent = Invoke-RestMethod -Uri $windowsManagerUrl
         Write-Host "Executing Windows Manager script..." -ForegroundColor Green
+        
+        # Execute the fetched script content
         Invoke-Expression $scriptContent
     } catch {
         Write-Host "Failed to fetch or execute Windows Manager script: $_" -ForegroundColor Red
+    }
+}
+
+# Function to fetch and execute the winget menu script from GitHub
+function Run-WingetMenu {
+    try {
+        $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl
+        Write-Host "Execution of winget menu script..." -ForegroundColor Green
+        
+        # Execute the fetched script content
+        Invoke-Expression $scriptContent
+    } catch {
+        Write-Host "Failed to fetch or execute winget menu script: $_" -ForegroundColor Red
     }
 }
 
@@ -130,20 +181,16 @@ function Show-InvalidOption {
     Write-Host "Invalid selection, please try again." -ForegroundColor Red
 }
 
-# Run wingetManager script at the start
-Run-WingetManager
-
 # Main loop
 while ($true) {
     Show-MainHeader
-    Show-WingetMessage
     Show-MainMenu
     $selection = Read-Host "Please enter your choice"
 
     switch ($selection) {
         "1" { Option1 }
         "2" { Option2 }
-        "3" { Write-Host "Exiting..." -ForegroundColor Red; exit }
+        "3" { Write-Host "Exiting..." -ForegroundColor Red; break }
         default { Show-InvalidOption }
     }
 

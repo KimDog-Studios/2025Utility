@@ -172,35 +172,36 @@ function Show-AppsInCategory {
 
 function Show-SearchResults {
     param (
+        [int]$categoryIndex,
         [string]$searchTerm
     )
 
     $categories = Get-JsonData
-    $apps = $categories | ForEach-Object { $_.options } | Select-Object -ExpandProperty options
+    $selectedCategory = $categories[$categoryIndex - 1]
 
-    $matchingApps = $apps | Where-Object { $_.name -match $searchTerm }
+    if ($selectedCategory) {
+        $apps = $selectedCategory.options
+        $matchingApps = $apps | Where-Object { $_.name -match $searchTerm }
 
-    if ($matchingApps.Count -eq 0) {
-        Write-Host "No apps found matching '$searchTerm'." -ForegroundColor Red
-        return
-    }
+        Clear-Host
 
-    Write-Host "`nSearch Results:" -ForegroundColor Yellow
-    $counter = 1
-    foreach ($app in $matchingApps) {
-        Write-Host "[$counter] $($app.name)" -ForegroundColor Green
-        Write-Host "Description: $($app.description)" -ForegroundColor White
-        Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
-        Write-Host ""
-        $counter++
-    }
-    Write-Host "[B] Back to Main Menu" -ForegroundColor Red
-    $choice = Read-Host "Select an option"
+        if ($matchingApps.Count -eq 0) {
+            Write-Host "No apps found matching '$searchTerm'." -ForegroundColor Red
+            return
+        }
 
-    if ($choice -eq 'B') {
-        return
+        Write-Host "`nSearch Results:" -ForegroundColor Yellow
+        $counter = 1
+        foreach ($app in $matchingApps) {
+            Write-Host "[$counter] $($app.name)" -ForegroundColor Green
+            Write-Host "Description: $($app.description)" -ForegroundColor White
+            Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+            Write-Host ""
+            $counter++
+        }
+        Write-Host "[B] Back to Category Menu" -ForegroundColor Red
     } else {
-        Write-Host "Invalid option. Returning to the search results." -ForegroundColor Red
+        Write-Host "Invalid category selection." -ForegroundColor Red
     }
 }
 
@@ -288,6 +289,7 @@ function Handle-AppSelection {
 
 function Show-Menu {
     $searchMode = $false
+    $currentCategoryIndex = 0
 
     Show-Header
 
@@ -296,13 +298,20 @@ function Show-Menu {
             Show-CategoryMenu
         }
 
-        $input = Read-Host "Select an option"
+        if ($searchMode) {
+            $searchTerm = Read-Host "Enter search term (or type [B] to go back)"
+            if ($searchTerm -eq 'B') {
+                $searchMode = $false
+            } else {
+                Show-SearchResults -categoryIndex $currentCategoryIndex -searchTerm $searchTerm
+            }
+        } else {
+            $input = Read-Host "Select an option"
 
-        if (-not $searchMode) {
             switch ($input) {
                 'F' {
-                    $searchTerm = Read-Host "Enter search term"
-                    Show-SearchResults -searchTerm $searchTerm
+                    $searchMode = $true
+                    $currentCategoryIndex = Read-Host "Enter category number to search within"
                 }
                 'U' {
                     Write-Host "Upgrading all installed apps & drivers..." -ForegroundColor Green
@@ -315,6 +324,7 @@ function Show-Menu {
                 default {
                     if ($input -match '^\d+$') {
                         $categoryIndex = [int]$input
+                        $currentCategoryIndex = $categoryIndex
                         Show-AppsInCategory -categoryIndex $categoryIndex
                     } else {
                         Write-Host "Invalid input. Please try again." -ForegroundColor Red

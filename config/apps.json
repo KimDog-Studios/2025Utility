@@ -68,7 +68,17 @@
         { "name": "Discord", "wingetId": "Discord.Discord", "description": "Popular communication platform for gamers with voice, video, and text chat." },
         { "name": "Slack", "wingetId": "SlackTechnologies.Slack", "description": "Collaboration hub for teams with messaging, file sharing, and integrations." },
         { "name": "Microsoft Teams", "wingetId": "Microsoft.Teams", "description": "Unified communication and collaboration platform with video meetings and chat." },
-        { "name": "Zoom", "wingetId": "Zoom.Zoom", "description": "Video conferencing tool for meetings, webinars, and online collaboration." }
+        { "name": "Zoom", "wingetId": "Zoom.Zoom", "description": "Video conferencing tool for meetings, webinars, and online collaboration." },
+        { "name": "Discord PTB", "wingetId": "Discord.Discord.PTB", "description": "Open-source Discord client with support for voice and video chat." },
+        { "name": "Discord Canary", "wingetId": "Discord.Discord.Canary", "description": "Open-source Discord client with support for voice and video chat." },
+        { "name": "Discord Development", "wingetId": "Discord.Discord.Development", "description": "Open-source Discord client with support for voice and video chat." },
+        { "name": "Skype Insiders", "wingetId": "Microsoft.Skype.Insiders", "description": "Video conferencing tool for meetings, webinars, and online collaboration." },
+        { "name": "Skype", "wingetId": "Microsoft.Skype", "description": "Video conferencing tool for meetings, webinars, and online collaboration." },
+        { "name": "Microsoft Teams Preview", "wingetId": "Microsoft.Teams.Preview", "description": "Unified communication and collaboration platform with video meetings and chat." },
+        { "name": "Microsoft Teams Exploration", "wingetId": "Microsoft.Teams.Exploration", "description": "Unified communication and collaboration platform with video meetings and chat." },
+        { "name": "Microsoft Teams Continuous Deployment", "wingetId": "Microsoft.Teams.ContinuousDeployment", "description": "Unified communication and collaboration platform with video meetings and chat." },
+        { "name": "Slack Beta", "wingetId": "SlackTechnologies.Slack.Beta", "description": "Collaboration hub for teams with messaging, file sharing, and integrations." }
+
       ]
     },
     {

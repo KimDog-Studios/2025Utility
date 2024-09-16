@@ -75,12 +75,7 @@ function Show-AppsInCategory {
 
     if ($selectedCategory) {
         $apps = $selectedCategory.options
-
-        # Track original indexes
-        $indexedApps = $apps | ForEach-Object { [PSCustomObject]@{ OriginalIndex = [array]::IndexOf($apps, $_); App = $_ } }
-        $sortedApps = $indexedApps | Sort-Object { $_.App.name.ToLower() }
-
-        $totalApps = $sortedApps.Count
+        $totalApps = $apps.Count
         $itemsPerPage = 5
         $page = 1
         $totalPages = [math]::Ceiling($totalApps / $itemsPerPage)
@@ -111,10 +106,10 @@ function Show-AppsInCategory {
             $endIndex = [math]::Min($startIndex + $itemsPerPage, $totalApps)
 
             for ($i = $startIndex; $i -lt $endIndex; $i++) {
-                $app = $sortedApps[$i]
-                Write-Host "$($i + 1). $($app.App.name)" -ForegroundColor Green
-                Write-Host "Description: $($app.App.description)" -ForegroundColor White
-                Write-Host "Winget ID: $($app.App.wingetId)" -ForegroundColor Cyan
+                $app = $apps[$i]
+                Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
+                Write-Host "Description: $($app.description)" -ForegroundColor White
+                Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
                 Write-Host ""
             }
 
@@ -158,8 +153,7 @@ function Show-AppsInCategory {
                     if ($input -match '^\d+$') {
                         $selectedAppIndex = [int]$input - 1
                         if ($selectedAppIndex -ge 0 -and $selectedAppIndex -lt $totalApps) {
-                            $originalIndex = $sortedApps[$selectedAppIndex].OriginalIndex
-                            Handle-AppSelection -appIndex ($originalIndex + 1) -categoryIndex $categoryIndex
+                            Handle-AppSelection -appIndex ($selectedAppIndex + 1) -categoryIndex $categoryIndex
                         } else {
                             Write-Host "Invalid app selection, please try again." -ForegroundColor Red
                         }
@@ -281,7 +275,7 @@ function Show-SearchResults {
                     $selectedResultIndex = [int]$input - 1
                     if ($selectedResultIndex -ge 0 -and $selectedResultIndex -lt $totalResults) {
                         $result = $searchResults[$selectedResultIndex]
-                        Handle-AppSelection -appIndex ($searchResults.IndexOf($result) + 1) -categoryIndex $null
+                        Handle-AppSelection -appIndex ($selectedResultIndex + 1) -categoryIndex $null
                     } else {
                         Write-Host "Invalid selection, please try again." -ForegroundColor Red
                     }

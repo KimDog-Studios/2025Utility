@@ -16,6 +16,7 @@ $setServicesToManualUrl = $urls.urls.WPFSetServicesToManual.URL
 $removeAppXFilesUrl = $urls.urls.WPFRemoveAppX.URL
 $ultimatePerformanceUrl = $urls.urls.WPFUltimatePerformance.URL
 $darkModeUrl = $urls.urls.InvokeDarkMode.URL
+$mouseAccelerationUrl = $urls.urls.InvokeMouseAcceleration.URL
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {
@@ -87,7 +88,8 @@ function Show-MainMenu {
     Write-Host "2. Remove Bloatware [Windows 11 Only]" -ForegroundColor Green
     Write-Host "3. Add & Apply Ultimate Performance Mode" -ForegroundColor Green
     Write-Host "4. Apply Dark Mode to Windows" -ForegroundColor Green
-    Write-Host "5. Exit" -ForegroundColor Red
+    Write-Host "5. Disable Mouse Acceleration" -ForegroundColor Green
+    Write-Host "6. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
     Write-Host "`n"  # Reduced gap
 }
@@ -120,6 +122,13 @@ function Option4 {
     Run-ScriptFromUrl -Url $darkModeUrl
 }
 
+# Function for Option 5: Disable Mouse Acceleration
+function Option5 {
+    Clear-Host
+    Write-Host "You selected Option 5: Disable Mouse Acceleration" -ForegroundColor Green
+    Run-ScriptFromUrl -Url $mouseAccelerationUrl
+}
+
 # Function for invalid option
 function Show-InvalidOption {
     Clear-Host
@@ -137,7 +146,7 @@ while ($true) {
         "2" { Option2 }
         "3" { Option3 }
         "4" { Option4 }
-        "5" { Write-Host "Exiting..." -ForegroundColor Red; exit }
+        "6" { Write-Host "Exiting..." -ForegroundColor Red; exit }
         default { Show-InvalidOption }
     }
 }

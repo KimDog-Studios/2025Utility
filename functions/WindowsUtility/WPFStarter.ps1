@@ -106,36 +106,32 @@ function Create-Shortcut {
         [string]$ShortcutPath,
         [string]$TargetPath,
         [string]$Arguments = "",
-        [bool]$RunAsAdmin = $false
+        [bool]$RunAsAdmin = $true
     )
 
     # Prepare the Shortcut
     $WshShell = New-Object -comObject WScript.Shell
-    if (-not (Test-Path -Path $ShortcutPath)) {
-        $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
-        $Shortcut.TargetPath = $TargetPath
-        $Shortcut.Arguments = $Arguments
+    $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
+    $Shortcut.TargetPath = $TargetPath
+    $Shortcut.Arguments = $Arguments
 
-        # Add an icon if available
-        $iconUrl = "https://christitus.com/images/logo-full.ico"
-        $iconPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "logo.ico")
-        Invoke-WebRequest -Uri $iconUrl -OutFile $iconPath
-        $Shortcut.IconLocation = $iconPath
+    # Add an icon if available
+    $iconUrl = "https://christitus.com/images/logo-full.ico"
+    $iconPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "logo.ico")
+    Invoke-WebRequest -Uri $iconUrl -OutFile $iconPath
+    $Shortcut.IconLocation = $iconPath
 
-        # Save the Shortcut
-        $Shortcut.Save()
+    # Save the Shortcut
+    $Shortcut.Save()
 
-        # Set 'Run as administrator' if specified
-        if ($RunAsAdmin) {
-            $bytes = [System.IO.File]::ReadAllBytes($ShortcutPath)
-            $bytes[0x15] = $bytes[0x15] -bor 0x20
-            [System.IO.File]::WriteAllBytes($ShortcutPath, $bytes)
-        }
-
-        Write-Host "Shortcut '$ShortcutName' has been created at $ShortcutPath with 'Run as administrator' set to $RunAsAdmin"
-    } else {
-        Write-Host "Shortcut '$ShortcutName' already exists at $ShortcutPath"
+    # Set 'Run as administrator' if specified
+    if ($RunAsAdmin) {
+        $bytes = [System.IO.File]::ReadAllBytes($ShortcutPath)
+        $bytes[0x15] = $bytes[0x15] -bor 0x20
+        [System.IO.File]::WriteAllBytes($ShortcutPath, $bytes)
     }
+
+    Write-Host "Shortcut '$ShortcutName' has been created at $ShortcutPath with 'Run as administrator' set to $RunAsAdmin"
 }
 
 # Function to create a folder in the Start Menu and add a shortcut
@@ -144,7 +140,7 @@ function Create-ShortcutInStartMenu {
         [string]$ShortcutName,
         [string]$TargetPath,
         [string]$Arguments = "",
-        [bool]$RunAsAdmin = $false
+        [bool]$RunAsAdmin = $true
     )
 
     # Define the Start Menu folder path
@@ -162,19 +158,10 @@ function Create-ShortcutInStartMenu {
     Create-Shortcut -ShortcutName $ShortcutName -ShortcutPath $shortcutPath -TargetPath $TargetPath -Arguments $Arguments -RunAsAdmin $RunAsAdmin
 }
 
-# Function to determine PowerShell version and create a shortcut accordingly
+# Automatically create the shortcut in the Start Menu
 function Create-WinUtilShortcut {
-    # Check if PowerShell 7 is available
-    $pwshPath = Get-Command "pwsh" -ErrorAction SilentlyContinue
-    if ($pwshPath -ne $null) {
-        # Use PowerShell 7
-        $shell = "pwsh.exe"
-        $shellArgs = "-Command `"Start-Process pwsh.exe -Verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'`"" 
-    } else {
-        # Fall back to PowerShell 5
-        $shell = "powershell.exe"
-        $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process powershell.exe -Verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'`"" 
-    }
+    $shell = if (Get-Command "pwsh" -ErrorAction SilentlyContinue) { "powershell.exe" }
+    $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'"
 
     # Create the shortcut in the Start Menu folder
     Create-ShortcutInStartMenu -ShortcutName "KimDog's Windows Utility" -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
@@ -182,23 +169,6 @@ function Create-WinUtilShortcut {
 
 # Call the shortcut creation function
 Create-WinUtilShortcut
-
-function Execute-ScriptFromUrl {
-    param (
-        [string]$url
-    )
-
-    try {
-        $scriptContent = Invoke-RestMethod -Uri $url -Method Get
-
-        if ($scriptContent) {
-            # Execute the fetched script content
-            Invoke-Expression $scriptContent
-        }
-    } catch {
-        Write-Host "An error occurred while fetching or executing the script from ${url}: ${_}" -ForegroundColor Red
-    }
-
 
 function Execute-ScriptFromUrl {
     param (

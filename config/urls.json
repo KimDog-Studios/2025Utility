@@ -26,6 +26,9 @@
         },
         "InvokeMouseAcceleration": {
             "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-MouseAcceleration.ps1"
+        },
+        "WPFGamingOptimization": {
+            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFGamingOptimization.ps1"
         }
     }
 }

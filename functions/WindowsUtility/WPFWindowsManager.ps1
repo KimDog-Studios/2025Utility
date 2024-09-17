@@ -17,6 +17,7 @@ $removeAppXFilesUrl = $urls.urls.WPFRemoveAppX.URL
 $ultimatePerformanceUrl = $urls.urls.WPFUltimatePerformance.URL
 $darkModeUrl = $urls.urls.InvokeDarkMode.URL
 $mouseAccelerationUrl = $urls.urls.InvokeMouseAcceleration.URL
+$gamingOptimizationUrll = $urls.urls.WPFGamingOptimization.URL
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {

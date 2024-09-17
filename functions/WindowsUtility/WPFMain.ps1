@@ -1,8 +1,3 @@
-if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-    Write-Host "This script requires running as Administrator." -ForegroundColor Red
-    exit
-}
-
 # Function to align header text
 function Align-Header {
     param (

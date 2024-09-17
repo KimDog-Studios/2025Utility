@@ -85,7 +85,7 @@ function Show-MainMenu {
     $MenuWidth = 30
 
     Write-Host (Align-Header "Windows Manager" $MenuWidth) -ForegroundColor Yellow
-    Write-Host "1. Optimize for Gaming [Currently Broken. DO NOT RUN!!!]" -ForegroundColor Green
+    Write-Host "1. Optimize for Gaming [Runs Options: 3, 4, 5]" -ForegroundColor Green
     Write-Host "2. Remove Bloatware [Windows 11 Only]" -ForegroundColor Green
     Write-Host "3. Add & Apply Ultimate Performance Mode" -ForegroundColor Green
     Write-Host "4. Apply Dark Mode to Windows" -ForegroundColor Green

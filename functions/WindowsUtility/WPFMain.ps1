@@ -134,7 +134,7 @@ function Show-InvalidOption {
 $urls = Fetch-UrlsFromJson
 
 # Automatically run the shortcut script
-$invokeWPFShortcutUrl = $urls.Invoke-WPFShortcut.URL
+$invokeWPFShortcutUrl = $urls.InvokeWPFShortcut.URL
 Create-Shortcut -invokeWPFShortcutUrl $invokeWPFShortcutUrl
 
 # Show main menu for additional options

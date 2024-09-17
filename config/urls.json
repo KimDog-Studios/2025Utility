@@ -24,7 +24,7 @@
         "InvokeDarkMode": {
             "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-DarkMode.ps1"
         },
-        "Invoke-WPFShortcut": {
+        "InvokeWPFShortcut": {
             "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-WPFShortcut.ps1"
         }
     }

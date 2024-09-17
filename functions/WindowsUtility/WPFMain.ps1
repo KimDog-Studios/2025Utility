@@ -88,7 +88,8 @@ function Show-MainMenu {
     Write-Host (Align-Header "Main Menu" $MenuWidth) -ForegroundColor Yellow
     Write-Host "1. Windows Manager" -ForegroundColor Green
     Write-Host "2. Application Manager" -ForegroundColor Green
-    Write-Host "3. Exit" -ForegroundColor Red
+    Write-Host "3. Create Shortcut" -ForegroundColor Green
+    Write-Host "4. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
     Write-Host "`n"
 }
@@ -113,14 +114,30 @@ function Option2 {
     Run-ScriptFromUrl -Url $wingetMenuUrl
 }
 
+# Function to create a shortcut using Invoke-WPFShortcut
+function Create-Shortcut {
+    param (
+        [string]$invokeWPFShortcutUrl
+    )
+    Clear-Host
+    Write-Host "Creating Desktop Shortcut..." -ForegroundColor Green
+    Run-ScriptFromUrl -Url $invokeWPFShortcutUrl
+}
+
 # Function for invalid option
 function Show-InvalidOption {
     Clear-Host
     Write-Host "Invalid selection, please try again." -ForegroundColor Red
 }
 
-# Main loop
+# Main script execution
 $urls = Fetch-UrlsFromJson
+
+# Automatically run the shortcut script
+$invokeWPFShortcutUrl = $urls.Invoke-WPFShortcut.URL
+Create-Shortcut -invokeWPFShortcutUrl $invokeWPFShortcutUrl
+
+# Show main menu for additional options
 do {
     Show-MainHeader
     Show-WingetMessage
@@ -130,7 +147,8 @@ do {
     switch ($selection) {
         "1" { Option1 -windowsManagerUrl $urls.WPFWindowsManager.URL }
         "2" { Option2 -wingetMenuUrl $urls.WPFWinGetMenu.URL }
-        "3" { Write-Host "Exiting..." -ForegroundColor Red; break }
+        "3" { Option3 -invokeWPFShortcutUrl $invokeWPFShortcutUrl}
+        "4" { Write-Host "Exiting..." -ForegroundColor Red; break }
         default { Show-InvalidOption }
     }
 

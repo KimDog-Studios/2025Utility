@@ -12,7 +12,6 @@ try {
 }
 
 # Access the URLs from the parsed JSON
-$setServicesToManualUrl = $urls.urls.WPFSetServicesToManual.URL
 $removeAppXFilesUrl = $urls.urls.WPFRemoveAppX.URL
 $ultimatePerformanceUrl = $urls.urls.WPFUltimatePerformance.URL
 $darkModeUrl = $urls.urls.InvokeDarkMode.URL

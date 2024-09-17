@@ -12,9 +12,6 @@
         "ChocoInstall": {
             "URL": "https://community.chocolatey.org/install.ps1"
         },
-        "WPFSetServicesToManual": {
-            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFSetServicesToManual.ps1"
-        },
         "WPFRemoveAppX": {
             "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFRemoveAppX.ps1"
         },

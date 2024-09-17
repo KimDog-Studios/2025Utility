@@ -1,22 +1,16 @@
 {
-    "urls": [
-      {
-        "WPFMain": [
-          {
+    "urls": {
+        "WPFMain": {
             "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFMain.ps1"
-          }
-        ],
-        "WPFWinGetMenu": [
-            {
-                "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFWinGetMenu.ps1"
-            }
-        ],
-        "WPFWindowsManager": [
-            {
-                "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFWindowsManager.ps1"
-            }
-        ]
-      }
-    ]
+        },
+        "WPFWinGetMenu": {
+            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFWinGetMenu.ps1"
+        },
+        "WPFWindowsManager": {
+            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFWindowsManager.ps1"
+        },
+        "ChocoInstall": {
+            "URL": "https://community.chocolatey.org/install.ps1"
+        }
+    }
 }
-  

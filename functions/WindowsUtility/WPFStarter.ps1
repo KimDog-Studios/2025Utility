@@ -30,15 +30,6 @@ function Test-WinUtilChocoInstalled {
 
 # Function to install Winget
 function Install-WinUtilWinget {
-    <#
-
-    .SYNOPSIS
-        Installs Winget if it is not already installed.
-
-    .DESCRIPTION
-        This function will download the latest version of Winget and install it. If Winget is already installed, it will do nothing.
-    #>
-
     $isWingetInstalled = Test-WinUtilWingetInstalled
 
     try {
@@ -87,11 +78,6 @@ function Install-WinUtilWinget {
 
 # Function to install Chocolatey
 function Install-WinUtilChoco {
-    <#
-    .SYNOPSIS
-        Installs Chocolatey if it is not already installed
-    #>
-
     try {
         Write-Host "Checking if Chocolatey is Installed..."
 
@@ -104,7 +90,7 @@ function Install-WinUtilChoco {
         Write-Host "Seems Chocolatey is not installed, installing now."
         Set-ExecutionPolicy Bypass -Scope Process -Force
         [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString($urls.ChocoInstall.URL))
 
     } catch {
         Write-Host "===========================================" -Foregroundcolor Red
@@ -113,20 +99,54 @@ function Install-WinUtilChoco {
     }
 }
 
-# Main script starts here
-Install-WinUtilWinget
-Install-WinUtilChoco
+function Execute-ScriptFromUrl {
+    param (
+        [string]$url
+    )
 
-# Define the URL of the script to execute
-$scriptUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFMain.ps1"
+    try {
+        $scriptContent = Invoke-RestMethod -Uri $url -Method Get
 
-try {
-    $scriptContent = Invoke-RestMethod -Uri $scriptUrl -Method Get
-
-    if ($scriptContent) {
-        # Execute the fetched script content
-        Invoke-Expression $scriptContent
+        if ($scriptContent) {
+            # Execute the fetched script content
+            Invoke-Expression $scriptContent
+        }
+    } catch {
+        Write-Host "An error occurred while fetching or executing the script from ${url}: ${_}" -ForegroundColor Red
     }
-} catch {
-    Write-Host "An error occurred: $_" -ForegroundColor Red
+}
+
+# Function to get the URLs from the JSON file
+function Get-URLsFromJson {
+    param (
+        [string]$jsonUrl
+    )
+
+    try {
+        # Fetch the JSON from the provided URL
+        $jsonContent = Invoke-RestMethod -Uri $jsonUrl -Method Get
+
+        if ($jsonContent) {
+            return $jsonContent.urls
+        }
+    } catch {
+        Write-Host "An error occurred while fetching the JSON: $_" -ForegroundColor Red
+    }
+}
+
+# Main script starts here
+$urlsJson = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/urls.json"
+
+# Fetch URLs from the JSON file
+$urls = Get-URLsFromJson -jsonUrl $urlsJson
+
+if ($urls) {
+    # Install Winget and Chocolatey
+    Install-WinUtilWinget
+    Install-WinUtilChoco
+
+    # Execute the scripts dynamically based on the URLs in the JSON
+    Execute-ScriptFromUrl -url $urls.WPFMain.URL
+    Execute-ScriptFromUrl -url $urls.WPFWinGetMenu.URL
+    Execute-ScriptFromUrl -url $urls.WPFWindowsManager.URL
 }

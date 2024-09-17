@@ -118,7 +118,7 @@ Install-WinUtilWinget
 Install-WinUtilChoco
 
 # Define the URL of the script to execute
-$scriptUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/public/WPFMain.ps1"
+$scriptUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFMain.ps1"
 
 try {
     $scriptContent = Invoke-RestMethod -Uri $scriptUrl -Method Get

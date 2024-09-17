@@ -1,8 +1,8 @@
 # Define the URLs of the scripts to execute
-$setServicesToManualUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/Windows/WPFSetServicesToManual.ps1"
-$removeAppXFilesUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/Windwos/WPFRemoveAppX.ps1"
-$ultimatePerormanceUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/Windows/WPFUltimatePerformance.ps1"
-$darkModeUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/Windows/Invoke-DarkMode.ps1"
+$setServicesToManualUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFSetServicesToManual.ps1"
+$removeAppXFilesUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windwos/WPFRemoveAppX.ps1"
+$ultimatePerormanceUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFUltimatePerformance.ps1"
+$darkModeUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-DarkMode.ps1"
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {
@@ -60,7 +60,7 @@ function Show-MainHeader {
         Write-Host "$topBottomBorder" -ForegroundColor Cyan
     }
 
-    Draw-Box -Text "KimDog's Windows Manager Menu | Last Updated: 2024-09-15"
+    Draw-Box -Text "KimDog's Windows Manager Menu | Last Updated: 2024-09-17"
     Write-Host "`n"
 }
 

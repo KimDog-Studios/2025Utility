@@ -20,7 +20,7 @@ Function Invoke-WPFUltimatePerformance {
 
             $guid = $null
             $nameFromFile = "KimDog - Ultimate Power Plan"
-            $description = "Ultimate Power Plan, added via KimDog's Utility"
+            $description = "Ultimate Power Plan, added via WinUtils"
 
             # Extract the new GUID from the duplicateOutput
             foreach ($line in $duplicateOutput) {

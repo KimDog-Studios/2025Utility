@@ -99,6 +99,53 @@ function Install-WinUtilChoco {
     }
 }
 
+# Function to create a shortcut without dialogs
+function Create-Shortcut {
+    param(
+        [string]$ShortcutName,
+        [string]$ShortcutPath,
+        [string]$TargetPath,
+        [string]$Arguments = "",
+        [bool]$RunAsAdmin = $false
+    )
+
+    # Prepare the Shortcut
+    $WshShell = New-Object -comObject WScript.Shell
+    $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
+    $Shortcut.TargetPath = $TargetPath
+    $Shortcut.Arguments = $Arguments
+
+    # Add an icon if available
+    $iconUrl = "https://christitus.com/images/logo-full.ico"
+    $iconPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "logo.ico")
+    Invoke-WebRequest -Uri $iconUrl -OutFile $iconPath
+    $Shortcut.IconLocation = $iconPath
+
+    # Save the Shortcut
+    $Shortcut.Save()
+
+    # Set 'Run as administrator' if specified
+    if ($RunAsAdmin) {
+        $bytes = [System.IO.File]::ReadAllBytes($ShortcutPath)
+        $bytes[0x15] = $bytes[0x15] -bor 0x20
+        [System.IO.File]::WriteAllBytes($ShortcutPath, $bytes)
+    }
+
+    Write-Host "Shortcut '$ShortcutName' has been created at $ShortcutPath with 'Run as administrator' set to $RunAsAdmin"
+}
+
+# Automatically create the shortcut
+function Create-WinUtilShortcut {
+    $desktopPath = [System.IO.Path]::Combine([Environment]::GetFolderPath('Desktop'), "KimDog's Windows Utility.lnk")
+    $shell = if (Get-Command "pwsh" -ErrorAction SilentlyContinue) { "powershell.exe" }
+    $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'"
+
+    Create-Shortcut -ShortcutName "KimDog's Windows Utility" -ShortcutPath $desktopPath -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
+}
+
+# Call the shortcut creation function
+Create-WinUtilShortcut
+
 function Execute-ScriptFromUrl {
     param (
         [string]$url

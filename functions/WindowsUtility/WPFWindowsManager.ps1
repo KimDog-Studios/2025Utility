@@ -1,8 +1,21 @@
-# Define the URLs of the scripts to execute
-$setServicesToManualUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFSetServicesToManual.ps1"
-$removeAppXFilesUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windwos/WPFRemoveAppX.ps1"
-$ultimatePerormanceUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFUltimatePerformance.ps1"
-$darkModeUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-DarkMode.ps1"
+# Define the URL for the JSON file containing script URLs
+$jsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/urls.json"
+
+# Fetch the JSON and parse it
+try {
+    Write-Host "Fetching URLs from JSON..." -ForegroundColor Cyan
+    $urls = Invoke-RestMethod -Uri $jsonUrl -Method Get -ErrorAction Stop
+    Write-Host "URLs successfully loaded." -ForegroundColor Green
+} catch {
+    Write-Host "Failed to fetch or parse the JSON: ${_}" -ForegroundColor Red
+    exit
+}
+
+# Access the URLs from the parsed JSON
+$setServicesToManualUrl = $urls.urls.WPFSetServicesToManual.URL
+$removeAppXFilesUrl = $urls.urls.WPFRemoveAppX.URL
+$ultimatePerformanceUrl = $urls.urls.WPFUltimatePerformance.URL
+$darkModeUrl = $urls.urls.InvokeDarkMode.URL
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {
@@ -21,7 +34,7 @@ function Run-ScriptFromUrl {
             Write-Host "No script content received." -ForegroundColor Yellow
         }
     } catch {
-        Write-Host "Failed to fetch or execute script: $_" -ForegroundColor Red
+        Write-Host "Failed to fetch or execute script: ${_}" -ForegroundColor Red
     }
 }
 
@@ -41,6 +54,7 @@ function Align-Header {
     $AlignedText
 }
 
+# Function to show the main header
 function Show-MainHeader {
     Clear-Host
 
@@ -78,31 +92,33 @@ function Show-MainMenu {
     Write-Host "`n"  # Reduced gap
 }
 
-# Function for Option 1
+# Function for Option 1: Optimize for Gaming
 function Option1 {
     Clear-Host
     Write-Host "You selected Option 1: Optimize for Gaming" -ForegroundColor Green
     Run-ScriptFromUrl -Url $setServicesToManualUrl
 }
 
-# Function for Option 2
+# Function for Option 2: Remove Bloatware
 function Option2 {
     Clear-Host
     Write-Host "You selected Option 2: Remove Bloatware" -ForegroundColor Green
     Run-ScriptFromUrl -Url $removeAppXFilesUrl
 }
 
+# Function for Option 3: Add & Apply Ultimate Performance Mode
 function Option3 {
     Clear-Host
     Write-Host "You selected Option 3: Add & Apply Ultimate Performance Mode" -ForegroundColor Green
-    Run-ScriptFromUrl -Url $ultimatePerormanceUrl
+    Run-ScriptFromUrl -Url $ultimatePerformanceUrl
 }
 
-# Function for Option 4
+# Function for Option 4: Apply Dark Mode to Windows
 function Option4 {
     Clear-Host
     Write-Host "You selected Option 4: Apply Dark Mode to Windows" -ForegroundColor Green
     Run-ScriptFromUrl -Url $darkModeUrl
+}
 
 # Function for invalid option
 function Show-InvalidOption {

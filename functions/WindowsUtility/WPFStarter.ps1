@@ -167,8 +167,57 @@ function Create-WinUtilShortcut {
     Create-ShortcutInStartMenu -ShortcutName "KimDog's Windows Utility" -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
 }
 
+# Function to create a shortcut on the desktop
+function Create-DesktopShortcut {
+    param(
+        [string]$ShortcutName,
+        [string]$TargetPath,
+        [string]$Arguments = "",
+        [bool]$RunAsAdmin = $true
+    )
+
+    # Define the path for the desktop
+    $desktopPath = [System.IO.Path]::Combine([System.Environment]::GetFolderPath('Desktop'), "$ShortcutName.lnk")
+
+    # Prepare the Shortcut
+    $WshShell = New-Object -comObject WScript.Shell
+    $Shortcut = $WshShell.CreateShortcut($desktopPath)
+    $Shortcut.TargetPath = $TargetPath
+    $Shortcut.Arguments = $Arguments
+
+    # Add an icon if available
+    $iconUrl = "https://christitus.com/images/logo-full.ico"
+    $iconPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "logo.ico")
+    Invoke-WebRequest -Uri $iconUrl -OutFile $iconPath
+    $Shortcut.IconLocation = $iconPath
+
+    # Save the Shortcut
+    $Shortcut.Save()
+
+    # Set 'Run as administrator' if specified
+    if ($RunAsAdmin) {
+        $bytes = [System.IO.File]::ReadAllBytes($desktopPath)
+        $bytes[0x15] = $bytes[0x15] -bor 0x20
+        [System.IO.File]::WriteAllBytes($desktopPath, $bytes)
+    }
+
+    Write-Host "Shortcut '$ShortcutName' has been created on the desktop with 'Run as administrator' set to $RunAsAdmin"
+}
+
+# Function to automatically create shortcuts in both the Start Menu and the Desktop
+function Create-WinUtilShortcuts {
+    $shell = if (Get-Command "pwsh" -ErrorAction SilentlyContinue) { "powershell.exe" }
+    $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'"
+
+    # Create the shortcut in the Start Menu folder
+    Create-ShortcutInStartMenu -ShortcutName "KimDog's Windows Utility" -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
+
+    # Create the shortcut on the desktop
+    Create-DesktopShortcut -ShortcutName "KimDog's Windows Utility" -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
+}
+
 # Call the shortcut creation function
-Create-WinUtilShortcut
+Create-WinUtilShortcuts
 
 function Execute-ScriptFromUrl {
     param (

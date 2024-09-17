@@ -1,6 +1,7 @@
 # Define the URLs of the scripts to execute
 $setServicesToManualUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/WPFSetServicesToManual.ps1"
 $removeAppXFilesUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/WPFRemoveAppX.ps1"
+$ultimatePerormance = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/WPFUltimatePerformance.ps1"
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {
@@ -68,8 +69,9 @@ function Show-MainMenu {
 
     Write-Host (Align-Header "Windows Manager" $MenuWidth) -ForegroundColor Yellow
     Write-Host "1. Optimize for Gaming" -ForegroundColor Green
-    Write-Host "2. Remove Bloatware" -ForegroundColor Green
-    Write-Host "3. Exit" -ForegroundColor Red
+    Write-Host "2. Remove Bloatware [Windows 11]" -ForegroundColor Green
+    Write-Host "3. Add & Apply Ultimate Performance Mode" -ForegroundColor Green
+    Write-Host "4. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
     Write-Host "`n"  # Reduced gap
 }
@@ -88,6 +90,12 @@ function Option2 {
     Run-ScriptFromUrl -Url $removeAppXFilesUrl
 }
 
+function Option3 {
+    Clear-Host
+    Write-Host "You selected Option 3: Add & Apply Ultimate Performance Mode" -ForegroundColor Green
+    Run-ScriptFromUrl -Url $ultimatePerormance
+}
+
 # Function for invalid option
 function Show-InvalidOption {
     Clear-Host
@@ -103,7 +111,8 @@ while ($true) {
     switch ($selection) {
         "1" { Option1 }
         "2" { Option2 }
-        "3" { Write-Host "Exiting..." -ForegroundColor Red; break }
+        "3" { Option3 }
+        "4" { Write-Host "Exiting..." -ForegroundColor Red; exit }
         default { Show-InvalidOption }
     }
 }

@@ -96,7 +96,7 @@ function Show-MainMenu {
 
 # Function for Option 1: Optimize for Gaming
 function Option1 {
-    Clear-Host
+    #Clear-Host
     Write-Host "You selected Option 1: Optimize for Gaming" -ForegroundColor Green
     Run-ScriptFromUrl -Url $setServicesToManualUrl
 }

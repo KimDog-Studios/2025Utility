@@ -23,6 +23,9 @@
         },
         "InvokeDarkMode": {
             "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-DarkMode.ps1"
+        },
+        "Invoke-MouseAcceleration": {
+            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-MouseAcceleration.ps1"
         }
     }
 }

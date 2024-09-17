@@ -153,15 +153,19 @@ function Invoke-WPFShortcut {
     Write-Host "Shortcut for $ShortcutToAdd has been saved to $($FileBrowser.FileName) with 'Run as administrator' set to $RunAsAdmin"
 }
 
-# Function to show the main menu
+# Automatically run the shortcut creation function
+$urls = Fetch-UrlsFromJson
+$invokeWPFShortcutUrl = $urls.InvokeWPFShortcut.URL
+Invoke-WPFShortcut -ShortcutToAdd "WinUtil" -RunAsAdmin $true
+
+# Show the main menu for additional options
 function Show-MainMenu {
     $MenuWidth = 30
 
     Write-Host (Align-Header "Main Menu" $MenuWidth) -ForegroundColor Yellow
     Write-Host "1. Windows Manager" -ForegroundColor Green
     Write-Host "2. Application Manager" -ForegroundColor Green
-    Write-Host "3. Create Shortcut" -ForegroundColor Green
-    Write-Host "4. Exit" -ForegroundColor Red
+    Write-Host "3. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
     Write-Host "`n"
 }
@@ -186,16 +190,6 @@ function Option2 {
     Run-ScriptFromUrl -Url $wingetMenuUrl
 }
 
-# Function for Option 3: Create Shortcut
-function Option3 {
-    param (
-        [string]$invokeWPFShortcutUrl
-    )
-    Clear-Host
-    Write-Host "Creating Desktop Shortcut..." -ForegroundColor Green
-    Invoke-ScriptFromUrl -Url $invokeWPFShortcutUrl
-}
-
 # Function for invalid option
 function Show-InvalidOption {
     Clear-Host
@@ -203,13 +197,6 @@ function Show-InvalidOption {
 }
 
 # Main script execution
-$urls = Fetch-UrlsFromJson
-
-# Automatically run the shortcut creation function
-$invokeWPFShortcutUrl = $urls.InvokeWPFShortcut.URL
-Invoke-WPFShortcut -ShortcutToAdd "WinUtil" -RunAsAdmin $true
-
-# Show main menu for additional options
 do {
     Show-MainHeader
     Show-WingetMessage
@@ -219,8 +206,7 @@ do {
     switch ($selection) {
         "1" { Option1 -windowsManagerUrl $urls.WPFWindowsManager.URL }
         "2" { Option2 -wingetMenuUrl $urls.WPFWinGetMenu.URL }
-        "3" { Option3 -invokeWPFShortcutUrl $urls.Invoke-WPFShortcut.URL }
-        "4" { Write-Host "Exiting..." -ForegroundColor Red; break }
+        "3" { Write-Host "Exiting..." -ForegroundColor Red; break }
         default { Show-InvalidOption }
     }
 

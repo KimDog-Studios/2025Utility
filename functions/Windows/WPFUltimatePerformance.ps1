@@ -1,8 +1,7 @@
-Function Invoke-WPFUltimatePerformance {
+function Invoke-WPFUltimatePerformance {
     <#
-
     .SYNOPSIS
-        Enables or disables the Ultimate Performance power scheme based on its GUID.
+        Enables or disables the Ultimate Performance power scheme based on its GUID and sets display timeout to never.
 
     .PARAMETER State
         Specifies whether to "Enable" or "Disable" the Ultimate Performance power scheme.
@@ -46,7 +45,12 @@ Function Invoke-WPFUltimatePerformance {
             Write-Output "The power plan has been set as active. Output:"
             Write-Output $setActiveOutput
 
+            # Set the display timeout to 0 (never turn off)
+            powercfg /change monitor-timeout-ac 0
+            powercfg /change monitor-timeout-dc 0
+
             Write-Host "> Ultimate Performance plan installed and set as active."
+            Write-Host "> Display timeout has been set to never turn off."
 
         } elseif ($State -eq "Disable") {
             # Check if the Ultimate Performance plan is installed by GUID

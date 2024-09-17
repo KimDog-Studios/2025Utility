@@ -19,8 +19,8 @@ Function Invoke-WPFUltimatePerformance {
             $duplicateOutput = powercfg /duplicatescheme $ultimateGUID
 
             $guid = $null
-            $nameFromFile = "KimDog - Ultimate Power Plan"
-            $description = "Ultimate Power Plan, added via WinUtils"
+            $nameFromFile = "KimDog's - Ultimate Power Plan"
+            $description = "Ultimate Power Plan, added via KimDog's Utility"
 
             # Extract the new GUID from the duplicateOutput
             foreach ($line in $duplicateOutput) {
@@ -73,3 +73,6 @@ Function Invoke-WPFUltimatePerformance {
         Write-Error "Error occurred: $_"
     }
 }
+
+# Example usage
+Invoke-WPFUltimatePerformance -State Enable

@@ -28,3 +28,6 @@ function Invoke-WinUtilMouseAcceleration {
         Write-Warning "An unexpected error occurred: ${_}"
     }
 }
+
+# Example usage
+Invoke-WinUtilMouseAcceleration

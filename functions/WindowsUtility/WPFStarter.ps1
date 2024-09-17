@@ -106,7 +106,7 @@ function Create-Shortcut {
         [string]$ShortcutPath,
         [string]$TargetPath,
         [string]$Arguments = "",
-        [bool]$RunAsAdmin = $true
+        [bool]$RunAsAdmin = $false
     )
 
     # Prepare the Shortcut
@@ -140,7 +140,7 @@ function Create-ShortcutInStartMenu {
         [string]$ShortcutName,
         [string]$TargetPath,
         [string]$Arguments = "",
-        [bool]$RunAsAdmin = $true
+        [bool]$RunAsAdmin = $false
     )
 
     # Define the Start Menu folder path
@@ -158,10 +158,19 @@ function Create-ShortcutInStartMenu {
     Create-Shortcut -ShortcutName $ShortcutName -ShortcutPath $shortcutPath -TargetPath $TargetPath -Arguments $Arguments -RunAsAdmin $RunAsAdmin
 }
 
-# Automatically create the shortcut in the Start Menu
+# Function to determine PowerShell version and create a shortcut accordingly
 function Create-WinUtilShortcut {
-    $shell = if (Get-Command "pwsh" -ErrorAction SilentlyContinue) { "powershell.exe" }
-    $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'"
+    # Check if PowerShell 7 is available
+    $pwshPath = Get-Command "pwsh" -ErrorAction SilentlyContinue
+    if ($pwshPath -ne $null) {
+        # Use PowerShell 7
+        $shell = "pwsh.exe"
+        $shellArgs = "-Command `"Start-Process pwsh.exe -Verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'`""
+    } else {
+        # Fall back to PowerShell 5
+        $shell = "powershell.exe"
+        $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process powershell.exe -Verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'`""
+    }
 
     # Create the shortcut in the Start Menu folder
     Create-ShortcutInStartMenu -ShortcutName "KimDog's Windows Utility" -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true

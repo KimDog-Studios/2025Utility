@@ -16,7 +16,7 @@ $removeAppXFilesUrl = $urls.urls.WPFRemoveAppX.URL
 $ultimatePerformanceUrl = $urls.urls.WPFUltimatePerformance.URL
 $darkModeUrl = $urls.urls.InvokeDarkMode.URL
 $mouseAccelerationUrl = $urls.urls.InvokeMouseAcceleration.URL
-$gamingOptimizationUrll = $urls.urls.WPFGamingOptimization.URL
+$gamingOptimizationUrl = $urls.urls.WPFGamingOptimization.URL
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {
@@ -96,43 +96,49 @@ function Show-MainMenu {
 
 # Function for Option 1: Optimize for Gaming
 function Option1 {
-    #Clear-Host
     Write-Host "You selected Option 1: Optimize for Gaming" -ForegroundColor Green
-    Run-ScriptFromUrl -Url $setServicesToManualUrl
+    Run-ScriptFromUrl -Url $gamingOptimizationUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
 }
 
 # Function for Option 2: Remove Bloatware
 function Option2 {
-    Clear-Host
     Write-Host "You selected Option 2: Remove Bloatware" -ForegroundColor Green
     Run-ScriptFromUrl -Url $removeAppXFilesUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
 }
 
 # Function for Option 3: Add & Apply Ultimate Performance Mode
 function Option3 {
-    Clear-Host
     Write-Host "You selected Option 3: Add & Apply Ultimate Performance Mode" -ForegroundColor Green
     Run-ScriptFromUrl -Url $ultimatePerformanceUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
 }
 
 # Function for Option 4: Apply Dark Mode to Windows
 function Option4 {
-    Clear-Host
     Write-Host "You selected Option 4: Apply Dark Mode to Windows" -ForegroundColor Green
     Run-ScriptFromUrl -Url $darkModeUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
 }
 
 # Function for Option 5: Disable Mouse Acceleration
 function Option5 {
-    Clear-Host
     Write-Host "You selected Option 5: Disable Mouse Acceleration" -ForegroundColor Green
     Run-ScriptFromUrl -Url $mouseAccelerationUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
 }
 
 # Function for invalid option
 function Show-InvalidOption {
-    Clear-Host
     Write-Host "Invalid selection, please try again." -ForegroundColor Red
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
 }
 
 # Main loop

@@ -1,7 +1,8 @@
 # Define the URLs of the scripts to execute
 $setServicesToManualUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/WPFSetServicesToManual.ps1"
 $removeAppXFilesUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/WPFRemoveAppX.ps1"
-$ultimatePerormance = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/WPFUltimatePerformance.ps1"
+$ultimatePerormanceUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/private/WPFUltimatePerformance.ps1"
+$darkModeUrl = ""
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {
@@ -71,7 +72,8 @@ function Show-MainMenu {
     Write-Host "1. Optimize for Gaming" -ForegroundColor Green
     Write-Host "2. Remove Bloatware [Windows 11]" -ForegroundColor Green
     Write-Host "3. Add & Apply Ultimate Performance Mode" -ForegroundColor Green
-    Write-Host "4. Exit" -ForegroundColor Red
+    Write-Host "4. Apply Dark Mode to Windows" -ForegroundColor Green
+    Write-Host "5. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
     Write-Host "`n"  # Reduced gap
 }
@@ -93,8 +95,14 @@ function Option2 {
 function Option3 {
     Clear-Host
     Write-Host "You selected Option 3: Add & Apply Ultimate Performance Mode" -ForegroundColor Green
-    Run-ScriptFromUrl -Url $ultimatePerormance
+    Run-ScriptFromUrl -Url $ultimatePerormanceUrl
 }
+
+# Function for Option 4
+function Option4 {
+    Clear-Host
+    Write-Host "You selected Option 4: Apply Dark Mode to Windows" -ForegroundColor Green
+    Run-ScriptFromUrl -Url $darkModeUrl
 
 # Function for invalid option
 function Show-InvalidOption {
@@ -112,7 +120,8 @@ while ($true) {
         "1" { Option1 }
         "2" { Option2 }
         "3" { Option3 }
-        "4" { Write-Host "Exiting..." -ForegroundColor Red; exit }
+        "4" { Option4 }
+        "5" { Write-Host "Exiting..." -ForegroundColor Red; exit }
         default { Show-InvalidOption }
     }
 }

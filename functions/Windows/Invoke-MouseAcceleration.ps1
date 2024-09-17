@@ -1,7 +1,7 @@
 function Invoke-WinUtilMouseAcceleration {
     <#
     .SYNOPSIS
-        Disables Mouse Acceleration
+        Disables Mouse Acceleration and waits for user confirmation.
 
     #>
     try {
@@ -17,6 +17,9 @@ function Invoke-WinUtilMouseAcceleration {
         Set-ItemProperty -Path $Path -Name MouseThreshold2 -Value $MouseThreshold2
         
         Write-Host "Mouse Acceleration has been disabled." -ForegroundColor Green
+        
+        # Wait for user to press Enter
+        Read-Host -Prompt "Press Enter to continue..."
     } catch [System.Security.SecurityException] {
         Write-Warning "Unable to set mouse acceleration settings due to a Security Exception."
     } catch [System.Management.Automation.ItemNotFoundException] {

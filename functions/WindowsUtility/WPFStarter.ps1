@@ -90,7 +90,7 @@ function Install-WinUtilChoco {
         Write-Host "Seems Chocolatey is not installed, installing now."
         Set-ExecutionPolicy Bypass -Scope Process -Force
         [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString($urls.ChocoInstall.URL))
+        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString($urls.ChocoInstall))
 
     } catch {
         Write-Host "===========================================" -Foregroundcolor Red

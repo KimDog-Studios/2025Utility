@@ -81,6 +81,78 @@ function Run-ScriptFromUrl {
     }
 }
 
+# Function to create a shortcut using Invoke-WPFShortcut
+function Invoke-WPFShortcut {
+    <#
+
+    .SYNOPSIS
+        Creates a shortcut and prompts for a save location
+
+    .PARAMETER ShortcutToAdd
+        The name of the shortcut to add
+
+    .PARAMETER RunAsAdmin
+        A boolean value to make 'Run as administrator' property on (true) or off (false), defaults to off
+
+    #>
+    param(
+        $ShortcutToAdd,
+        [bool]$RunAsAdmin = $false
+    )
+
+    # Prepare the Shortcut Fields and add a Custom Icon if it's available, else don't add a Custom Icon.
+    Switch ($ShortcutToAdd) {
+        "WinUtil" {
+            # Use Powershell 7 if installed and fallback to PS5 if not
+            if (Get-Command "pwsh" -ErrorAction SilentlyContinue) {
+                $shell = "pwsh.exe"
+            } else {
+                $shell = "powershell.exe"
+            }
+
+            $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'"
+            $DestinationName = "KimDog's Windows Utility.lnk"
+        }
+    }
+
+    # Show a File Dialog Browser, to let the User choose the Name and Location of where to save the Shortcut
+    $FileBrowser = New-Object System.Windows.Forms.SaveFileDialog
+    $FileBrowser.InitialDirectory = [Environment]::GetFolderPath('Desktop')
+    $FileBrowser.Filter = "Shortcut Files (*.lnk)|*.lnk"
+    $FileBrowser.FileName = $DestinationName
+
+    # Do an Early Return if the Save Operation was canceled by User's Input.
+    $FileBrowserResult = $FileBrowser.ShowDialog()
+    $DialogResultEnum = New-Object System.Windows.Forms.DialogResult
+    if (-not ($FileBrowserResult -eq $DialogResultEnum::OK)) {
+        return
+    }
+
+    # Prepare the Shortcut parameter
+    $WshShell = New-Object -comObject WScript.Shell
+    $Shortcut = $WshShell.CreateShortcut($FileBrowser.FileName)
+    $Shortcut.TargetPath = $shell
+    $Shortcut.Arguments = $shellArgs
+    if (-NOT (Test-Path -Path $winutildir["logo.ico"])) {
+        Invoke-WebRequest -Uri "https://christitus.com/images/logo-full.ico" -OutFile $winutildir["logo.ico"]
+    }
+    if (Test-Path -Path $winutildir["logo.ico"]) {
+        $Shortcut.IconLocation = $winutildir["logo.ico"]
+    }
+
+    # Save the Shortcut to disk
+    $Shortcut.Save()
+
+    if ($RunAsAdmin -eq $true) {
+        $bytes = [System.IO.File]::ReadAllBytes($FileBrowser.FileName)
+        # Set byte value at position 0x15 in hex, or 21 in decimal, from the value 0x00 to 0x20 in hex
+        $bytes[0x15] = $bytes[0x15] -bor 0x20
+        [System.IO.File]::WriteAllBytes($FileBrowser.FileName, $bytes)
+    }
+
+    Write-Host "Shortcut for $ShortcutToAdd has been saved to $($FileBrowser.FileName) with 'Run as administrator' set to $RunAsAdmin"
+}
+
 # Function to show the main menu
 function Show-MainMenu {
     $MenuWidth = 30
@@ -114,14 +186,14 @@ function Option2 {
     Run-ScriptFromUrl -Url $wingetMenuUrl
 }
 
-# Function to create a shortcut using Invoke-WPFShortcut
-function Create-Shortcut {
+# Function for Option 3: Create Shortcut
+function Option3 {
     param (
         [string]$invokeWPFShortcutUrl
     )
     Clear-Host
     Write-Host "Creating Desktop Shortcut..." -ForegroundColor Green
-    Run-ScriptFromUrl -Url $invokeWPFShortcutUrl
+    Invoke-ScriptFromUrl -Url $invokeWPFShortcutUrl
 }
 
 # Function for invalid option
@@ -133,9 +205,9 @@ function Show-InvalidOption {
 # Main script execution
 $urls = Fetch-UrlsFromJson
 
-# Automatically run the shortcut script
+# Automatically run the shortcut creation function
 $invokeWPFShortcutUrl = $urls.InvokeWPFShortcut.URL
-Create-Shortcut -invokeWPFShortcutUrl $invokeWPFShortcutUrl
+Invoke-WPFShortcut -ShortcutToAdd "WinUtil" -RunAsAdmin $true
 
 # Show main menu for additional options
 do {
@@ -147,7 +219,7 @@ do {
     switch ($selection) {
         "1" { Option1 -windowsManagerUrl $urls.WPFWindowsManager.URL }
         "2" { Option2 -wingetMenuUrl $urls.WPFWinGetMenu.URL }
-        "3" { Option3 -invokeWPFShortcutUrl $invokeWPFShortcutUrl}
+        "3" { Option3 -invokeWPFShortcutUrl $urls.Invoke-WPFShortcut.URL }
         "4" { Write-Host "Exiting..." -ForegroundColor Red; break }
         default { Show-InvalidOption }
     }

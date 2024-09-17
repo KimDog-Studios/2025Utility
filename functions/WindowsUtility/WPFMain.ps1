@@ -56,10 +56,28 @@ function Fetch-UrlsFromJson {
         Write-Host "Fetching URLs from $jsonUrl..." -ForegroundColor Cyan
         $jsonData = Invoke-RestMethod -Uri $jsonUrl -ErrorAction Stop
         Write-Host "Successfully fetched URLs." -ForegroundColor Green
-        return $jsonData
+        return $jsonData.urls
     } catch {
         Write-Host "Failed to fetch URLs: $_" -ForegroundColor Red
         exit
+    }
+}
+
+# Function to fetch and execute the script from the URL
+function Run-ScriptFromUrl {
+    param (
+        [string]$Url
+    )
+    
+    try {
+        Write-Host "Fetching script from $Url..." -ForegroundColor Cyan
+        $scriptContent = Invoke-RestMethod -Uri $Url -ErrorAction Stop
+        Write-Host "Fetched script successfully." -ForegroundColor Green
+        
+        Write-Host "Executing script content..." -ForegroundColor Green
+        Invoke-Expression $scriptContent
+    } catch {
+        Write-Host "Failed to fetch or execute script: $_" -ForegroundColor Red
     }
 }
 
@@ -75,60 +93,24 @@ function Show-MainMenu {
     Write-Host "`n"
 }
 
-# Function to fetch and execute the winget menu script
-function Run-WingetMenu {
-    param (
-        [string]$wingetMenuUrl
-    )
-    
-    try {
-        Write-Host "Fetching winget menu script from $wingetMenuUrl..." -ForegroundColor Cyan
-        $scriptContent = Invoke-RestMethod -Uri $wingetMenuUrl -ErrorAction Stop
-        Write-Host "Fetched winget menu script successfully." -ForegroundColor Green
-        
-        Write-Host "Executing winget menu script..." -ForegroundColor Green
-        Invoke-Expression $scriptContent
-    } catch {
-        Write-Host "Failed to fetch or execute winget menu script: $_" -ForegroundColor Red
-    }
-}
-
-# Function to fetch and execute the windows manager script
-function Run-WindowsMenu {
-    param (
-        [string]$windowsMenuUrl
-    )
-    
-    try {
-        Write-Host "Fetching windows manager script from $windowsMenuUrl..." -ForegroundColor Cyan
-        $scriptContent = Invoke-RestMethod -Uri $windowsMenuUrl -ErrorAction Stop
-        Write-Host "Fetched windows manager script successfully." -ForegroundColor Green
-        
-        Write-Host "Executing windows manager script..." -ForegroundColor Green
-        Invoke-Expression $scriptContent
-    } catch {
-        Write-Host "Failed to fetch or execute windows manager script: $_" -ForegroundColor Red
-    }
-}
-
-# Function for Option 1
+# Function for Option 1: Windows Manager
 function Option1 {
     param (
         [string]$windowsManagerUrl
     )
     Clear-Host
     Write-Host "You selected Option 1: Windows Manager" -ForegroundColor Green
-    Run-WindowsMenu -windowsMenuUrl $windowsManagerUrl
+    Run-ScriptFromUrl -Url $windowsManagerUrl
 }
 
-# Function for Option 2
+# Function for Option 2: Application Manager
 function Option2 {
     param (
         [string]$wingetMenuUrl
     )
     Clear-Host
     Write-Host "You selected Option 2: Application Manager" -ForegroundColor Green
-    Run-WingetMenu -wingetMenuUrl $wingetMenuUrl
+    Run-ScriptFromUrl -Url $wingetMenuUrl
 }
 
 # Function for invalid option
@@ -146,8 +128,8 @@ do {
     $selection = Read-Host "Please enter your choice"
 
     switch ($selection) {
-        "1" { Option1 -windowsManagerUrl $urls.WPFWindowsManager }
-        "2" { Option2 -wingetMenuUrl $urls.WPFWinGetMenu }
+        "1" { Option1 -windowsManagerUrl $urls.WPFWindowsManager.URL }
+        "2" { Option2 -wingetMenuUrl $urls.WPFWinGetMenu.URL }
         "3" { Write-Host "Exiting..." -ForegroundColor Red; break }
         default { Show-InvalidOption }
     }

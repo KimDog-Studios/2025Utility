@@ -1,22 +1,23 @@
 function Invoke-WinUtilDarkMode {
     <#
     .SYNOPSIS
-        Enables Dark Mode in Windows.
-
+        Enables Dark Mode in Windows if not already enabled.
     #>
     try {
-        Write-Host "Enabling Dark Mode..." -ForegroundColor Green
+        Write-Host "Checking Dark Mode status..." -ForegroundColor Green
         
-        $DarkMoveValue = 0  # 0 for Dark Mode, 1 for Light Mode
-
+        $DarkModeValue = 0  # 0 for Dark Mode, 1 for Light Mode
         $Path = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
-        Set-ItemProperty -Path $Path -Name AppsUseLightTheme -Value $DarkMoveValue
-        Set-ItemProperty -Path $Path -Name SystemUsesLightTheme -Value $DarkMoveValue
-        
-        Write-Host "Dark Mode has been enabled." -ForegroundColor Green
-        
-        # Wait for user to press Enter
-        Read-Host -Prompt "Press Enter to continue..."
+        $currentDarkMode = (Get-ItemProperty -Path $Path -Name AppsUseLightTheme).AppsUseLightTheme
+
+        if ($currentDarkMode -ne $DarkModeValue) {
+            Write-Host "Enabling Dark Mode..." -ForegroundColor Green
+            Set-ItemProperty -Path $Path -Name AppsUseLightTheme -Value $DarkModeValue
+            Set-ItemProperty -Path $Path -Name SystemUsesLightTheme -Value $DarkModeValue
+            Write-Host "Dark Mode has been enabled." -ForegroundColor Green
+        } else {
+            Write-Host "Dark Mode is already enabled." -ForegroundColor Yellow
+        }
     } catch [System.Security.SecurityException] {
         Write-Warning "Unable to modify Dark Mode settings due to a Security Exception."
     } catch [System.Management.Automation.ItemNotFoundException] {

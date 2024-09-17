@@ -96,6 +96,7 @@ function Show-MainMenu {
 
 # Function for Option 1: Optimize for Gaming
 function Option1 {
+    cls
     Write-Host "You selected Option 1: Optimize for Gaming" -ForegroundColor Green
     Run-ScriptFromUrl -Url $gamingOptimizationUrl
     Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
@@ -104,6 +105,7 @@ function Option1 {
 
 # Function for Option 2: Remove Bloatware
 function Option2 {
+    cls
     Write-Host "You selected Option 2: Remove Bloatware" -ForegroundColor Green
     Run-ScriptFromUrl -Url $removeAppXFilesUrl
     Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
@@ -112,6 +114,7 @@ function Option2 {
 
 # Function for Option 3: Add & Apply Ultimate Performance Mode
 function Option3 {
+    cls
     Write-Host "You selected Option 3: Add & Apply Ultimate Performance Mode" -ForegroundColor Green
     Run-ScriptFromUrl -Url $ultimatePerformanceUrl
     Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
@@ -120,6 +123,7 @@ function Option3 {
 
 # Function for Option 4: Apply Dark Mode to Windows
 function Option4 {
+    cls
     Write-Host "You selected Option 4: Apply Dark Mode to Windows" -ForegroundColor Green
     Run-ScriptFromUrl -Url $darkModeUrl
     Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
@@ -128,6 +132,7 @@ function Option4 {
 
 # Function for Option 5: Disable Mouse Acceleration
 function Option5 {
+    cls
     Write-Host "You selected Option 5: Disable Mouse Acceleration" -ForegroundColor Green
     Run-ScriptFromUrl -Url $mouseAccelerationUrl
     Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan

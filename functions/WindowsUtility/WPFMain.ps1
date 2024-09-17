@@ -81,82 +81,52 @@ function Run-ScriptFromUrl {
     }
 }
 
-# Function to create a shortcut using Invoke-WPFShortcut
-function Invoke-WPFShortcut {
-    <#
-
-    .SYNOPSIS
-        Creates a shortcut and prompts for a save location
-
-    .PARAMETER ShortcutToAdd
-        The name of the shortcut to add
-
-    .PARAMETER RunAsAdmin
-        A boolean value to make 'Run as administrator' property on (true) or off (false), defaults to off
-
-    #>
+# Function to create a shortcut without dialogs
+function Create-Shortcut {
     param(
-        $ShortcutToAdd,
+        [string]$ShortcutName,
+        [string]$ShortcutPath,
+        [string]$TargetPath,
+        [string]$Arguments = "",
         [bool]$RunAsAdmin = $false
     )
 
-    # Prepare the Shortcut Fields and add a Custom Icon if it's available, else don't add a Custom Icon.
-    Switch ($ShortcutToAdd) {
-        "WinUtil" {
-            # Use Powershell 7 if installed and fallback to PS5 if not
-            if (Get-Command "pwsh" -ErrorAction SilentlyContinue) {
-                $shell = "pwsh.exe"
-            } else {
-                $shell = "powershell.exe"
-            }
-
-            $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'"
-            $DestinationName = "KimDog's Windows Utility.lnk"
-        }
-    }
-
-    # Show a File Dialog Browser, to let the User choose the Name and Location of where to save the Shortcut
-    $FileBrowser = New-Object System.Windows.Forms.SaveFileDialog
-    $FileBrowser.InitialDirectory = [Environment]::GetFolderPath('Desktop')
-    $FileBrowser.Filter = "Shortcut Files (*.lnk)|*.lnk"
-    $FileBrowser.FileName = $DestinationName
-
-    # Do an Early Return if the Save Operation was canceled by User's Input.
-    $FileBrowserResult = $FileBrowser.ShowDialog()
-    $DialogResultEnum = New-Object System.Windows.Forms.DialogResult
-    if (-not ($FileBrowserResult -eq $DialogResultEnum::OK)) {
-        return
-    }
-
-    # Prepare the Shortcut parameter
+    # Prepare the Shortcut
     $WshShell = New-Object -comObject WScript.Shell
-    $Shortcut = $WshShell.CreateShortcut($FileBrowser.FileName)
-    $Shortcut.TargetPath = $shell
-    $Shortcut.Arguments = $shellArgs
-    if (-NOT (Test-Path -Path $winutildir["logo.ico"])) {
-        Invoke-WebRequest -Uri "https://christitus.com/images/logo-full.ico" -OutFile $winutildir["logo.ico"]
-    }
-    if (Test-Path -Path $winutildir["logo.ico"]) {
-        $Shortcut.IconLocation = $winutildir["logo.ico"]
-    }
+    $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
+    $Shortcut.TargetPath = $TargetPath
+    $Shortcut.Arguments = $Arguments
 
-    # Save the Shortcut to disk
+    # Add an icon if available
+    $iconUrl = "https://christitus.com/images/logo-full.ico"
+    $iconPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "logo.ico")
+    Invoke-WebRequest -Uri $iconUrl -OutFile $iconPath
+    $Shortcut.IconLocation = $iconPath
+
+    # Save the Shortcut
     $Shortcut.Save()
 
-    if ($RunAsAdmin -eq $true) {
-        $bytes = [System.IO.File]::ReadAllBytes($FileBrowser.FileName)
-        # Set byte value at position 0x15 in hex, or 21 in decimal, from the value 0x00 to 0x20 in hex
+    # Set 'Run as administrator' if specified
+    if ($RunAsAdmin) {
+        $bytes = [System.IO.File]::ReadAllBytes($ShortcutPath)
         $bytes[0x15] = $bytes[0x15] -bor 0x20
-        [System.IO.File]::WriteAllBytes($FileBrowser.FileName, $bytes)
+        [System.IO.File]::WriteAllBytes($ShortcutPath, $bytes)
     }
 
-    Write-Host "Shortcut for $ShortcutToAdd has been saved to $($FileBrowser.FileName) with 'Run as administrator' set to $RunAsAdmin"
+    Write-Host "Shortcut '$ShortcutName' has been created at $ShortcutPath with 'Run as administrator' set to $RunAsAdmin"
 }
 
-# Automatically run the shortcut creation function
-$urls = Fetch-UrlsFromJson
-$invokeWPFShortcutUrl = $urls.InvokeWPFShortcut.URL
-Invoke-WPFShortcut -ShortcutToAdd "WinUtil" -RunAsAdmin $true
+# Automatically create the shortcut
+function Create-WinUtilShortcut {
+    $desktopPath = [System.IO.Path]::Combine([Environment]::GetFolderPath('Desktop'), "KimDog's Windows Utility.lnk")
+    $shell = if (Get-Command "pwsh" -ErrorAction SilentlyContinue) { "powershell.exe" }
+    $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'"
+
+    Create-Shortcut -ShortcutName "KimDog's Windows Utility" -ShortcutPath $desktopPath -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
+}
+
+# Call the shortcut creation function
+Create-WinUtilShortcut
 
 # Show the main menu for additional options
 function Show-MainMenu {

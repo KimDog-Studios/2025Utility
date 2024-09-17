@@ -146,6 +146,7 @@ while ($true) {
         "2" { Option2 }
         "3" { Option3 }
         "4" { Option4 }
+        "5" { Option5 }
         "6" { Write-Host "Exiting..." -ForegroundColor Red; exit }
         default { Show-InvalidOption }
     }

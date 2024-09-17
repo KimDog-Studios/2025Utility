@@ -106,7 +106,7 @@ function Create-Shortcut {
         [string]$ShortcutPath,
         [string]$TargetPath,
         [string]$Arguments = "",
-        [bool]$RunAsAdmin = $false
+        [bool]$RunAsAdmin = $true
     )
 
     # Prepare the Shortcut
@@ -134,13 +134,37 @@ function Create-Shortcut {
     Write-Host "Shortcut '$ShortcutName' has been created at $ShortcutPath with 'Run as administrator' set to $RunAsAdmin"
 }
 
-# Automatically create the shortcut
+# Function to create a folder in the Start Menu and add a shortcut
+function Create-ShortcutInStartMenu {
+    param(
+        [string]$ShortcutName,
+        [string]$TargetPath,
+        [string]$Arguments = "",
+        [bool]$RunAsAdmin = $true
+    )
+
+    # Define the Start Menu folder path
+    $startMenuPath = [System.IO.Path]::Combine([System.Environment]::GetFolderPath('StartMenu'), 'Programs', 'KimDog Studios')
+    
+    # Create the folder if it does not exist
+    if (-not (Test-Path -Path $startMenuPath)) {
+        New-Item -Path $startMenuPath -ItemType Directory | Out-Null
+    }
+
+    # Define the shortcut path
+    $shortcutPath = [System.IO.Path]::Combine($startMenuPath, "$ShortcutName.lnk")
+
+    # Create the shortcut
+    Create-Shortcut -ShortcutName $ShortcutName -ShortcutPath $shortcutPath -TargetPath $TargetPath -Arguments $Arguments -RunAsAdmin $RunAsAdmin
+}
+
+# Automatically create the shortcut in the Start Menu
 function Create-WinUtilShortcut {
-    $desktopPath = [System.IO.Path]::Combine([Environment]::GetFolderPath('Desktop'), "KimDog's Windows Utility.lnk")
     $shell = if (Get-Command "pwsh" -ErrorAction SilentlyContinue) { "powershell.exe" }
     $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'"
 
-    Create-Shortcut -ShortcutName "KimDog's Windows Utility" -ShortcutPath $desktopPath -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
+    # Create the shortcut in the Start Menu folder
+    Create-ShortcutInStartMenu -ShortcutName "KimDog's Windows Utility" -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
 }
 
 # Call the shortcut creation function

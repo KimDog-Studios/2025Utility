@@ -151,8 +151,8 @@ do {
     $selection = Read-Host "Please enter your choice"
 
     switch ($selection) {
-        "1" { Option1 -windowsManagerUrl $urls.windows_manager }
-        "2" { Option2 -wingetMenuUrl $urls.winget_menu }
+        "1" { Option1 -windowsManagerUrl $urls.WPFWindowsManager }
+        "2" { Option2 -wingetMenuUrl $urls.WPFWinGetMenu }
         "3" { Write-Host "Exiting..." -ForegroundColor Red; break }
         default { Show-InvalidOption }
     }

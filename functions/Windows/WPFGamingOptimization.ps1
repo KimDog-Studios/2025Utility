@@ -165,3 +165,13 @@ function Invoke-WPFUltimatePerformance {
 Invoke-WinUtilDarkMode
 Invoke-WinUtilMouseAcceleration
 Invoke-WPFUltimatePerformance -State "Enable"
+
+# Restart Windows Explorer
+try {
+    Write-Host "Restarting Windows Explorer..." -ForegroundColor Green
+    Stop-Process -Name explorer -Force
+    Start-Process explorer
+    Write-Host "Windows Explorer has been restarted." -ForegroundColor Green
+} catch {
+    Write-Warning "Failed to restart Windows Explorer: ${_}"
+}

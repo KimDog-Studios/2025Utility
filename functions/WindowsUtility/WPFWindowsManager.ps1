@@ -81,6 +81,7 @@ function Show-MainMenu {
     $menuCount = $menuOptions.Count
 
     while ($true) {
+        Clear-Host  # Clear the screen for redrawing the menu
         for ($i = 0; $i -lt $menuCount; $i++) {
             $option = $menuOptions[$i]
             if ($i -eq $selectedIndex) {
@@ -106,8 +107,6 @@ function Show-MainMenu {
             Write-Host "Exiting..." -ForegroundColor Red
             exit
         }
-
-        Clear-Host  # Clear the screen for redrawing the menu
     }
 }
 

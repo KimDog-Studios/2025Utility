@@ -1,28 +1,22 @@
-Add-Type -AssemblyName PresentationFramework
+# Define the URL for the JSON file containing script URLs
+$jsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/urls.json"
 
-# Function to determine if the system is using a dark theme
-function Is-DarkTheme {
-    $key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes'
-    $value = Get-ItemProperty -Path $key -Name 'AppsUseLightTheme' -ErrorAction SilentlyContinue
-    return $value.AppsUseLightTheme -eq 0
-}
-
-# Define the URL for the XAML file
-$xamlUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/xmal/inputXML.xaml"
-
-# Fetch the XAML content
+# Fetch the JSON and parse it
 try {
-    Write-Host "Fetching XAML from $xamlUrl..." -ForegroundColor Cyan
-    $xamlContent = Invoke-RestMethod -Uri $xamlUrl -Method Get -ErrorAction Stop
-    [xml]$xaml = $xamlContent
-    Write-Host "XAML successfully loaded." -ForegroundColor Green
+    Write-Host "Fetching URLs from JSON..." -ForegroundColor Cyan
+    $urls = Invoke-RestMethod -Uri $jsonUrl -Method Get -ErrorAction Stop
+    Write-Host "URLs successfully loaded." -ForegroundColor Green
 } catch {
-    Write-Host "Failed to fetch or parse the XAML: ${_}" -ForegroundColor Red
+    Write-Host "Failed to fetch or parse the JSON: ${_}" -ForegroundColor Red
     exit
 }
 
-# Create the WPF window from the XAML
-$window = [Windows.Markup.XamlReader]::Load($xaml.CreateNavigator())
+# Access the URLs from the parsed JSON
+$removeAppXFilesUrl = $urls.urls.WPFRemoveAppX.URL
+$ultimatePerformanceUrl = $urls.urls.WPFUltimatePerformance.URL
+$darkModeUrl = $urls.urls.InvokeDarkMode.URL
+$mouseAccelerationUrl = $urls.urls.InvokeMouseAcceleration.URL
+$gamingOptimizationUrl = $urls.urls.WPFGamingOptimization.URL
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {
@@ -45,47 +39,121 @@ function Run-ScriptFromUrl {
     }
 }
 
-# Define the URL for the JSON file containing script URLs
-$jsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/config.json"
+# Function to align and display header
+function Align-Header {
+    param (
+        [string]$Text,
+        [int]$Width = 30
+    )
 
-# Fetch the JSON and parse it
-try {
-    Write-Host "Fetching URLs from JSON..." -ForegroundColor Cyan
-    $urls = Invoke-RestMethod -Uri $jsonUrl -Method Get -ErrorAction Stop
-    Write-Host "URLs successfully loaded." -ForegroundColor Green
-} catch {
-    Write-Host "Failed to fetch or parse the JSON: ${_}" -ForegroundColor Red
-    exit
+    $TextLength = $Text.Length
+    $Padding = $Width - $TextLength
+    $LeftPadding = [math]::Floor($Padding / 2)
+    $RightPadding = [math]::Ceiling($Padding / 2)
+    
+    $AlignedText = ("=" * $LeftPadding) + $Text + ("=" * $RightPadding)
+    $AlignedText
 }
 
-# Create a list of menu options and corresponding URLs
-$menuOptions = @(
-    @{ Name = "Optimize for Gaming"; URL = $urls.urls.WPFGamingOptimization.URL },
-    @{ Name = "Remove Bloatware [Windows 11]"; URL = $urls.urls.WPFRemoveAppX.URL },
-    @{ Name = "Apply Ultimate Performance Mode"; URL = $urls.urls.WPFUltimatePerformance.URL },
-    @{ Name = "Apply Dark Mode to Windows"; URL = $urls.urls.InvokeDarkMode.URL },
-    @{ Name = "Disable Mouse Acceleration"; URL = $urls.urls.InvokeMouseAcceleration.URL },
-    @{ Name = "Enable Classic Right Click Menu"; URL = $urls.urls.WPFClassicRightClick.URL },
-    @{ Name = "Set Windows Updates to Default"; URL = $urls.urls.InvokeSetWindowsUpdatesToDefault.URL },
-    @{ Name = "Set Updates to Security [Recommended]"; URL = $urls.urls.InvokeSetWindowsUpdatesToSecurity.URL },
-    @{ Name = "Disable Windows Updates [NOT Recommended]"; URL = $urls.urls.InvokeSetWindowsUpdatesToDisabled.URL },
-    @{ Name = "Uninstall Microsoft Edge"; URL = $urls.urls.InvokeEnableWindowsFeedback.URL }
-)
+# Function to show the main header
+function Show-MainHeader {
+    Clear-Host
 
-# Populate the StackPanel with buttons
-$stackPanel = $window.FindName("ContentStackPanel")
-foreach ($option in $menuOptions) {
-    $button = New-Object System.Windows.Controls.Button
-    $button.Content = $option.Name
-    $button.Margin = "10"
-    $button.Height = 50
-    $button.Background = [System.Windows.Media.Brushes]::LightBlue
-    $button.Foreground = [System.Windows.Media.Brushes]::Black
-    $button.Add_Click({
-        Run-ScriptFromUrl -Url $option.URL  # Execute the script
-    })
-    $stackPanel.Children.Add($button)
+    function Draw-Box {
+        param (
+            [string]$Text
+        )
+
+        $boxWidth = $Text.Length + 4
+        $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
+        $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
+
+        Write-Host "$topBottomBorder" -ForegroundColor Cyan
+        Write-Host "$emptyLine" -ForegroundColor Cyan
+        Write-Host "| $Text |" -ForegroundColor Cyan
+        Write-Host "$emptyLine" -ForegroundColor Cyan
+        Write-Host "$topBottomBorder" -ForegroundColor Cyan
+    }
+
+    Draw-Box -Text "KimDog's Windows Manager Menu | Last Updated: 2024-09-17"
+    Write-Host "`n"
 }
 
-# Show the window
-$window.ShowDialog() | Out-Null
+# Function to show the main menu
+function Show-MainMenu {
+    $MenuWidth = 30
+
+    Write-Host (Align-Header "Windows Manager" $MenuWidth) -ForegroundColor Yellow
+    Write-Host "1. Optimize for Gaming [Runs Options: 3, 4, 5]" -ForegroundColor Green
+    Write-Host "2. Remove Bloatware [Windows 11 Only]" -ForegroundColor Green
+    Write-Host "3. Add & Apply Ultimate Performance Mode" -ForegroundColor Green
+    Write-Host "4. Apply Dark Mode to Windows" -ForegroundColor Green
+    Write-Host "5. Disable Mouse Acceleration" -ForegroundColor Green
+    Write-Host "6. Exit" -ForegroundColor Red
+    Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
+    Write-Host "`n"  # Reduced gap
+}
+
+# Function for Option 1: Optimize for Gaming
+function Option1 {
+    Write-Host "You selected Option 1: Optimize for Gaming" -ForegroundColor Green
+    Run-ScriptFromUrl -Url $gamingOptimizationUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
+}
+
+# Function for Option 2: Remove Bloatware
+function Option2 {
+    Write-Host "You selected Option 2: Remove Bloatware" -ForegroundColor Green
+    Run-ScriptFromUrl -Url $removeAppXFilesUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
+}
+
+# Function for Option 3: Add & Apply Ultimate Performance Mode
+function Option3 {
+    Write-Host "You selected Option 3: Add & Apply Ultimate Performance Mode" -ForegroundColor Green
+    Run-ScriptFromUrl -Url $ultimatePerformanceUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
+}
+
+# Function for Option 4: Apply Dark Mode to Windows
+function Option4 {
+    Write-Host "You selected Option 4: Apply Dark Mode to Windows" -ForegroundColor Green
+    Run-ScriptFromUrl -Url $darkModeUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
+}
+
+# Function for Option 5: Disable Mouse Acceleration
+function Option5 {
+    Write-Host "You selected Option 5: Disable Mouse Acceleration" -ForegroundColor Green
+    Run-ScriptFromUrl -Url $mouseAccelerationUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
+}
+
+# Function for invalid option
+function Show-InvalidOption {
+    Write-Host "Invalid selection, please try again." -ForegroundColor Red
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
+}
+
+# Main loop
+while ($true) {
+    Show-MainHeader
+    Show-MainMenu
+    $selection = Read-Host "Please enter your choice"
+
+    switch ($selection) {
+        "1" { Option1 }
+        "2" { Option2 }
+        "3" { Option3 }
+        "4" { Option4 }
+        "5" { Option5 }
+        "6" { Write-Host "Exiting..." -ForegroundColor Red; exit }
+        default { Show-InvalidOption }
+    }
+}

@@ -39,7 +39,7 @@
     "WPFClassicRightClick": {
         "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFClassicRightClick.ps1"
     },
-    "Uninstall-WinUtilEdgeBrowser": {
+    "UninstallWinUtilEdgeBrowser": {
         "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Uninstall-WinUtilEdgeBrowser.ps1"
     },
     "WPFShortcut": {

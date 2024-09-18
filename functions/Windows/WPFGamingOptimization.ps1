@@ -51,24 +51,44 @@ function Restart-WindowsExplorer {
     }
 }
 
+Write-Host "This Script runs the Following Tweaks to your System: " -ForegroundColor Green
+Write-Host "Add and Enables Ultimate Performance Power Scheme" -ForegroundColor Green
+Write-Host "Sets Desktop Theme to Dark Mode" -ForegroundColor Green
+Write-Host "Disballes Mouse Acceleration" -ForegroundColor Green
+Write-Host "Sets Windows 11 Right click menu to the Classic!" -ForegroundColor Green
+Write-Host "Sets Windows Updates to Security"
+
 # Main execution
 try {
     # Fetch URLs from JSON
     $urls = Fetch-UrlsFromJson
 
-    # Execute scripts from URLs
-    foreach ($url in @(
-        @{ Url = $urls.WPFUltimatePerformance.URL; Description = "Ultimate Performance" },
-        @{ Url = $urls.InvokeDarkMode.URL; Description = "Dark Mode" },
-        @{ Url = $urls.InvokeMouseAcceleration.URL; Description = "Mouse Acceleration" },
-        @{ Url = $urls.WPFClassRightClick.URL; Description = "Sets the Windows 11 Right click menu to the Classic!" },
-        @{ Url = $urls.InvokeSetWindowsUpdatesToSecurity.URL; Description = "Sets Windows Updates to Security Only" }
-    )) {
-        if (-not [string]::IsNullOrWhiteSpace($url.Url)) {
-            Run-ScriptFromUrl -Url $url.Url -Description $url.Description
-        } else {
-            Write-Host "Warning: URL for $($url.Description) is empty." -ForegroundColor Yellow
-        }
+    # Check if URLs are not empty
+    if (-not $urls) {
+        throw "No URLs fetched from the JSON."
+    }
+
+    # Countdown timer for 5 seconds
+    for ($i = 5; $i -gt 0; $i--) {
+        Write-Host "Starting in $i seconds..." -ForegroundColor Yellow
+        Start-Sleep -Seconds 1
+    }
+
+    # Execute scripts from URLs with checks
+    if ($urls.WPFUltimatePerformance.URL) {
+        Run-ScriptFromUrl -Url $urls.WPFUltimatePerformance.URL -Description "Ultimate Performance"
+    }
+    if ($urls.InvokeDarkMode.URL) {
+        Run-ScriptFromUrl -Url $urls.InvokeDarkMode.URL -Description "Dark Mode"
+    }
+    if ($urls.InvokeMouseAcceleration.URL) {
+        Run-ScriptFromUrl -Url $urls.InvokeMouseAcceleration.URL -Description "Mouse Acceleration"
+    }
+    if ($urls.WPFClassRightClick.URL) {
+        Run-ScriptFromUrl -Url $urls.WPFClassRightClick.URL -Description "Sets the Windows 11 Right click menu to the Classic!"
+    }
+    if ($urls.InvokeSetWindowsUpdatesToSecurity.URL) {
+        Run-ScriptFromUrl -Url $urls.InvokeSetWindowsUpdatesToSecurity.URL -Description "Sets Windows Updates to Security Only"
     }
 
     Restart-WindowsExplorer

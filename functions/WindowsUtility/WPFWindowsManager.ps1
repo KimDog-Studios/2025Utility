@@ -21,7 +21,8 @@ $menuOptions = @(
     @{ Name = "Enable Classic Right Click Menu"; URL = $urls.urls.WPFClassicRightClick.URL },
     @{ Name = "Set Windows Updates to Default"; URL = $urls.urls.InvokeSetWindowsUpdatesToDefault.URL },
     @{ Name = "Set Updates to Security [Recommended]"; URL = $urls.urls.InvokeSetWindowsUpdatesToSecurity.URL },
-    @{ Name = "Disable Windows Updates [NOT Recommended]"; URL = $urls.urls.InvokeSetWindowsUpdatesToDisabled.URL }
+    @{ Name = "Disable Windows Updates [NOT Recommended]"; URL = $urls.urls.InvokeSetWindowsUpdatesToDisabled.URL },
+    @{ Name = "Uninstall Microsoft Edge"; URL = $urls.urls.InvokeEnableWindowsFeedback.URL }
 )
 
 # Function to fetch and execute the script from the URL

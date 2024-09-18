@@ -16,7 +16,7 @@ function Get-JsonData {
             return $null
         }
 
-        return $data.categories
+        return $data.categories  # Ensure this returns the categories array
     } catch {
         Write-Host "Error fetching or parsing data: $_" -ForegroundColor Red
         Write-Host "Exception details: $($_.Exception)" -ForegroundColor Red
@@ -46,14 +46,36 @@ function Show-MainHeader {
 
 # Function to display the main menu options
 function Show-MainMenu {
-    for ($i = 0; $i -lt $menuOptions.Count; $i++) {
-        if ($i -eq $currentIndex) {
-            Write-Host "`[*] $($menuOptions[$i].Name)" -ForegroundColor Yellow  # Highlight the current item in yellow
-        } else {
-            Write-Host "`[ ] $($menuOptions[$i].Name)"  # Regular menu item
+    $currentIndex = 0  # Track the current index in the main menu
+    while ($true) {
+        Show-MainHeader
+        for ($i = 0; $i -lt $menuOptions.Count; $i++) {
+            if ($i -eq $currentIndex) {
+                Write-Host "`[*] $($menuOptions[$i].Name)" -ForegroundColor Yellow
+            } else {
+                Write-Host "`[ ] $($menuOptions[$i].Name)"
+            }
         }
+        "`n" | Out-String
+
+        # Read key input
+        $key = [System.Console]::ReadKey($true)
+
+        # Handle arrow keys and selection
+        switch ($key.Key) {
+            'UpArrow' {
+                $currentIndex = ($currentIndex - 1 + $menuOptions.Count) % $menuOptions.Count
+            }
+            'DownArrow' {
+                $currentIndex = ($currentIndex + 1) % $menuOptions.Count
+            }
+            'Enter' {
+                Clear-Host
+                & $menuOptions[$currentIndex].Action  # Execute the selected option
+            }
+        }
+        Start-Sleep -Milliseconds 100
     }
-    "`n" | Out-String  # Explicitly add a line break after each option
 }
 
 # Function to display categories in a menu format
@@ -68,7 +90,9 @@ function Show-CategoryMenu {
     $categoryOptions = @()
     for ($i = 0; $i -lt $categories.Count; $i++) {
         $category = $categories[$i]
-        $categoryOptions += @{ Name = "$($category.name) [$($category.options.Count) Apps]"; Action = { Show-AppsInCategory -categoryIndex $i } }
+        # Capture the current index in a closure
+        $index = $i  # Capture the current index
+        $categoryOptions += @{ Name = "$($category.name) [$($category.options.Count) Apps]"; Action = { Show-AppsInCategory -categoryIndex $index } }
     }
     
     $categoryOptions += @{ Name = "Back to Main Menu"; Action = { return } }
@@ -76,6 +100,8 @@ function Show-CategoryMenu {
     $currentIndex = 0  # Reset current index for category menu
     while ($true) {
         Show-MainHeader
+        Write-Host "Total Categories: $($categoryOptions.Count)" -ForegroundColor Green
+        Write-Host "Current Index: $($currentIndex + 1)" -ForegroundColor Green  # Display index starting from 1
         for ($i = 0; $i -lt $categoryOptions.Count; $i++) {
             if ($i -eq $currentIndex) {
                 Write-Host "`[*] $($categoryOptions[$i].Name)" -ForegroundColor Yellow
@@ -98,6 +124,14 @@ function Show-CategoryMenu {
             }
             'Enter' {
                 Clear-Host  # Clear the screen before running the action
+                # Debugging: Output the current index and category being accessed
+                Write-Host "Selected Category Index: $($currentIndex + 1)" -ForegroundColor Green  # Display index starting from 1
+                Write-Host "Category Name: $($categoryOptions[$currentIndex].Name)" -ForegroundColor Green
+                
+                # Debugging: Output the index being passed to Show-AppsInCategory
+                $categoryIndex = $currentIndex  # Use the zero-based index
+                Write-Host "Passing Category Index: $categoryIndex" -ForegroundColor Green
+                
                 & $categoryOptions[$currentIndex].Action  # Execute the selected option
             }
         }
@@ -126,6 +160,7 @@ function Show-AppsInCategory {
         Write-Host "Category: $($category.name)" -ForegroundColor Cyan
         $startIndex = ($page - 1) * $itemsPerPage
         $endIndex = [math]::Min($page * $itemsPerPage, $apps.Count) - 1
+
         for ($i = $startIndex; $i -le $endIndex; $i++) {
             $app = $apps[$i]
             Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
@@ -134,12 +169,15 @@ function Show-AppsInCategory {
             Write-Host "   Chocolatey ID: $($app.chocoId)" -ForegroundColor Cyan
             Write-Host ""
         }
+
         Write-Host "Page $page of $totalPages" -ForegroundColor Yellow
         Write-Host "`nOptions:" -ForegroundColor Yellow
         Write-Host "[B] Back to Category Menu" -ForegroundColor Red
         if ($page -lt $totalPages) { Write-Host "[N] Next Page" -ForegroundColor Cyan }
         if ($page -gt 1) { Write-Host "[P] Previous Page" -ForegroundColor Cyan }
         Write-Host ""
+        
+        # Read user input
         $input = Read-Host "Choose an option or enter app number"
         switch ($input.ToUpper()) {
             'N' { if ($page -lt $totalPages) { $page++ } else { Write-Host "Last page." -ForegroundColor Red } }
@@ -222,25 +260,4 @@ function Handle-AppSelection {
 }
 
 # Main menu loop
-while ($true) {
-    Show-MainHeader
-    Show-MainMenu
-
-    # Read key input
-    $key = [System.Console]::ReadKey($true)
-
-    # Handle arrow keys and selection
-    switch ($key.Key) {
-        'UpArrow' {
-            $currentIndex = ($currentIndex - 1 + $menuOptions.Count) % $menuOptions.Count
-        }
-        'DownArrow' {
-            $currentIndex = ($currentIndex + 1) % $menuOptions.Count
-        }
-        'Enter' {
-            Clear-Host
-            & $menuOptions[$currentIndex].Action
-        }
-    }
-    Start-Sleep -Milliseconds 100
-}
+Show-MainMenu

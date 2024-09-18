@@ -57,7 +57,13 @@ function Create-WinUtilShortcuts {
             New-Item -Path $location.Value -ItemType Directory | Out-Null
         }
         $shortcutPath = [System.IO.Path]::Combine($location.Value, "KimDog's Windows Utility.lnk")
-        Create-Shortcut -ShortcutName "KimDog's Windows Utility" -ShortcutPath $shortcutPath -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
+        
+        # Check if the shortcut already exists
+        if (-not (Test-Path -Path $shortcutPath)) {
+            Create-Shortcut -ShortcutName "KimDog's Windows Utility" -ShortcutPath $shortcutPath -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
+        } else {
+            Write-Host "Shortcut '$shortcutPath' already exists." -ForegroundColor Yellow
+        }
     }
 }
 

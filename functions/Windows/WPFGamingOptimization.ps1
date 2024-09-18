@@ -46,6 +46,9 @@ function Restart-WindowsExplorer {
         Stop-Process -Name explorer -Force
        $process = Get-Process -Name "explorer"
       Stop-Process -InputObject $process
+    } catch {
+        Write-Host "Failed to restart Windows Explorer: $_" -ForegroundColor Red
+    }
 }
 
 # Main execution
@@ -57,6 +60,7 @@ try {
     Run-ScriptFromUrl -Url $urls.WPFUltimatePerformance.URL -Description "Ultimate Performance"
     Run-ScriptFromUrl -Url $urls.InvokeDarkMode.URL -Description "Dark Mode"
     Run-ScriptFromUrl -Url $urls.InvokeMouseAcceleration.URL -Description "Mouse Acceleration"
+    Run-ScriptFromUrl -Url $urls.WPFClassRightClick.URL -Description "Sets the Windows 11 Right click menu to the Classic!"
 
     Restart-WindowsExplorer
     Write-Host "All optimizations completed successfully." -ForegroundColor Green

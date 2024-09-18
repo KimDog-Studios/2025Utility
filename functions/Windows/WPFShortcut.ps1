@@ -43,13 +43,13 @@ function Create-WinUtilShortcuts {
         if ($location.Key -eq "Start Menu" -and -not (Test-Path -Path $location.Value)) {
             New-Item -Path $location.Value -ItemType Directory | Out-Null
         }
-        $shortcutPath = [System.IO.Path]::Combine($location.Value, "KimDog's Windows Utility.lnk")
         
-        # Check if the shortcut already exists
-        if (-not (Test-Path -Path $shortcutPath)) {
-            Create-Shortcut -ShortcutName "KimDog's Windows Utility" -ShortcutPath $shortcutPath -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
+        # Create shortcut that runs as admin
+        $adminShortcutPath = [System.IO.Path]::Combine($location.Value, "KimDog's Utility.lnk")
+        if (-not (Test-Path -Path $adminShortcutPath)) {
+            Create-Shortcut -ShortcutName "KimDog's Utility" -ShortcutPath $adminShortcutPath -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
         } else {
-            Write-Host "Shortcut '$shortcutPath' already exists." -ForegroundColor Yellow
+            Write-Host "Shortcut '$adminShortcutPath' already exists." -ForegroundColor Yellow
         }
     }
 }

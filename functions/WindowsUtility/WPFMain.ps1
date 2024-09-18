@@ -51,7 +51,7 @@ function Show-WingetMessage {
 
 # Fetch URLs from the JSON file
 function Fetch-UrlsFromJson {
-    $jsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/urls.json"
+    $jsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/config.json"
     try {
         Write-Host "Fetching URLs from $jsonUrl..." -ForegroundColor Cyan
         $jsonData = Invoke-RestMethod -Uri $jsonUrl -ErrorAction Stop
@@ -120,6 +120,8 @@ function Show-InvalidOption {
 }
 
 # Main script execution
+$urls = Fetch-UrlsFromJson  # Fetch URLs at the start
+
 do {
     Show-MainHeader
     Show-WingetMessage

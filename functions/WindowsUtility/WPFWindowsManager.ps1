@@ -1,5 +1,5 @@
 # Define the URL for the JSON file containing script URLs
-$jsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/urls.json"
+$jsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/config.json"
 
 # Fetch the JSON and parse it
 try {

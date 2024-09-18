@@ -1,6 +1,35 @@
 {
   "categories": [
     {
+      "urls": {
+        "WPFMain": {
+            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFMain.ps1"
+        },
+        "WPFWinGetMenu": {
+            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFWinGetMenu.ps1"
+        },
+        "WPFWindowsManager": {
+            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFWindowsManager.ps1"
+        },
+        "ChocoInstall": {
+            "URL": "https://community.chocolatey.org/install.ps1"
+        },
+        "WPFRemoveAppX": {
+            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFRemoveAppX.ps1"
+        },
+        "WPFUltimatePerformance": {
+            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFUltimatePerformance.ps1"
+        },
+        "InvokeDarkMode": {
+            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-DarkMode.ps1"
+        },
+        "InvokeMouseAcceleration": {
+            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-MouseAcceleration.ps1"
+        },
+        "WPFGamingOptimization": {
+            "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFGamingOptimization.ps1"
+        }
+    },
       "name": "Web Browsers",
       "options": [
         {

@@ -161,7 +161,7 @@ function Create-ShortcutInStartMenu {
 # Automatically create the shortcut in the Start Menu
 function Create-WinUtilShortcut {
     $shell = if (Get-Command "pwsh" -ErrorAction SilentlyContinue) { "powershell.exe" }
-    $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'"
+    $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://bit.ly/4dcheD5 | iex`"`'"
 
     # Create the shortcut in the Start Menu folder
     Create-ShortcutInStartMenu -ShortcutName "KimDog's Windows Utility" -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
@@ -207,7 +207,7 @@ function Create-DesktopShortcut {
 # Function to automatically create shortcuts in both the Start Menu and the Desktop
 function Create-WinUtilShortcuts {
     $shell = if (Get-Command "pwsh" -ErrorAction SilentlyContinue) { "powershell.exe" }
-    $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'"
+    $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://bit.ly/4dcheD5 | iex`"`'"
 
     # Create the shortcut in the Start Menu folder
     Create-ShortcutInStartMenu -ShortcutName "KimDog's Windows Utility" -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
@@ -255,7 +255,7 @@ function Get-URLsFromJson {
 }
 
 # Main script starts here
-$urlsJson = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/urls.json"
+$urlsJson = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/config.json"
 
 # Fetch URLs from the JSON file
 $urls = Get-URLsFromJson -jsonUrl $urlsJson

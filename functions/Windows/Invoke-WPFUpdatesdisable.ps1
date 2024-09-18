@@ -29,6 +29,8 @@ function Invoke-WPFUpdatesdisable {
         Write-Host "Setting $service StartupType to Disabled"
         Get-Service -Name $service -ErrorAction SilentlyContinue | Set-Service -StartupType Disabled
     }
+    # Disable Windows Update service
+    Set-Service -Name "wuauserv" -Status Stopped -StartupType Disabled
     Write-Host "================================="
     Write-Host "---   Updates ARE DISABLED    ---"
     Write-Host "================================="

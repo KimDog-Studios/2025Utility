@@ -1,8 +1,25 @@
 Add-Type -AssemblyName PresentationFramework
 
-# Load the XAML file
-$xamlPath = "path\to\your\UI.xaml"  # Update this path to where your UI.xaml file is located
-[xml]$xaml = Get-Content $xamlPath
+# Function to determine if the system is using a dark theme
+function Is-DarkTheme {
+    $key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes'
+    $value = Get-ItemProperty -Path $key -Name 'AppsUseLightTheme' -ErrorAction SilentlyContinue
+    return $value.AppsUseLightTheme -eq 0
+}
+
+# Define the URL for the XAML file
+$xamlUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/xmal/inputXML.xaml"
+
+# Fetch the XAML content
+try {
+    Write-Host "Fetching XAML from $xamlUrl..." -ForegroundColor Cyan
+    $xamlContent = Invoke-RestMethod -Uri $xamlUrl -Method Get -ErrorAction Stop
+    [xml]$xaml = $xamlContent
+    Write-Host "XAML successfully loaded." -ForegroundColor Green
+} catch {
+    Write-Host "Failed to fetch or parse the XAML: ${_}" -ForegroundColor Red
+    exit
+}
 
 # Create the WPF window from the XAML
 $window = [Windows.Markup.XamlReader]::Load($xaml.CreateNavigator())

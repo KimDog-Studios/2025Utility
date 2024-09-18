@@ -56,7 +56,7 @@ $menuOptions = @(
     @{ Name = "Add & Apply Ultimate Performance Mode"; Action = { Run-ScriptFromUrl -Url $ultimatePerformanceUrl } },
     @{ Name = "Apply Dark Mode to Windows"; Action = { Run-ScriptFromUrl -Url $darkModeUrl } },
     @{ Name = "Disable Mouse Acceleration"; Action = { Run-ScriptFromUrl -Url $mouseAccelerationUrl } },
-    @{ Name = "Optimize for Gaming"; Action = { Run-ScriptFromUrl -Url $gamingOptimizationUrl } },
+    @{ Name = "Optimize for Gaming [Recommended for Gamers]"; Action = { Run-ScriptFromUrl -Url $gamingOptimizationUrl } },
     @{ Name = "Remove Bloatware [Windows 11 Only]"; Action = { Run-ScriptFromUrl -Url $removeAppXFilesUrl } },
     @{ Name = "Uninstall Microsoft Edge"; Action = { Run-ScriptFromUrl -Url $UninstallWinUtilEdgeBrowser } },
     @{ Name = "Set Windows 11 Right Click Menu to Classic"; Action = { Run-ScriptFromUrl -Url $WPFClassicRightClick } },

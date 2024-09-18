@@ -3,13 +3,33 @@ $jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/mai
 # Fetch JSON data
 function Get-JsonData {
     try {
-        $data = Invoke-RestMethod -Uri $jsonFileUrl
-        if ($data?.categories) { return $data.categories }
-        Write-Host "Invalid JSON or missing 'categories'." -ForegroundColor Red
+        $response = Invoke-WebRequest -Uri $jsonFileUrl -UseBasicParsing
+        $statusCode = $response.StatusCode
+        
+        if ($statusCode -ne 200) {
+            Write-Host "HTTP Error: Status code $statusCode" -ForegroundColor Red
+            return $null
+        }
+        
+        $content = $response.Content
+        $data = $content | ConvertFrom-Json
+        
+        if ($null -eq $data) {
+            Write-Host "Failed to parse JSON content." -ForegroundColor Red
+            return $null
+        }
+        
+        if ($null -eq $data.categories) {
+            Write-Host "JSON does not contain a 'categories' property." -ForegroundColor Red
+            return $null
+        }
+        
+        return $data.categories
     } catch {
-        Write-Host "Error fetching data: $_" -ForegroundColor Red
+        Write-Host "Error fetching or parsing data: $_" -ForegroundColor Red
+        Write-Host "Exception details: $($_.Exception)" -ForegroundColor Red
+        return $null
     }
-    exit
 }
 
 # Align header text
@@ -47,7 +67,10 @@ function Show-CategoryMenu {
         return
     }
     Write-Host "`nCategories:" -ForegroundColor Yellow
-    $categories | ForEach-Object { Write-Host "[{0}] {1} [{2} Apps]" -f ($categories.IndexOf($_) + 1), $_.name, $_.options.Count -ForegroundColor Cyan }
+    for ($i = 0; $i -lt $categories.Count; $i++) {
+        $category = $categories[$i]
+        Write-Host ("[{0}] {1} [{2} Apps]" -f ($i + 1), $category.name, $category.options.Count) -ForegroundColor Cyan
+    }
     Write-Host "[F] Search All Apps" -ForegroundColor Green
     Write-Host "[U] Upgrade All Installed Apps & Drivers" -ForegroundColor Green
     Write-Host "[X] Exit Script" -ForegroundColor Red
@@ -57,7 +80,6 @@ function Show-CategoryMenu {
 # Display apps in a category with pagination
 function Show-AppsInCategory {
     param ([int]$categoryIndex)
-    cls
     $categories = Get-JsonData
     if ($categoryIndex -lt 1 -or $categoryIndex -gt $categories.Count) {
         Write-Host "Invalid category." -ForegroundColor Red
@@ -72,11 +94,14 @@ function Show-AppsInCategory {
     while ($true) {
         cls
         Draw-Box -Text "Category: $($category.name)"
-        $apps[$((($page - 1) * $itemsPerPage)..([math]::Min($page * $itemsPerPage, $apps.Count) - 1))] | ForEach-Object {
-            Write-Host "$($_.Index + 1). $($_.name)" -ForegroundColor Green
-            Write-Host "   Description: $($_.description)" -ForegroundColor White
-            Write-Host "   Winget ID: $($_.wingetId)" -ForegroundColor Cyan
-            Write-Host "   Chocolatey ID: $($_.chocoId)" -ForegroundColor Cyan
+        $startIndex = ($page - 1) * $itemsPerPage
+        $endIndex = [math]::Min($page * $itemsPerPage, $apps.Count) - 1
+        for ($i = $startIndex; $i -le $endIndex; $i++) {
+            $app = $apps[$i]
+            Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
+            Write-Host "   Description: $($app.description)" -ForegroundColor White
+            Write-Host "   Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+            Write-Host "   Chocolatey ID: $($app.chocoId)" -ForegroundColor Cyan
             Write-Host ""
         }
         Draw-Box -Text "Page $page of $totalPages"
@@ -85,14 +110,15 @@ function Show-AppsInCategory {
         if ($page -lt $totalPages) { Write-Host "[N] Next Page" -ForegroundColor Cyan }
         if ($page -gt 1) { Write-Host "[P] Previous Page" -ForegroundColor Cyan }
         Write-Host ""
-        switch (Read-Host "Choose an option or enter app number") {
+        $input = Read-Host "Choose an option or enter app number"
+        switch ($input.ToUpper()) {
             'N' { if ($page -lt $totalPages) { $page++ } else { Write-Host "Last page." -ForegroundColor Red } }
             'P' { if ($page -gt 1) { $page-- } else { Write-Host "First page." -ForegroundColor Red } }
             'B' { return }
             default {
                 if ($input -match '^\d+$') {
                     $index = [int]$input - 1
-                    if ($index -ge ($page - 1) * $itemsPerPage -and $index -lt $page * $itemsPerPage) {
+                    if ($index -ge 0 -and $index -lt $apps.Count) {
                         Handle-AppSelection -app $apps[$index]
                     } else {
                         Write-Host "Invalid app selection." -ForegroundColor Red
@@ -110,7 +136,10 @@ function Show-SearchResults {
     param ([string]$searchTerm)
     cls
     $categories = Get-JsonData
-    $results = $categories | ForEach-Object { $_.options | Where-Object { $_.name -imatch $searchTerm -or $_.description -imatch $searchTerm } }
+    $results = @()
+    foreach ($category in $categories) {
+        $results += $category.options | Where-Object { $_.name -imatch $searchTerm -or $_.description -imatch $searchTerm }
+    }
 
     if ($results.Count -eq 0) {
         Write-Host "No results for '$searchTerm'." -ForegroundColor Red
@@ -123,11 +152,14 @@ function Show-SearchResults {
     while ($true) {
         cls
         Draw-Box -Text "Search Results | Term: '$searchTerm'"
-        $results[$((($page - 1) * $itemsPerPage)..([math]::Min($page * $itemsPerPage, $results.Count) - 1))] | ForEach-Object {
-            Write-Host "$($_.Index + 1). $($_.Name)" -ForegroundColor Green
-            Write-Host "   Description: $($_.Description)" -ForegroundColor White
-            Write-Host "   Winget ID: $($_.WingetId)" -ForegroundColor Cyan
-            Write-Host "   Chocolatey ID: $($_.ChocolateyId)" -ForegroundColor Cyan
+        $startIndex = ($page - 1) * $itemsPerPage
+        $endIndex = [math]::Min($page * $itemsPerPage, $results.Count) - 1
+        for ($i = $startIndex; $i -le $endIndex; $i++) {
+            $app = $results[$i]
+            Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
+            Write-Host "   Description: $($app.description)" -ForegroundColor White
+            Write-Host "   Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+            Write-Host "   Chocolatey ID: $($app.chocoId)" -ForegroundColor Cyan
             Write-Host ""
         }
         Draw-Box -Text "Page $page of $totalPages"
@@ -173,10 +205,10 @@ function Handle-AppSelection {
     param ([PSCustomObject]$app)
     cls
     Write-Host "`nSelected App:" -ForegroundColor Green
-    Write-Host "Name: $($app.Name)" -ForegroundColor Cyan
-    Write-Host "Description: $($app.Description)" -ForegroundColor White
-    Write-Host "Winget ID: $($app.WingetId)" -ForegroundColor Cyan
-    Write-Host "Chocolatey ID: $($app.ChocolateyId)" -ForegroundColor Cyan
+    Write-Host "Name: $($app.name)" -ForegroundColor Cyan
+    Write-Host "Description: $($app.description)" -ForegroundColor White
+    Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
+    Write-Host "Chocolatey ID: $($app.chocoId)" -ForegroundColor Cyan
     Write-Host "`nOptions:" -ForegroundColor Yellow
     Write-Host "[W] Install with Winget" -ForegroundColor Green
     Write-Host "[C] Install with Chocolatey" -ForegroundColor Green
@@ -184,10 +216,10 @@ function Handle-AppSelection {
     Write-Host ""
     switch (Read-Host "Choose an option") {
         'W' {
-            if ($app.WingetId) {
+            if ($app.wingetId) {
                 Write-Host "Installing with Winget..." -ForegroundColor Cyan
                 try {
-                    winget install --id $app.WingetId
+                    winget install --id $app.wingetId
                     Write-Host "Installation completed." -ForegroundColor Green
                 } catch {
                     Write-Host "Installation failed: $_" -ForegroundColor Red
@@ -197,10 +229,10 @@ function Handle-AppSelection {
             }
         }
         'C' {
-            if ($app.ChocolateyId) {
+            if ($app.chocoId) {
                 Write-Host "Installing with Chocolatey..." -ForegroundColor Cyan
                 try {
-                    choco install $app.ChocolateyId
+                    choco install $app.chocoId
                     Write-Host "Installation completed." -ForegroundColor Green
                 } catch {
                     Write-Host "Installation failed: $_" -ForegroundColor Red
@@ -216,10 +248,11 @@ function Handle-AppSelection {
 
 # Main menu loop
 function Show-MainMenu {
-    Show-Header
     while ($true) {
+        Show-Header
         Show-CategoryMenu
-        switch (Read-Host "Choose an option") {
+        $input = Read-Host "Choose an option"
+        switch ($input.ToUpper()) {
             'F' {
                 $searchTerm = Read-Host "Enter search term"
                 Show-SearchResults -searchTerm $searchTerm
@@ -228,9 +261,17 @@ function Show-MainMenu {
             'X' { exit }
             default {
                 if ($input -match '^\d+$') {
-                    Show-AppsInCategory -categoryIndex [int]$input
+                    $categoryIndex = [int]$input
+                    $categories = Get-JsonData
+                    if ($categoryIndex -ge 1 -and $categoryIndex -le $categories.Count) {
+                        Show-AppsInCategory -categoryIndex $categoryIndex
+                    } else {
+                        Write-Host "Invalid category number." -ForegroundColor Red
+                        Start-Sleep -Seconds 2
+                    }
                 } else {
                     Write-Host "Invalid option." -ForegroundColor Red
+                    Start-Sleep -Seconds 2
                 }
             }
         }

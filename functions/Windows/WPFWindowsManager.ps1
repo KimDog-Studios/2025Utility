@@ -17,6 +17,9 @@ $ultimatePerformanceUrl = $urls.urls.WPFUltimatePerformance.URL
 $darkModeUrl = $urls.urls.InvokeDarkMode.URL
 $mouseAccelerationUrl = $urls.urls.InvokeMouseAcceleration.URL
 $gamingOptimizationUrl = $urls.urls.WPFGamingOptimization.URL
+$setWindowsUpdatesToDefault = $urls.urls.InvokeSetWindowsUpdatesToDefault.URL
+$setWindowsUpdatesToSecurity = $urls.urls.InvokeSetWindowsUpdatesToSecurity.URL
+$setWindowsUpdatesToDisabled = $urls.urls.InvokeSetWindowsUpdatesToDisabled.URL
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {
@@ -89,7 +92,10 @@ function Show-MainMenu {
     Write-Host "3. Add & Apply Ultimate Performance Mode" -ForegroundColor Green
     Write-Host "4. Apply Dark Mode to Windows" -ForegroundColor Green
     Write-Host "5. Disable Mouse Acceleration" -ForegroundColor Green
-    Write-Host "6. Exit" -ForegroundColor Red
+    Write-Host "6. Set Windows Updates to Default" -ForegroundColor Green
+    Write-Host "7. Set Windows Updates to Security [Recommended]" -ForegroundColor Red
+    Write-Host "8. Set Windows Updates to Disabled [NOT Recommended!!]" -ForegroundColor Red
+    Write-Host "9. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
     Write-Host "`n"  # Reduced gap
 }
@@ -139,6 +145,33 @@ function Option5 {
     Read-Host
 }
 
+# Function for Option 6: Set Windows Updates to Default
+function Option6 {
+    cls
+    Write-Host "You selected Option 5: Set Windows Updates to Default" -ForegroundColor Green
+    Run-ScriptFromUrl -Url $setWindowsUpdatesToDefault
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
+}
+
+# Function for Option 7: Set Windows Updates to Security
+function Option7 {
+    cls
+    Write-Host "You selected Option 5: Set Windows Updates to Security" -ForegroundColor Green
+    Run-ScriptFromUrl -Url $setWindowsUpdatesToSecurity
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
+}
+
+# Function for Option 8: Set Windows Updates to Disabled
+function Option8 {
+    cls
+    Write-Host "You selected Option 5: Set Windows Updates to Disabled" -ForegroundColor Green
+    Run-ScriptFromUrl -Url $setWindowsUpdatesToDisabled
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
+    Read-Host
+}
+
 # Function for invalid option
 function Show-InvalidOption {
     Write-Host "Invalid selection, please try again." -ForegroundColor Red
@@ -158,7 +191,10 @@ while ($true) {
         "3" { Option3 }
         "4" { Option4 }
         "5" { Option5 }
-        "6" { Write-Host "Exiting..." -ForegroundColor Red; exit }
+        "6" { Option6 }
+        "7" { Option7 }
+        "8" { Option8 }
+        "9" { Write-Host "Exiting..." -ForegroundColor Red; exit }
         default { Show-InvalidOption }
     }
 }

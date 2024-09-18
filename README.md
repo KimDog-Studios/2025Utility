@@ -2,7 +2,7 @@
 
 - To run the script, execute the following command in an Admin PowerShell:
 
-`irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`
+`irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Utility/WPFStarter.ps1 | iex`
 
 ## 📚 Table of Contents
 - [Usage](#-usage)

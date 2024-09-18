@@ -1,4 +1,4 @@
-$jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/apps.json"
+$jsonFileUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/config.json"
 
 # Fetch JSON data
 function Get-JsonData {

@@ -128,11 +128,12 @@ Function Uninstall-WinUtilEdgeBrowser {
         }
     }
 
-    if ($action -eq "Install") {
-        Install-Edge
-    } elseif ($action -eq "Uninstall") {
+    if ($action -eq "Uninstall") {
         Uninstall-Edge
         Uninstall-EdgeUpdate
         # Uninstall-WebView - WebView is needed for Visual Studio and some MS Store Games like Forza
     }
 }
+
+# Call the function at the bottom
+Uninstall-WinUtilEdgeBrowser -action "Uninstall"

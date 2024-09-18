@@ -166,11 +166,12 @@ Invoke-WinUtilDarkMode
 Invoke-WinUtilMouseAcceleration
 Invoke-WPFUltimatePerformance -State "Enable"
 
-# Restart Windows Explorer
+# Restart Windows Explorer without opening a new window
 try {
     Write-Host "Restarting Windows Explorer..." -ForegroundColor Green
     Stop-Process -Name explorer -Force
-    Start-Process explorer
+    # Use Start-Process to restart Explorer without opening a new window
+    Start-Process -FilePath "explorer.exe" -WindowStyle Hidden
     Write-Host "Windows Explorer has been restarted." -ForegroundColor Green
 } catch {
     Write-Warning "Failed to restart Windows Explorer: ${_}"

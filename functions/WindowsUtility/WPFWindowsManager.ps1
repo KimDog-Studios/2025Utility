@@ -79,7 +79,7 @@ function Show-MainMenu {
         $option = $menuOptions[$i]
         Write-Host "$($i + 1). $($option.Name)" -ForegroundColor Green
     }
-    Write-Host "9. Exit" -ForegroundColor Red
+    Write-Host "[E]. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
     Write-Host "`n"  # Reduced gap
 }
@@ -107,7 +107,7 @@ while ($true) {
     Show-MainMenu
     $selection = Read-Host "Please enter your choice"
 
-    if ($selection -eq '9') {
+    if ($selection -eq 'e') {
         Write-Host "Exiting..." -ForegroundColor Red
         exit
     }

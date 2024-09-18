@@ -161,18 +161,23 @@ function Invoke-WPFUltimatePerformance {
     }
 }
 
-# Invoke the functions
+function Invoke-RestartExplorer {
+    <#
+    .SYNOPSIS
+        Restarts Windows Explorer to refresh the shell.
+    #>
+    try {
+        Write-Host "Restarting Windows Explorer..." -ForegroundColor Green
+        Stop-Process -Name explorer -Force
+        Start-Process explorer
+        Write-Host "Windows Explorer has been restarted." -ForegroundColor Green
+    } catch {
+        Write-Warning "An error occurred while restarting Windows Explorer: ${_}"
+    }
+}
+
+# Execute functions
 Invoke-WinUtilDarkMode
 Invoke-WinUtilMouseAcceleration
 Invoke-WPFUltimatePerformance -State "Enable"
-
-# Restart Windows Explorer without opening a new window
-try {
-    Write-Host "Restarting Windows Explorer..." -ForegroundColor Green
-    Stop-Process -Name explorer -Force
-    # Use Start-Process to restart Explorer without opening a new window
-    Start-Process -FilePath "explorer.exe" -WindowStyle Hidden
-    Write-Host "Windows Explorer has been restarted." -ForegroundColor Green
-} catch {
-    Write-Warning "Failed to restart Windows Explorer: ${_}"
-}
+Invoke-RestartExplorer

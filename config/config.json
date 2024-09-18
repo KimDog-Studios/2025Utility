@@ -41,6 +41,9 @@
     },
     "Uninstall-WinUtilEdgeBrowser": {
         "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Uninstall-WinUtilEdgeBrowser.ps1"
+    },
+    "WPFMenuSystem": {
+        "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFMenuSystem.ps1"
     }
   },
   "categories": [

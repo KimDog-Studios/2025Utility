@@ -49,6 +49,7 @@ function Show-MainMenu {
     $currentIndex = 0  # Track the current index in the main menu
     while ($true) {
         Show-MainHeader
+        Write-Host "Main Menu Options:" -ForegroundColor Cyan
         for ($i = 0; $i -lt $menuOptions.Count; $i++) {
             if ($i -eq $currentIndex) {
                 Write-Host "`[*] $($menuOptions[$i].Name)" -ForegroundColor Yellow
@@ -90,7 +91,6 @@ function Show-CategoryMenu {
     $categoryOptions = @()
     for ($i = 0; $i -lt $categories.Count; $i++) {
         $category = $categories[$i]
-        # Capture the current index in a closure
         $index = $i  # Capture the current index
         $categoryOptions += @{ Name = "$($category.name) [$($category.options.Count) Apps]"; Action = { Show-AppsInCategory -categoryIndex $index } }
     }
@@ -100,8 +100,7 @@ function Show-CategoryMenu {
     $currentIndex = 0  # Reset current index for category menu
     while ($true) {
         Show-MainHeader
-        Write-Host "Total Categories: $($categoryOptions.Count)" -ForegroundColor Green
-        Write-Host "Current Index: $($currentIndex + 1)" -ForegroundColor Green  # Display index starting from 1
+        Write-Host "Category Menu Options:" -ForegroundColor Cyan
         for ($i = 0; $i -lt $categoryOptions.Count; $i++) {
             if ($i -eq $currentIndex) {
                 Write-Host "`[*] $($categoryOptions[$i].Name)" -ForegroundColor Yellow
@@ -117,21 +116,13 @@ function Show-CategoryMenu {
         # Handle arrow keys and selection
         switch ($key.Key) {
             'UpArrow' {
-                $currentIndex = ($currentIndex - 1 + $categoryOptions.Count) % $categoryOptions.Count  # Move up
+                $currentIndex = ($currentIndex - 1 + $categoryOptions.Count) % $categoryOptions.Count
             }
             'DownArrow' {
-                $currentIndex = ($currentIndex + 1) % $categoryOptions.Count  # Move down
+                $currentIndex = ($currentIndex + 1) % $categoryOptions.Count
             }
             'Enter' {
-                Clear-Host  # Clear the screen before running the action
-                # Debugging: Output the current index and category being accessed
-                Write-Host "Selected Category Index: $($currentIndex + 1)" -ForegroundColor Green  # Display index starting from 1
-                Write-Host "Category Name: $($categoryOptions[$currentIndex].Name)" -ForegroundColor Green
-                
-                # Debugging: Output the index being passed to Show-AppsInCategory
-                $categoryIndex = $currentIndex  # Use the zero-based index
-                Write-Host "Passing Category Index: $categoryIndex" -ForegroundColor Green
-                
+                Clear-Host
                 & $categoryOptions[$currentIndex].Action  # Execute the selected option
             }
         }
@@ -154,6 +145,7 @@ function Show-AppsInCategory {
     $itemsPerPage = 5
     $totalPages = [math]::Ceiling($apps.Count / $itemsPerPage)
     $page = 1
+    $currentIndex = 0  # Track the current index of the app selection
 
     while ($true) {
         cls
@@ -161,9 +153,14 @@ function Show-AppsInCategory {
         $startIndex = ($page - 1) * $itemsPerPage
         $endIndex = [math]::Min($page * $itemsPerPage, $apps.Count) - 1
 
+        Write-Host "Apps in this category:" -ForegroundColor Cyan
         for ($i = $startIndex; $i -le $endIndex; $i++) {
             $app = $apps[$i]
-            Write-Host "$($i + 1). $($app.name)" -ForegroundColor Green
+            if ($i -eq $startIndex + $currentIndex) {
+                Write-Host "`[*] $($app.name)" -ForegroundColor Yellow  # Highlight selected app
+            } else {
+                Write-Host "`[ ] $($app.name)"
+            }
             Write-Host "   Description: $($app.description)" -ForegroundColor White
             Write-Host "   Winget ID: $($app.wingetId)" -ForegroundColor Cyan
             Write-Host "   Chocolatey ID: $($app.chocoId)" -ForegroundColor Cyan
@@ -176,23 +173,35 @@ function Show-AppsInCategory {
         if ($page -lt $totalPages) { Write-Host "[N] Next Page" -ForegroundColor Cyan }
         if ($page -gt 1) { Write-Host "[P] Previous Page" -ForegroundColor Cyan }
         Write-Host ""
-        
-        # Read user input
-        $input = Read-Host "Choose an option or enter app number"
-        switch ($input.ToUpper()) {
-            'N' { if ($page -lt $totalPages) { $page++ } else { Write-Host "Last page." -ForegroundColor Red } }
-            'P' { if ($page -gt 1) { $page-- } else { Write-Host "First page." -ForegroundColor Red } }
+
+        # Read key input
+        $key = [System.Console]::ReadKey($true)
+
+        switch ($key.Key) {
+            'UpArrow' {
+                if ($currentIndex -gt 0) {
+                    $currentIndex--  # Move up in the list
+                }
+            }
+            'DownArrow' {
+                if ($currentIndex -lt [math]::Min($itemsPerPage - 1, $endIndex - $startIndex)) {
+                    $currentIndex++  # Move down in the list
+                }
+            }
+            'N' {
+                if ($page -lt $totalPages) { $page++ } else { Write-Host "Last page." -ForegroundColor Red }
+                $currentIndex = 0  # Reset current index when changing pages
+            }
+            'P' {
+                if ($page -gt 1) { $page-- } else { Write-Host "First page." -ForegroundColor Red }
+                $currentIndex = 0  # Reset current index when changing pages
+            }
             'B' { return }
-            default {
-                if ($input -match '^\d+$') {
-                    $index = [int]$input - 1
-                    if ($index -ge 0 -and $index -lt $apps.Count) {
-                        Handle-AppSelection -app $apps[$index]
-                    } else {
-                        Write-Host "Invalid app selection. Please enter a number between 1 and $($apps.Count)." -ForegroundColor Red
-                    }
-                } else {
-                    Write-Host "Invalid input. Please enter a valid option." -ForegroundColor Red
+            'Enter' {
+                # Handle app selection
+                $selectedAppIndex = $startIndex + $currentIndex
+                if ($selectedAppIndex -ge 0 -and $selectedAppIndex -lt $apps.Count) {
+                    Handle-AppSelection -app $apps[$selectedAppIndex]
                 }
             }
         }
@@ -221,41 +230,75 @@ function Handle-AppSelection {
     Write-Host "Winget ID: $($app.wingetId)" -ForegroundColor Cyan
     Write-Host "Chocolatey ID: $($app.chocoId)" -ForegroundColor Cyan
     Write-Host "`nOptions:" -ForegroundColor Yellow
-    Write-Host "[W] Install with Winget" -ForegroundColor Green
-    Write-Host "[C] Install with Chocolatey" -ForegroundColor Green
-    Write-Host "[B] Back" -ForegroundColor Red
-    Write-Host ""
-    switch (Read-Host "Choose an option") {
-        'W' {
-            if ($app.wingetId) {
-                Write-Host "Installing with Winget..." -ForegroundColor Cyan
-                try {
-                    winget install --id $app.wingetId
-                    Write-Host "Installation completed." -ForegroundColor Green
-                } catch {
-                    Write-Host "Installation failed: $_" -ForegroundColor Red
-                }
+
+    # Define installation options
+    $options = @(
+        @{ Name = "Install with Winget"; Action = { Install-WithWinget -app $app } },
+        @{ Name = "Install with Chocolatey"; Action = { Install-WithChocolatey -app $app } },
+        @{ Name = "Back"; Action = { return } }
+    )
+
+    $currentIndex = 0  # Track the current index in the options menu
+
+    while ($true) {
+        for ($i = 0; $i -lt $options.Count; $i++) {
+            if ($i -eq $currentIndex) {
+                Write-Host "`[*] $($options[$i].Name)" -ForegroundColor Yellow  # Highlight selected option
             } else {
-                Write-Host "No Winget ID available for this app." -ForegroundColor Red
+                Write-Host "`[ ] $($options[$i].Name)"
             }
         }
-        'C' {
-            if ($app.chocoId) {
-                Write-Host "Installing with Chocolatey..." -ForegroundColor Cyan
-                try {
-                    choco install $app.chocoId
-                    Write-Host "Installation completed." -ForegroundColor Green
-                } catch {
-                    Write-Host "Installation failed: $_" -ForegroundColor Red
-                }
-            } else {
-                Write-Host "No Chocolatey ID available for this app." -ForegroundColor Red
+        Write-Host ""
+
+        # Read key input
+        $key = [System.Console]::ReadKey($true)
+
+        switch ($key.Key) {
+            'UpArrow' {
+                $currentIndex = ($currentIndex - 1 + $options.Count) % $options.Count  # Move up
+            }
+            'DownArrow' {
+                $currentIndex = ($currentIndex + 1) % $options.Count  # Move down
+            }
+            'Enter' {
+                & $options[$currentIndex].Action  # Execute the selected option
+                break  # Exit the loop after executing the action
             }
         }
-        'B' { return }
-        default {
-            Write-Host "Invalid option. Please select [W], [C], or [B]." -ForegroundColor Red
+        Start-Sleep -Milliseconds 100
+        cls  # Clear the screen for the next display
+    }
+}
+
+# Function to install with Winget
+function Install-WithWinget {
+    param ([PSCustomObject]$app)
+    if ($app.wingetId) {
+        Write-Host "Installing with Winget..." -ForegroundColor Cyan
+        try {
+            winget install --id $app.wingetId
+            Write-Host "Installation completed." -ForegroundColor Green
+        } catch {
+            Write-Host "Installation failed: $_" -ForegroundColor Red
         }
+    } else {
+        Write-Host "No Winget ID available for this app." -ForegroundColor Red
+    }
+}
+
+# Function to install with Chocolatey
+function Install-WithChocolatey {
+    param ([PSCustomObject]$app)
+    if ($app.chocoId) {
+        Write-Host "Installing with Chocolatey..." -ForegroundColor Cyan
+        try {
+            choco install $app.chocoId
+            Write-Host "Installation completed." -ForegroundColor Green
+        } catch {
+            Write-Host "Installation failed: $_" -ForegroundColor Red
+        }
+    } else {
+        Write-Host "No Chocolatey ID available for this app." -ForegroundColor Red
     }
 }
 

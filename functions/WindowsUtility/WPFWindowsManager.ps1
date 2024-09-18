@@ -13,11 +13,12 @@ try {
 
 # Create a list of menu options and corresponding URLs
 $menuOptions = @(
-    @{ Name = "Optimize for Gaming [Runs Options: 3, 4, 5]"; URL = $urls.urls.WPFGamingOptimization.URL },
+    @{ Name = "Optimize for Gaming"; URL = $urls.urls.WPFGamingOptimization.URL },
     @{ Name = "Remove Bloatware [Windows 11]"; URL = $urls.urls.WPFRemoveAppX.URL },
     @{ Name = "Apply Ultimate Performance Mode"; URL = $urls.urls.WPFUltimatePerformance.URL },
     @{ Name = "Apply Dark Mode to Windows"; URL = $urls.urls.InvokeDarkMode.URL },
     @{ Name = "Disable Mouse Acceleration"; URL = $urls.urls.InvokeMouseAcceleration.URL },
+    @{ Name = "Enable Classic Right Click Menu"; URL = $urls.urls.WPFClassicRightClick.URL },
     @{ Name = "Set Windows Updates to Default"; URL = $urls.urls.InvokeSetWindowsUpdatesToDefault.URL },
     @{ Name = "Set Updates to Security [Recommended]"; URL = $urls.urls.InvokeSetWindowsUpdatesToSecurity.URL },
     @{ Name = "Disable Windows Updates [NOT Recommended]"; URL = $urls.urls.InvokeSetWindowsUpdatesToDisabled.URL }
@@ -65,7 +66,7 @@ function Show-MainHeader {
     Clear-Host
     Write-Host "========================================" -ForegroundColor Cyan
     Write-Host " KimDog's Windows Manager Menu" -ForegroundColor Cyan
-    Write-Host " Last Updated: 2024-09-17" -ForegroundColor Cyan
+    Write-Host " Last Updated: 2024-09-18" -ForegroundColor Cyan
     Write-Host "========================================" -ForegroundColor Cyan
     Write-Host "`n"
 }

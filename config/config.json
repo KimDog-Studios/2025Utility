@@ -35,6 +35,9 @@
     },
     "InvokeSetWindowsUpdatesToSecurity": {
       "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-WPFUpdatessecurity.ps1"
+    },
+    "WPFClassRightClick": {
+        "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFClassicRightClick.ps1"
     }
   },
   "categories": [

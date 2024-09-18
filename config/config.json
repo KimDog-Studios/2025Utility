@@ -13,37 +13,37 @@
       "URL": "https://community.chocolatey.org/install.ps1"
     },
     "WPFRemoveAppX": {
-      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFRemoveAppX.ps1"
+      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows-11/WPFRemoveAppX.ps1"
     },
     "WPFUltimatePerformance": {
-      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFUltimatePerformance.ps1"
+      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows-10/WPFUltimatePerformance.ps1"
     },
     "InvokeDarkMode": {
-      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-DarkMode.ps1"
+      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows-10/Invoke-DarkMode.ps1"
     },
     "InvokeMouseAcceleration": {
-      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-MouseAcceleration.ps1"
+      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows-10/Invoke-MouseAcceleration.ps1"
     },
     "WPFGamingOptimization": {
-      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFGamingOptimization.ps1"
+      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows-10/WPFGamingOptimization.ps1"
     },
     "InvokeSetWindowsUpdatesToDefault": {
-      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-WPFUpdatesdefault.ps1"
+      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows-10/Invoke-WPFUpdatesdefault.ps1"
     },
     "InvokeSetWindowsUpdatesToDisabled": {
-      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-WPFUpdatesdisable.ps1"
+      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows-10/Invoke-WPFUpdatesdisable.ps1"
     },
     "InvokeSetWindowsUpdatesToSecurity": {
-      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-WPFUpdatessecurity.ps1"
+      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows-10/Invoke-WPFUpdatessecurity.ps1"
     },
     "WPFClassicRightClick": {
-        "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFClassicRightClick.ps1"
+        "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows-11/WPFClassicRightClick.ps1"
     },
     "UninstallWinUtilEdgeBrowser": {
-        "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Uninstall-WinUtilEdgeBrowser.ps1"
+        "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows-10/Uninstall-WinUtilEdgeBrowser.ps1"
     },
     "WPFShortcut": {
-        "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFShortcut.ps1"
+        "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows-10/WPFShortcut.ps1"
     }
   },
   "categories": [

@@ -72,18 +72,43 @@ function Show-MainHeader {
     Write-Host "`n"
 }
 
-# Function to show the main menu dynamically
+# Function to show the main menu dynamically with keyboard navigation
 function Show-MainMenu {
     $MenuWidth = 30
     Write-Host (Align-Header "Windows Manager" $MenuWidth) -ForegroundColor Yellow
 
-    for ($i = 0; $i -lt $menuOptions.Count; $i++) {
-        $option = $menuOptions[$i]
-        Write-Host "[$($i + 1)] $($option.Name)" -ForegroundColor Green
+    $selectedIndex = 0
+    $menuCount = $menuOptions.Count
+
+    while ($true) {
+        for ($i = 0; $i -lt $menuCount; $i++) {
+            $option = $menuOptions[$i]
+            if ($i -eq $selectedIndex) {
+                Write-Host "[*] $($option.Name)" -ForegroundColor Green  # Selected option
+            } else {
+                Write-Host "[ ] $($option.Name)" -ForegroundColor White  # Unselected option
+            }
+        }
+        Write-Host "[E]. Exit" -ForegroundColor Red
+        Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
+        Write-Host "`n"  # Reduced gap
+
+        # Read key input
+        $key = [System.Console]::ReadKey($true)
+
+        if ($key.Key -eq [ConsoleKey]::Up) {
+            $selectedIndex = ($selectedIndex - 1 + $menuCount) % $menuCount  # Navigate up
+        } elseif ($key.Key -eq [ConsoleKey]::Down) {
+            $selectedIndex = ($selectedIndex + 1) % $menuCount  # Navigate down
+        } elseif ($key.Key -eq [ConsoleKey]::Space) {
+            Run-ScriptFromUrl -Url $menuOptions[$selectedIndex].URL  # Select option
+        } elseif ($key.Key -eq [ConsoleKey]::E) {
+            Write-Host "Exiting..." -ForegroundColor Red
+            exit
+        }
+
+        Clear-Host  # Clear the screen for redrawing the menu
     }
-    Write-Host "[E]. Exit" -ForegroundColor Red
-    Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
-    Write-Host "`n"  # Reduced gap
 }
 
 # Function to handle menu selection and execute corresponding scripts

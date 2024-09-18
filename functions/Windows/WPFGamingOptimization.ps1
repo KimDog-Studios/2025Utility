@@ -51,12 +51,12 @@ function Restart-WindowsExplorer {
     }
 }
 
-Write-Host "This Script runs the Following Tweaks to your System: " -ForegroundColor Green
-Write-Host "Add and Enables Ultimate Performance Power Scheme" -ForegroundColor Green
-Write-Host "Sets Desktop Theme to Dark Mode" -ForegroundColor Green
-Write-Host "Disballes Mouse Acceleration" -ForegroundColor Green
-Write-Host "Sets Windows 11 Right click menu to the Classic!" -ForegroundColor Green
-Write-Host "Sets Windows Updates to Security"
+Write-Host "This Script runs the Following Tweaks to your System: " -ForegroundColor Red
+Write-Host "Add and Enables Ultimate Performance Power Scheme" -ForegroundColor Red
+Write-Host "Sets Desktop Theme to Dark Mode" -ForegroundColor Red
+Write-Host "Disballes Mouse Acceleration" -ForegroundColor Red
+Write-Host "Sets Windows 11 Right click menu to the Classic!" -ForegroundColor Red
+Write-Host "Sets Windows Updates to Security" -ForegroundColor Red
 
 # Main execution
 try {

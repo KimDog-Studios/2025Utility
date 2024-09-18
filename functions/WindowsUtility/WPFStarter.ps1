@@ -2,14 +2,10 @@
 function Test-WinUtilWingetInstalled {
     try {
         $wingetPath = Get-Command "winget" -ErrorAction SilentlyContinue
-        if ($wingetPath -ne $null) {
-            return "installed"
-        } else {
-            return "not installed"
-        }
+        return $wingetPath -ne $null
     } catch {
         Write-Host "Error checking Winget installation: $_" -ForegroundColor Red
-        return "error"
+        return $false
     }
 }
 
@@ -17,91 +13,72 @@ function Test-WinUtilWingetInstalled {
 function Test-WinUtilChocoInstalled {
     try {
         $chocoPath = Get-Command "choco" -ErrorAction SilentlyContinue
-        if ($chocoPath -ne $null) {
-            return "installed"
-        } else {
-            return "not installed"
-        }
+        return $chocoPath -ne $null
     } catch {
         Write-Host "Error checking Chocolatey installation: $_" -ForegroundColor Red
-        return "error"
+        return $false
     }
 }
 
 # Function to install Winget
 function Install-WinUtilWinget {
-    $isWingetInstalled = Test-WinUtilWingetInstalled
+    if (Test-WinUtilWingetInstalled) {
+        Write-Host "Winget is already installed." -ForegroundColor Green
+        return
+    }
+
+    Write-Host "Winget is not installed. Installing now..." -ForegroundColor Yellow
 
     try {
-        if ($isWingetInstalled -eq "installed") {
-            Write-Host "`nWinget is already installed.`r" -ForegroundColor Green
-            return
-        } else {
-            Write-Host "`nWinget is not installed. Continuing with install.`r" -ForegroundColor Yellow
-        }
-
-        # Gets the computer's information
+        # Check Windows version
         $ComputerInfo = Get-ComputerInfo -ErrorAction Stop
-
-        if (($ComputerInfo.WindowsVersion) -lt "1809") {
-            Write-Host "Winget is not supported on this version of Windows (Pre-1809)" -ForegroundColor Red
+        if ([version]$ComputerInfo.WindowsVersion -lt [version]"10.0.17763") {
+            Write-Host "Winget is not supported on this version of Windows." -ForegroundColor Red
             return
         }
 
-        Write-Host "Downloading Winget Prerequisites`n"
+        # Install Winget prerequisites and Winget
+        Write-Host "Downloading and installing Winget..." -ForegroundColor Cyan
         Get-WinUtilWingetPrerequisites
-        Write-Host "Downloading Winget and License File`r"
         Get-WinUtilWingetLatest
-        Write-Host "Installing Winget w/ Prerequisites`r"
         Add-AppxProvisionedPackage -Online -PackagePath $ENV:TEMP\Microsoft.DesktopAppInstaller.msixbundle -DependencyPackagePath $ENV:TEMP\Microsoft.VCLibs.x64.Desktop.appx, $ENV:TEMP\Microsoft.UI.Xaml.x64.appx -LicensePath $ENV:TEMP\License1.xml
-        Write-Host "Winget Installed" -ForegroundColor Green
-        Write-Host "Enabling NuGet and Module..."
+
+        Write-Host "Winget installed successfully." -ForegroundColor Green
         Install-PackageProvider -Name NuGet -Force
         Install-Module -Name Microsoft.WinGet.Client -Force
-
-        Write-Output "Refreshing Environment Variables...`n"
-        $ENV:PATH = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
     } catch {
-        Write-Host "Failure detected while installing via GitHub method. Continuing with Chocolatey method as fallback." -ForegroundColor Red
-
-        try {
-            Install-WinUtilChoco
-            Start-Process -Verb runas -FilePath powershell.exe -ArgumentList "choco install winget-cli"
-            Write-Host "Winget Installed" -ForegroundColor Green
-            Write-Output "Refreshing Environment Variables...`n"
-            $ENV:PATH = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
-        } catch {
-            throw [WingetFailedInstall]::new('Failed to install!')
-        }
+        Write-Host "Failed to install Winget. Attempting Chocolatey installation as a fallback." -ForegroundColor Red
+        Install-WinUtilChoco
+        Start-Process -Verb runas -FilePath "powershell.exe" -ArgumentList "choco install winget-cli"
+        Write-Host "Winget installed via Chocolatey." -ForegroundColor Green
     }
+
+    # Refresh Environment Variables
+    $ENV:PATH = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 }
 
 # Function to install Chocolatey
 function Install-WinUtilChoco {
+    if (Test-WinUtilChocoInstalled) {
+        Write-Host "Chocolatey is already installed." -ForegroundColor Green
+        return
+    }
+
+    Write-Host "Chocolatey is not installed. Installing now..." -ForegroundColor Yellow
+
     try {
-        Write-Host "Checking if Chocolatey is Installed..."
-
-        $isChocoInstalled = Test-WinUtilChocoInstalled
-        if ($isChocoInstalled -eq "installed") {
-            Write-Host "Chocolatey is already installed." -ForegroundColor Green
-            return
-        }
-
-        Write-Host "Seems Chocolatey is not installed, installing now."
         Set-ExecutionPolicy Bypass -Scope Process -Force
         [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString($urls.ChocoInstall))
-
+        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString($urls.ChocoInstall.URL))
+        Write-Host "Chocolatey installed successfully." -ForegroundColor Green
     } catch {
-        Write-Host "===========================================" -Foregroundcolor Red
-        Write-Host "--     Chocolatey failed to install     ---" -Foregroundcolor Red
-        Write-Host "===========================================" -Foregroundcolor Red
+        Write-Host "Failed to install Chocolatey: $_" -ForegroundColor Red
     }
 }
 
 # Function to create a shortcut without dialogs
 function Create-Shortcut {
-    param(
+    param (
         [string]$ShortcutName,
         [string]$ShortcutPath,
         [string]$TargetPath,
@@ -131,12 +108,12 @@ function Create-Shortcut {
         [System.IO.File]::WriteAllBytes($ShortcutPath, $bytes)
     }
 
-    Write-Host "Shortcut '$ShortcutName' has been created at $ShortcutPath with 'Run as administrator' set to $RunAsAdmin"
+    Write-Host "Shortcut '$ShortcutName' created at $ShortcutPath with 'Run as administrator' set to $RunAsAdmin"
 }
 
 # Function to create a folder in the Start Menu and add a shortcut
 function Create-ShortcutInStartMenu {
-    param(
+    param (
         [string]$ShortcutName,
         [string]$TargetPath,
         [string]$Arguments = "",
@@ -158,18 +135,9 @@ function Create-ShortcutInStartMenu {
     Create-Shortcut -ShortcutName $ShortcutName -ShortcutPath $shortcutPath -TargetPath $TargetPath -Arguments $Arguments -RunAsAdmin $RunAsAdmin
 }
 
-# Automatically create the shortcut in the Start Menu
-function Create-WinUtilShortcut {
-    $shell = if (Get-Command "pwsh" -ErrorAction SilentlyContinue) { "powershell.exe" }
-    $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/WPFStarter.ps1 | iex`"`'"
-
-    # Create the shortcut in the Start Menu folder
-    Create-ShortcutInStartMenu -ShortcutName "KimDog's Windows Utility" -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
-}
-
 # Function to create a shortcut on the desktop
 function Create-DesktopShortcut {
-    param(
+    param (
         [string]$ShortcutName,
         [string]$TargetPath,
         [string]$Arguments = "",
@@ -201,7 +169,7 @@ function Create-DesktopShortcut {
         [System.IO.File]::WriteAllBytes($desktopPath, $bytes)
     }
 
-    Write-Host "Shortcut '$ShortcutName' has been created on the desktop with 'Run as administrator' set to $RunAsAdmin"
+    Write-Host "Shortcut '$ShortcutName' created on the desktop with 'Run as administrator' set to $RunAsAdmin"
 }
 
 # Function to automatically create shortcuts in both the Start Menu and the Desktop
@@ -216,9 +184,7 @@ function Create-WinUtilShortcuts {
     Create-DesktopShortcut -ShortcutName "KimDog's Windows Utility" -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
 }
 
-# Call the shortcut creation function
-Create-WinUtilShortcuts
-
+# Function to execute a script from a URL
 function Execute-ScriptFromUrl {
     param (
         [string]$url
@@ -246,27 +212,25 @@ function Get-URLsFromJson {
         # Fetch the JSON from the provided URL
         $jsonContent = Invoke-RestMethod -Uri $jsonUrl -Method Get
 
-        if ($jsonContent) {
-            return $jsonContent.urls
-        }
+        # Parse the JSON content
+        return $jsonContent
     } catch {
-        Write-Host "An error occurred while fetching the JSON: $_" -ForegroundColor Red
+        Write-Host "An error occurred while fetching or parsing the JSON from ${jsonUrl}: ${_}" -ForegroundColor Red
+        return $null
     }
 }
 
-# Main script starts here
-$urlsJson = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/urls.json"
-
-# Fetch URLs from the JSON file
-$urls = Get-URLsFromJson -jsonUrl $urlsJson
+# Get the JSON file URL and parse the JSON
+$jsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/WindowsUtility/utilityLinks.json"
+$urls = Get-URLsFromJson -jsonUrl $jsonUrl
 
 if ($urls) {
     # Install Winget and Chocolatey
     Install-WinUtilWinget
     Install-WinUtilChoco
 
-    # Execute the scripts dynamically based on the URLs in the JSON
-    Execute-ScriptFromUrl -url $urls.WPFMain.URL
-    Execute-ScriptFromUrl -url $urls.WPFWinGetMenu.URL
-    Execute-ScriptFromUrl -url $urls.WPFWindowsManager.URL
+    # Create the shortcuts
+    Create-WinUtilShortcuts
+} else {
+    Write-Host "Failed to get URLs from JSON." -ForegroundColor Red
 }

@@ -186,7 +186,7 @@ function Create-DesktopShortcut {
     $Shortcut.Arguments = $Arguments
 
     # Add an icon if available
-    $iconUrl = "https://christitus.com/images/logo-full.ico"
+    $iconUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/icon.ico"
     $iconPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "logo.ico")
     Invoke-WebRequest -Uri $iconUrl -OutFile $iconPath
     $Shortcut.IconLocation = $iconPath

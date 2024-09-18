@@ -1,205 +1,205 @@
 {
     "categories": [
-    {
-      "name": "Web Browsers",
-      "options": [
         {
-          "name": "Microsoft Edge",
-          "wingetId": "Microsoft.Edge",
-          "chocoId": "microsoft-edge",
-          "description": "Microsoft Edge browser, based on the Chromium open source browser."
+            "name": "Web Browsers",
+            "options": [
+                {
+                    "name": "Microsoft Edge",
+                    "wingetId": "Microsoft.Edge",
+                    "chocoId": "microsoft-edge",
+                    "description": "Microsoft Edge browser, based on the Chromium open source browser."
+                },
+                {
+                    "name": "Google Chrome",
+                    "wingetId": "Google.Chrome",
+                    "chocoId": "googlechrome",
+                    "description": "Google Chrome browser, based on the Chromium open source browser."
+                },
+                {
+                    "name": "Brave Browser",
+                    "wingetId": "Brave.Brave",
+                    "chocoId": "brave",
+                    "description": "Brave browser, based on the Chromium open source browser."
+                },
+                {
+                    "name": "Vivaldi Browser",
+                    "wingetId": "VivaldiTechnologies.Vivaldi",
+                    "chocoId": "vivaldi",
+                    "description": "The new Vivaldi browser protects you from trackers, blocks unwanted ads, and puts you in control with unique built-in features. Get Vivaldi and browse fast."
+                },
+                {
+                    "name": "Opera",
+                    "wingetId": "Opera.Opera",
+                    "chocoId": "opera",
+                    "description": "Opera browser, based on the Chromium open source browser."
+                },
+                {
+                    "name": "Firefox",
+                    "wingetId": "Mozilla.Firefox",
+                    "chocoId": "firefox",
+                    "description": "Firefox browser, based on the Mozilla open source browser."
+                },
+                {
+                    "name": "Tor Browser",
+                    "wingetId": "TorProject.TorBrowser",
+                    "chocoId": "tor-browser",
+                    "description": "Tor Browser, based on the Tor Project open source browser."
+                },
+                {
+                    "name": "Chromium",
+                    "wingetId": "Hibbiki.Chromium",
+                    "chocoId": "chromium",
+                    "description": "Chromium browser, based on the Chromium open source browser."
+                },
+                {
+                    "name": "Safari",
+                    "wingetId": "Apple.Safari",
+                    "chocoId": "safari",
+                    "description": "Apple Safari browser, based on the WebKit open source browser."
+                },
+                {
+                    "name": "Opera GX",
+                    "wingetId": "Opera.OperaGX",
+                    "chocoId": "opera-gx",
+                    "description": "Opera browser, based on the Chromium open source browser."
+                }
+            ]
         },
         {
-          "name": "Google Chrome",
-          "wingetId": "Google.Chrome",
-          "chocoId": "googlechrome",
-          "description": "Google Chrome browser, based on the Chromium open source browser."
+            "name": "Development Tools",
+            "options": [
+                {
+                    "name": "Visual Studio Code",
+                    "wingetId": "Microsoft.VisualStudioCode",
+                    "chocoId": "vscode",
+                    "description": "Visual Studio Code is a lightweight and powerful code editor."
+                },
+                {
+                    "name": "Sublime Text",
+                    "wingetId": "SublimeHQ.SublimeText.4",
+                    "chocoId": "sublimetext4",
+                    "description": "Sublime Text is a sophisticated text editor with a modern interface."
+                },
+                {
+                    "name": "Atom",
+                    "wingetId": "GitHub.Atom",
+                    "chocoId": "atom",
+                    "description": "Atom is a hackable text editor for the 21st century."
+                },
+                {
+                    "name": "Notepad++",
+                    "wingetId": "Notepad++.Notepad++",
+                    "chocoId": "notepadplusplus",
+                    "description": "Notepad++ is a free and open-source text editor."
+                },
+                {
+                    "name": "GitHub Desktop",
+                    "wingetId": "GitHub.GitHubDesktop",
+                    "chocoId": "github-desktop",
+                    "description": "GitHub Desktop is a cross-platform desktop application for managing Git repositories."
+                },
+                {
+                    "name": "Git",
+                    "wingetId": "Git.Git",
+                    "chocoId": "git",
+                    "description": "Git is a distributed version control system for tracking changes in source code."
+                },
+                {
+                    "name": "Visual Studio 2022 Community",
+                    "wingetId": "Microsoft.VisualStudio.2022.Community",
+                    "chocoId": "visualstudio2022community",
+                    "description": "Visual Studio 2022 Community Edition is a comprehensive development environment for building modern web and cloud applications."
+                },
+                {
+                    "name": "Visual Studio 2022 Enterprise",
+                    "wingetId": "Microsoft.VisualStudio.2022.Enterprise",
+                    "chocoId": "visualstudio2022enterprise",
+                    "description": "Visual Studio 2022 Enterprise Edition is a comprehensive development environment for building modern web and cloud applications."
+                },
+                {
+                    "name": "Visual Studio 2022 Professional",
+                    "wingetId": "Microsoft.VisualStudio.2022.Professional",
+                    "chocoId": "visualstudio2022professional",
+                    "description": "Visual Studio 2022 Professional Edition is a comprehensive development environment for building modern web and cloud applications."
+                }
+            ]
         },
         {
-          "name": "Brave Browser",
-          "wingetId": "Brave.Brave",
-          "chocoId": "brave",
-          "description": "Brave browser, based on the Chromium open source browser."
-        },
-        {
-          "name": "Vivaldi Browser",
-          "wingetId": "VivaldiTechnologies.Vivaldi",
-          "chocoId": "vivaldi",
-          "description": "The new Vivaldi browser protects you from trackers, blocks unwanted ads, and puts you in control with unique built-in features. Get Vivaldi and browse fast."
-        },
-        {
-          "name": "Opera",
-          "wingetId": "Opera.Opera",
-          "chocoId": "opera",
-          "description": "Opera browser, based on the Chromium open source browser."
-        },
-        {
-          "name": "Firefox",
-          "wingetId": "Mozilla.Firefox",
-          "chocoId": "firefox",
-          "description": "Firefox browser, based on the Mozilla open source browser."
-        },
-        {
-          "name": "Tor Browser",
-          "wingetId": "TorProject.TorBrowser",
-          "chocoId": "tor-browser",
-          "description": "Tor Browser, based on the Tor Project open source browser."
-        },
-        {
-          "name": "Chromium",
-          "wingetId": "Hibbiki.Chromium",
-          "chocoId": "chromium",
-          "description": "Chromium browser, based on the Chromium open source browser."
-        },
-        {
-          "name": "Safari",
-          "wingetId": "Apple.Safari",
-          "chocoId": "safari",
-          "description": "Apple Safari browser, based on the WebKit open source browser."
-        },
-        {
-          "name": "Opera GX",
-          "wingetId": "Opera.OperaGX",
-          "chocoId": "opera-gx",
-          "description": "Opera browser, based on the Chromium open source browser."
+            "name": "Utilities",
+            "options": [
+                {
+                    "name": "7ZIP",
+                    "wingetId": "7zip.7zip",
+                    "chocoId": "7zip",
+                    "description": "7-Zip is a file archiver with a high compression ratio."
+                },
+                {
+                    "name": "Nvidia GeForce Experience",
+                    "wingetId": "NVIDIA.GeForceExperience",
+                    "chocoId": "nvidia-geforce-experience",
+                    "description": "NVIDIA GeForce Experience is a powerful and advanced graphics application for gamers."
+                },
+                {
+                    "name": "Corsair iCUE",
+                    "wingetId": "Corsair.iCUE.5",
+                    "chocoId": "icue",
+                    "description": "Corsair iCUE is a powerful and advanced software for managing game controllers and peripherals."
+                },
+                {
+                    "name": "Fan Control",
+                    "wingetId": "Rem0o.FanControl",
+                    "chocoId": "N/A",
+                    "description": "Fan Control is a powerful and advanced software for controlling fans and air purifiers."
+                },
+                {
+                    "name": "MSI Afterburner",
+                    "wingetId": "MSI Afterburner",
+                    "chocoId": "msiafterburner",
+                    "description": "MSI Afterburner is a powerful and advanced software for managing GPUs."
+                },
+                {
+                    "name": "MSI Afterburner Beta",
+                    "wingetId": "Guru3D.Afterburner.Beta",
+                    "chocoId": "N/A",
+                    "description": "MSI Afterburner is a powerful and advanced software for managing GPUs."
+                },
+                {
+                    "name": "HWINFO",
+                    "wingetId": "REALiX.HWiNFO",
+                    "chocoId": "hwinfo",
+                    "description": "HWiNFO is a powerful and advanced software for managing hardware and software information."
+                },
+                {
+                    "name": "NVCleanstall",
+                    "wingetId": "TechPowerUp.NVCleanstall",
+                    "chocoId": "N/A",
+                    "description": "NVCleanstall lets you customize the NVIDIA GeForce Driver package by removing components that you don't need (or want)."
+                },
+                {
+                    "name": "DDU [Display Driver Uninstaller]",
+                    "wingetId": "Wagnardsoft.DisplayDriverUninstaller",
+                    "chocoId": "ddu",
+                    "description": "DDU[Display Driver Uninstaller] is a powerful and advanced software for managing NVIDIA GeForce Driver packages."
+                },
+                {
+                    "name": "Revo Uninstaller",
+                    "wingetId": "RevoUninstaller.RevoUninstaller",
+                    "chocoId": "revo-uninstaller",
+                    "description": "RevoUninstaller is a powerful and advanced software for managing software installations."
+                },
+                {
+                    "name": "TeamViewer",
+                    "wingetId": "TeamViewer.TeamViewer",
+                    "chocoId": "teamviewer9",
+                    "description": "TeamViewer is a powerful and advanced software for remote desktop and virtual meeting."
+                },
+                {
+                    "name": "Node.JS LTS",
+                    "wingetId": "OpenJS.NodeJS.LTS",
+                    "chocoId": "nodejs.install",
+                    "description": "Node.JS LTS is a powerful and advanced software for managing software installations."
+                }
+            ]
         }
-      ]
-    },
-    {
-      "name": "Development Tools",
-      "options": [
-        {
-          "name": "Visual Studio Code",
-          "wingetId": "Microsoft.VisualStudioCode",
-          "chocoId": "vscode",
-          "description": "Visual Studio Code is a lightweight and powerful code editor."
-        },
-        {
-          "name": "Sublime Text",
-          "wingetId": "SublimeHQ.SublimeText.4",
-          "chocoId": "sublimetext4",
-          "description": "Sublime Text is a sophisticated text editor with a modern interface."
-        },
-        {
-          "name": "Atom",
-          "wingetId": "GitHub.Atom",
-          "chocoId": "atom",
-          "description": "Atom is a hackable text editor for the 21st century."
-        },
-        {
-          "name": "Notepad++",
-          "wingetId": "Notepad++.Notepad++",
-          "chocoId": "notepadplusplus",
-          "description": "Notepad++ is a free and open-source text editor."
-        },
-        {
-          "name": "GitHub Desktop",
-          "wingetId": "GitHub.GitHubDesktop",
-          "chocoId": "github-desktop",
-          "description": "GitHub Desktop is a cross-platform desktop application for managing Git repositories."
-        },
-        {
-          "name": "Git",
-          "wingetId": "Git.Git",
-          "chocoId": "git",
-          "description": "Git is a distributed version control system for tracking changes in source code."
-        },
-        {
-          "name": "Visual Studio 2022 Community",
-          "wingetId": "Microsoft.VisualStudio.2022.Community",
-          "chocoId": "visualstudio2022community",
-          "description": "Visual Studio 2022 Community Edition is a comprehensive development environment for building modern web and cloud applications."
-        },
-        {
-          "name": "Visual Studio 2022 Enterprise",
-          "wingetId": "Microsoft.VisualStudio.2022.Enterprise",
-          "chocoId": "visualstudio2022enterprise",
-          "description": "Visual Studio 2022 Enterprise Edition is a comprehensive development environment for building modern web and cloud applications."
-        },
-        {
-          "name": "Visual Studio 2022 Professional",
-          "wingetId": "Microsoft.VisualStudio.2022.Professional",
-          "chocoId": "visualstudio2022professional",
-          "description": "Visual Studio 2022 Professional Edition is a comprehensive development environment for building modern web and cloud applications."
-        }
-      ]
-    },
-    {
-      "name": "Utilities",
-      "options": [
-        {
-          "name": "7ZIP",
-          "wingetId": "7zip.7zip",
-          "chocoId": "7zip",
-          "description": "7-Zip is a file archiver with a high compression ratio."
-        },
-        {
-          "name": "Nvidia GeForce Experience",
-          "wingetId": "NVIDIA.GeForceExperience",
-          "chocoId": "nvidia-geforce-experience",
-          "description": "NVIDIA GeForce Experience is a powerful and advanced graphics application for gamers."
-        },
-        {
-          "name": "Corsair iCUE",
-          "wingetId": "Corsair.iCUE.5",
-          "chocoId": "icue",
-          "description": "Corsair iCUE is a powerful and advanced software for managing game controllers and peripherals."
-        },
-        {
-          "name": "Fan Control",
-          "wingetId": "Rem0o.FanControl",
-          "chocoId": "N/A",
-          "description": "Fan Control is a powerful and advanced software for controlling fans and air purifiers."
-        },
-        {
-          "name": "MSI Afterburner",
-          "wingetId": "MSI Afterburner",
-          "chocoId": "msiafterburner",
-          "description": "MSI Afterburner is a powerful and advanced software for managing GPUs."
-        },
-        {
-          "name": "MSI Afterburner Beta",
-          "wingetId": "Guru3D.Afterburner.Beta",
-          "chocoId": "N/A",
-          "description": "MSI Afterburner is a powerful and advanced software for managing GPUs."
-        },
-        {
-          "name": "HWINFO",
-          "wingetId": "REALiX.HWiNFO",
-          "chocoId": "hwinfo",
-          "description": "HWiNFO is a powerful and advanced software for managing hardware and software information."
-        },
-        {
-          "name": "NVCleanstall",
-          "wingetId": "TechPowerUp.NVCleanstall",
-          "chocoId": "N/A",
-          "description": "NVCleanstall lets you customize the NVIDIA GeForce Driver package by removing components that you don't need (or want)."
-        },
-        {
-          "name": "DDU [Display Driver Uninstaller]",
-          "wingetId": "Wagnardsoft.DisplayDriverUninstaller",
-          "chocoId": "ddu",
-          "description": "DDU[Display Driver Uninstaller] is a powerful and advanced software for managing NVIDIA GeForce Driver packages."
-        },
-        {
-          "name": "Revo Uninstaller",
-          "wingetId": "RevoUninstaller.RevoUninstaller",
-          "chocoId": "revo-uninstaller",
-          "description": "RevoUninstaller is a powerful and advanced software for managing software installations."
-        },
-        {
-          "name": "TeamViewer",
-          "wingetId": "TeamViewer.TeamViewer",
-          "chocoId": "teamviewer9",
-          "description": "TeamViewer is a powerful and advanced software for remote desktop and virtual meeting."
-        },
-        {
-          "name": "Node.JS LTS",
-          "wingetId": "OpenJS.NodeJS.LTS",
-          "chocoId": "nodejs.install",
-          "description": "Node.JS LTS is a powerful and advanced software for managing software installations."
-        }
-      ]
-    }
     ]
 }

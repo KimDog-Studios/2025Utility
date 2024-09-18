@@ -44,11 +44,8 @@ function Restart-WindowsExplorer {
     try {
         Write-Host "Restarting Windows Explorer..." -ForegroundColor Green
         Stop-Process -Name explorer -Force
-        Start-Process explorer
-        Write-Host "Windows Explorer has been restarted." -ForegroundColor Green
-    } catch {
-        Write-Warning "An error occurred while restarting Windows Explorer: ${_}"
-    }
+       $process = Get-Process -Name "explorer"
+      Stop-Process -InputObject $process
 }
 
 # Main execution

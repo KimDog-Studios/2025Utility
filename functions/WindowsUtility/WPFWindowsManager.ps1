@@ -86,7 +86,7 @@ function Show-MainHeader {
 # Function to display the menu options
 function Show-MainMenu {
     Clear-Host  # Clear the console for a fresh display
-    Write-Host "Windows 10 Options will also work for Windows 11" -ForegroundColor Cyan
+    Write-Host "Windows 10 Options will also work for Windows 11`n" -ForegroundColor Cyan
     Write-Host "----- Windows 10 Options -----" -ForegroundColor Cyan
     for ($i = 0; $i -lt $windows10Options.Count; $i++) {
         if ($i -eq $currentIndex) {

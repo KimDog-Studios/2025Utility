@@ -2,31 +2,37 @@
 function Fetch-UrlsFromJson {
     $jsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/config.json"
     try {
-        Write-Host "Fetching URLs from $jsonUrl..." -ForegroundColor Cyan
+        Write-Verbose "Fetching URLs from $jsonUrl..."
         $jsonData = Invoke-RestMethod -Uri $jsonUrl -ErrorAction Stop
         Write-Host "Successfully fetched URLs." -ForegroundColor Green
         return $jsonData.urls
     } catch {
         Write-Host "Failed to fetch URLs: $_" -ForegroundColor Red
-        exit
+        throw
     }
 }
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {
     param (
-        [string]$Url
+        [Parameter(Mandatory=$true)]
+        [string]$Url,
+        [string]$Description
     )
     
     try {
-        Write-Host "Fetching script from $Url..." -ForegroundColor Cyan
+        Write-Verbose "Fetching script for $Description from $Url..."
         $scriptContent = Invoke-RestMethod -Uri $Url -ErrorAction Stop
         Write-Host "Fetched script successfully." -ForegroundColor Green
         
-        Write-Host "Executing script content..." -ForegroundColor Green
-        Invoke-Expression $scriptContent
+        Write-Host "Executing $Description script..." -ForegroundColor Green
+        $global:ErrorActionPreference = 'Stop'
+        Invoke-Command -ScriptBlock ([scriptblock]::Create($scriptContent))
+        Write-Host "$Description script executed successfully." -ForegroundColor Green
     } catch {
-        Write-Host "Failed to fetch or execute script: $_" -ForegroundColor Red
+        Write-Host "Failed to fetch or execute $Description script: $_" -ForegroundColor Red
+    } finally {
+        $global:ErrorActionPreference = 'Continue'
     }
 }
 
@@ -45,16 +51,18 @@ function Restart-WindowsExplorer {
     }
 }
 
-# Fetch URLs from JSON
-$urls = Fetch-UrlsFromJson
+# Main execution
+try {
+    # Fetch URLs from JSON
+    $urls = Fetch-UrlsFromJson
 
-# Assign URLs to variables
-$ultimatePerformanceUrl = $urls.WPFUltimatePerformance.URL
-$darkModeUrl = $urls.InvokeDarkMode.URL
-$mouseAccelerationUrl = $urls.InvokeMouseAcceleration.URL
+    # Execute scripts from URLs
+    Run-ScriptFromUrl -Url $urls.WPFUltimatePerformance.URL -Description "Ultimate Performance"
+    Run-ScriptFromUrl -Url $urls.InvokeDarkMode.URL -Description "Dark Mode"
+    Run-ScriptFromUrl -Url $urls.InvokeMouseAcceleration.URL -Description "Mouse Acceleration"
 
-# Execute scripts from URLs
-Run-ScriptFromUrl -Url $ultimatePerformanceUrl
-Run-ScriptFromUrl -Url $darkModeUrl
-Run-ScriptFromUrl -Url $mouseAccelerationUrl
-Restart-WindowsExplorer
+    Restart-WindowsExplorer
+    Write-Host "All optimizations completed successfully." -ForegroundColor Green
+} catch {
+    Write-Host "An error occurred during the optimization process: $_" -ForegroundColor Red
+}

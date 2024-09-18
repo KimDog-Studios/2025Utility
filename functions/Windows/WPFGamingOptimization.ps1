@@ -52,11 +52,9 @@ $urls = Fetch-UrlsFromJson
 $ultimatePerformanceUrl = $urls.WPFUltimatePerformance.URL
 $darkModeUrl = $urls.InvokeDarkMode.URL
 $mouseAccelerationUrl = $urls.InvokeMouseAcceleration.URL
-$gamingOptimizationUrl = $urls.WPFGamingOptimization.URL
 
 # Execute scripts from URLs
 Run-ScriptFromUrl -Url $ultimatePerformanceUrl
 Run-ScriptFromUrl -Url $darkModeUrl
 Run-ScriptFromUrl -Url $mouseAccelerationUrl
-Run-ScriptFromUrl -Url $gamingOptimizationUrl
 Restart-WindowsExplorer

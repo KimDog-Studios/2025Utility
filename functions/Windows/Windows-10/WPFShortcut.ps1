@@ -32,7 +32,7 @@ function Create-Shortcut {
 # Combine Create-ShortcutInStartMenu and Create-DesktopShortcut
 function Create-WinUtilShortcuts {
     $shell = if (Get-Command "pwsh" -ErrorAction SilentlyContinue) { "pwsh" } else { "powershell.exe" }
-    $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://bit.ly/4dcheD5 | iex`"`'"
+    $shellArgs = "-ExecutionPolicy Bypass -Command `"Start-Process $shell -verb runas -ArgumentList `'-Command `"irm https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Utility/WPFStarter.ps1 | iex`"`'"
 
     $locations = @{
         "Start Menu" = [System.IO.Path]::Combine([System.Environment]::GetFolderPath('StartMenu'), 'Programs', 'KimDog Studios')

@@ -11,17 +11,17 @@ try {
     exit
 }
 
-# Create a hashtable of menu options and corresponding URLs
-$menuOptions = @{
-    "Optimize for Gaming [Runs Options: 3, 4, 5]"            = $urls.urls.WPFGamingOptimization.URL
-    "Remove Bloatware [Windows 11]"  = $urls.urls.WPFRemoveAppX.URL
-    "Apply Ultimate Performance Mode"= $urls.urls.WPFUltimatePerformance.URL
-    "Apply Dark Mode to Windows"     = $urls.urls.InvokeDarkMode.URL
-    "Disable Mouse Acceleration"     = $urls.urls.InvokeMouseAcceleration.URL
-    "Set Windows Updates to Default" = $urls.urls.InvokeSetWindowsUpdatesToDefault.URL
-    "Set Updates to Security [Recommended]"        = $urls.urls.InvokeSetWindowsUpdatesToSecurity.URL
-    "Disable Windows Updates [NOT Recommended]"        = $urls.urls.InvokeSetWindowsUpdatesToDisabled.URL
-}
+# Create a list of menu options and corresponding URLs
+$menuOptions = @(
+    @{ Name = "Optimize for Gaming [Runs Options: 3, 4, 5]"; URL = $urls.urls.WPFGamingOptimization.URL },
+    @{ Name = "Remove Bloatware [Windows 11]"; URL = $urls.urls.WPFRemoveAppX.URL },
+    @{ Name = "Apply Ultimate Performance Mode"; URL = $urls.urls.WPFUltimatePerformance.URL },
+    @{ Name = "Apply Dark Mode to Windows"; URL = $urls.urls.InvokeDarkMode.URL },
+    @{ Name = "Disable Mouse Acceleration"; URL = $urls.urls.InvokeMouseAcceleration.URL },
+    @{ Name = "Set Windows Updates to Default"; URL = $urls.urls.InvokeSetWindowsUpdatesToDefault.URL },
+    @{ Name = "Set Updates to Security [Recommended]"; URL = $urls.urls.InvokeSetWindowsUpdatesToSecurity.URL },
+    @{ Name = "Disable Windows Updates [NOT Recommended]"; URL = $urls.urls.InvokeSetWindowsUpdatesToDisabled.URL }
+)
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {
@@ -75,10 +75,9 @@ function Show-MainMenu {
     $MenuWidth = 30
     Write-Host (Align-Header "Windows Manager" $MenuWidth) -ForegroundColor Yellow
 
-    $i = 1
-    foreach ($option in $menuOptions.Keys) {
-        Write-Host "$i. $option" -ForegroundColor Green
-        $i++
+    for ($i = 0; $i -lt $menuOptions.Count; $i++) {
+        $option = $menuOptions[$i]
+        Write-Host "$($i + 1). $($option.Name)" -ForegroundColor Green
     }
     Write-Host "9. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
@@ -88,11 +87,15 @@ function Show-MainMenu {
 # Function to handle menu selection and execute corresponding scripts
 function Handle-MenuSelection {
     param (
-        [string]$selection
+        [int]$selection
     )
 
-    if ($menuOptions.ContainsKey($selection)) {
-        Run-ScriptFromUrl -Url $menuOptions[$selection]
+    # Subtract 1 from selection to match zero-based index
+    $index = $selection - 1
+
+    if ($index -ge 0 -and $index -lt $menuOptions.Count) {
+        $url = $menuOptions[$index].URL
+        Run-ScriptFromUrl -Url $url
     } else {
         Write-Host "Invalid selection, please try again." -ForegroundColor Red
     }
@@ -104,12 +107,19 @@ while ($true) {
     Show-MainMenu
     $selection = Read-Host "Please enter your choice"
 
-    if ($selection -eq 'e') {
+    if ($selection -eq '9') {
         Write-Host "Exiting..." -ForegroundColor Red
         exit
     }
 
-    Handle-MenuSelection -selection $selection
+    # Ensure that the input is numeric and valid
+    if ([int]::TryParse($selection, [ref]$null)) {
+        $selectionInt = [int]$selection
+        Handle-MenuSelection -selection $selectionInt
+    } else {
+        Write-Host "Invalid input, please enter a valid number." -ForegroundColor Red
+    }
+
     Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
     Read-Host
 }

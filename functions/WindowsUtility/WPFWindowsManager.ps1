@@ -1,5 +1,5 @@
 # Define the URL for the JSON file containing script URLs
-$jsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/urls.json"
+$jsonUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/config/config.json"
 
 # Fetch the JSON and parse it
 try {
@@ -39,59 +39,41 @@ function Run-ScriptFromUrl {
     }
 }
 
-# Function to align and display header
-function Align-Header {
-    param (
-        [string]$Text,
-        [int]$Width = 30
-    )
-
-    $TextLength = $Text.Length
-    $Padding = $Width - $TextLength
-    $LeftPadding = [math]::Floor($Padding / 2)
-    $RightPadding = [math]::Ceiling($Padding / 2)
-    
-    $AlignedText = ("=" * $LeftPadding) + $Text + ("=" * $RightPadding)
-    $AlignedText
+# Function to read key input
+function Read-Key {
+    $key = [System.Console]::ReadKey($true)
+    return $key
 }
+
+# Define menu options and their corresponding actions
+$menuOptions = @(
+    @{ Name = "Optimize for Gaming [Runs Options: 3, 4, 5]"; Action = { Option1 } },
+    @{ Name = "Remove Bloatware [Windows 11 Only]"; Action = { Option2 } },
+    @{ Name = "Add & Apply Ultimate Performance Mode"; Action = { Option3 } },
+    @{ Name = "Apply Dark Mode to Windows"; Action = { Option4 } },
+    @{ Name = "Disable Mouse Acceleration"; Action = { Option5 } },
+    @{ Name = "Exit"; Action = { Write-Host "Exiting..." -ForegroundColor Red; exit } }
+)
+
+$currentIndex = 0  # Track the current index
 
 # Function to show the main header
 function Show-MainHeader {
     Clear-Host
-
-    function Draw-Box {
-        param (
-            [string]$Text
-        )
-
-        $boxWidth = $Text.Length + 4
-        $topBottomBorder = "+" + ("-" * ($boxWidth - 2)) + "+"
-        $emptyLine = "|" + (" " * ($boxWidth - 2)) + "|"
-
-        Write-Host "$topBottomBorder" -ForegroundColor Cyan
-        Write-Host "$emptyLine" -ForegroundColor Cyan
-        Write-Host "| $Text |" -ForegroundColor Cyan
-        Write-Host "$emptyLine" -ForegroundColor Cyan
-        Write-Host "$topBottomBorder" -ForegroundColor Cyan
-    }
-
-    Draw-Box -Text "KimDog's Windows Manager Menu | Last Updated: 2024-09-17"
+    Write-Host "KimDog's Windows Manager Menu | Last Updated: 2024-09-17" -ForegroundColor Cyan
     Write-Host "`n"
 }
 
-# Function to show the main menu
+# Function to display the menu options
 function Show-MainMenu {
-    $MenuWidth = 30
-
-    Write-Host (Align-Header "Windows Manager" $MenuWidth) -ForegroundColor Yellow
-    Write-Host "1. Optimize for Gaming [Runs Options: 3, 4, 5]" -ForegroundColor Green
-    Write-Host "2. Remove Bloatware [Windows 11 Only]" -ForegroundColor Green
-    Write-Host "3. Add & Apply Ultimate Performance Mode" -ForegroundColor Green
-    Write-Host "4. Apply Dark Mode to Windows" -ForegroundColor Green
-    Write-Host "5. Disable Mouse Acceleration" -ForegroundColor Green
-    Write-Host "6. Exit" -ForegroundColor Red
-    Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan
-    Write-Host "`n"  # Reduced gap
+    for ($i = 0; $i -lt $menuOptions.Count; $i++) {
+        if ($i -eq $currentIndex) {
+            Write-Host "`[*] $($menuOptions[$i].Name)" -ForegroundColor Yellow  # Highlight the current item in yellow
+        } else {
+            Write-Host "`[ ] $($menuOptions[$i].Name)"  # Regular menu item
+        }
+    }
+    "`n" | Out-String  # Explicitly add a line break after each option
 }
 
 # Function for Option 1: Optimize for Gaming
@@ -134,26 +116,26 @@ function Option5 {
     Read-Host
 }
 
-# Function for invalid option
-function Show-InvalidOption {
-    Write-Host "Invalid selection, please try again." -ForegroundColor Red
-    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
-    Read-Host
-}
-
 # Main loop
 while ($true) {
     Show-MainHeader
     Show-MainMenu
-    $selection = Read-Host "Please enter your choice"
 
-    switch ($selection) {
-        "1" { Option1 }
-        "2" { Option2 }
-        "3" { Option3 }
-        "4" { Option4 }
-        "5" { Option5 }
-        "6" { Write-Host "Exiting..." -ForegroundColor Red; exit }
-        default { Show-InvalidOption }
+    # Read key input
+    $key = Read-Key
+
+    # Handle arrow keys and selection
+    switch ($key.Key) {
+        'UpArrow' {
+            $currentIndex = ($currentIndex - 1 + $menuOptions.Count) % $menuOptions.Count  # Move up
+        }
+        'DownArrow' {
+            $currentIndex = ($currentIndex + 1) % $menuOptions.Count  # Move down
+        }
+        'Enter' {
+            Clear-Host  # Clear the screen before running the action
+            & $menuOptions[$currentIndex].Action  # Execute the selected option
+        }
     }
+    Start-Sleep -Milliseconds 100
 }

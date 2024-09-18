@@ -165,6 +165,3 @@ function Invoke-WPFUltimatePerformance {
 Invoke-WinUtilDarkMode
 Invoke-WinUtilMouseAcceleration
 Invoke-WPFUltimatePerformance -State "Enable"
-
-# Prompt user to press Enter to continue
-#Read-Host "Press Enter to continue..."

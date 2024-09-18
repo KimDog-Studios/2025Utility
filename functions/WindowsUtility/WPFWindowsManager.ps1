@@ -99,6 +99,7 @@ function Option1 {
     cls
     Write-Host "You selected Option 1: Optimize for Gaming" -ForegroundColor Green
     Run-ScriptFromUrl -Url $gamingOptimizationUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
     Read-Host
 }
 
@@ -107,6 +108,7 @@ function Option2 {
     cls
     Write-Host "You selected Option 2: Remove Bloatware" -ForegroundColor Green
     Run-ScriptFromUrl -Url $removeAppXFilesUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
     Read-Host
 }
 
@@ -115,6 +117,7 @@ function Option3 {
     cls
     Write-Host "You selected Option 3: Add & Apply Ultimate Performance Mode" -ForegroundColor Green
     Run-ScriptFromUrl -Url $ultimatePerformanceUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
     Read-Host
 }
 
@@ -123,6 +126,7 @@ function Option4 {
     cls
     Write-Host "You selected Option 4: Apply Dark Mode to Windows" -ForegroundColor Green
     Run-ScriptFromUrl -Url $darkModeUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
     Read-Host
 }
 
@@ -131,12 +135,14 @@ function Option5 {
     cls
     Write-Host "You selected Option 5: Disable Mouse Acceleration" -ForegroundColor Green
     Run-ScriptFromUrl -Url $mouseAccelerationUrl
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
     Read-Host
 }
 
 # Function for invalid option
 function Show-InvalidOption {
     Write-Host "Invalid selection, please try again." -ForegroundColor Red
+    Write-Host "`nPress Enter to return to the main menu..." -ForegroundColor Cyan
     Read-Host
 }
 

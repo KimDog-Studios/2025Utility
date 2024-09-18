@@ -57,10 +57,19 @@ try {
     $urls = Fetch-UrlsFromJson
 
     # Execute scripts from URLs
-    Run-ScriptFromUrl -Url $urls.WPFUltimatePerformance.URL -Description "Ultimate Performance"
-    Run-ScriptFromUrl -Url $urls.InvokeDarkMode.URL -Description "Dark Mode"
-    Run-ScriptFromUrl -Url $urls.InvokeMouseAcceleration.URL -Description "Mouse Acceleration"
-    Run-ScriptFromUrl -Url $urls.WPFClassRightClick.URL -Description "Sets the Windows 11 Right click menu to the Classic!"
+    foreach ($url in @(
+        @{ Url = $urls.WPFUltimatePerformance.URL; Description = "Ultimate Performance" },
+        @{ Url = $urls.InvokeDarkMode.URL; Description = "Dark Mode" },
+        @{ Url = $urls.InvokeMouseAcceleration.URL; Description = "Mouse Acceleration" },
+        @{ Url = $urls.WPFClassRightClick.URL; Description = "Sets the Windows 11 Right click menu to the Classic!" },
+        @{ Url = $urls.InvokeSetWindowsUpdatesToSecurity.URL; Description = "Sets Windows Updates to Security Only" }
+    )) {
+        if (-not [string]::IsNullOrWhiteSpace($url.Url)) {
+            Run-ScriptFromUrl -Url $url.Url -Description $url.Description
+        } else {
+            Write-Host "Warning: URL for $($url.Description) is empty." -ForegroundColor Yellow
+        }
+    }
 
     Restart-WindowsExplorer
     Write-Host "All optimizations completed successfully." -ForegroundColor Green

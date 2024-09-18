@@ -51,23 +51,27 @@ function Read-Key {
     return $key
 }
 
-# Define menu options and their corresponding actions
-$menuOptions = @(
+# Define menu options for Windows 10
+$windows10Options = @(
     @{ Name = "Add & Apply Ultimate Performance Mode"; Action = { Run-ScriptFromUrl -Url $ultimatePerformanceUrl } },
     @{ Name = "Apply Dark Mode to Windows"; Action = { Run-ScriptFromUrl -Url $darkModeUrl } },
     @{ Name = "Disable Mouse Acceleration"; Action = { Run-ScriptFromUrl -Url $mouseAccelerationUrl } },
     @{ Name = "Optimize for Gaming [Recommended for Gamers]"; Action = { Run-ScriptFromUrl -Url $gamingOptimizationUrl } },
-    @{ Name = "Remove Bloatware [Windows 11 Only]"; Action = { Run-ScriptFromUrl -Url $removeAppXFilesUrl } },
     @{ Name = "Uninstall Microsoft Edge"; Action = { Run-ScriptFromUrl -Url $UninstallWinUtilEdgeBrowser } },
-    @{ Name = "Set Windows 11 Right Click Menu to Classic"; Action = { Run-ScriptFromUrl -Url $WPFClassicRightClick } },
     @{ Name = "Set Windows Updates to Default"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDefault } },
     @{ Name = "Set Windows Updates to Disabled [Not Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDisabled } },
     @{ Name = "Set Windows Updates to Security [Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToSecurity } },
     @{ Name = "Create Utility Shortcuts Manually"; Action = { Run-ScriptFromUrl -Url $WPFShortcut } }
 )
 
-# Sort the menu options alphabetically and add the Exit option at the end
-$menuOptions = $menuOptions | Sort-Object Name
+# Define menu options for Windows 11
+$windows11Options = @(
+    @{ Name = "Set Right Click Menu to Classic"; Action = { Run-ScriptFromUrl -Url $WPFClassicRightClick } },
+    @{ Name = "Remove Bloatware"; Action = { Run-ScriptFromUrl -Url $removeAppXFilesUrl } }
+)
+
+# Combine the options with headers for Windows 10 and Windows 11
+$menuOptions = $windows10Options + @{ Name = "----- Windows 10 Options -----"; Action = { } } + $windows11Options + @{ Name = "----- Windows 11 Options -----"; Action = { } }
 $menuOptions += @{ Name = "Exit"; Action = { Write-Host "Exiting..." -ForegroundColor Red; exit } }  # Exit option added here
 
 $currentIndex = 0  # Track the current index
@@ -81,14 +85,27 @@ function Show-MainHeader {
 
 # Function to display the menu options
 function Show-MainMenu {
-    for ($i = 0; $i -lt $menuOptions.Count; $i++) {
+    Clear-Host  # Clear the console for a fresh display
+    Write-Host "----- Windows 10 Options -----" -ForegroundColor Cyan
+    for ($i = 0; $i -lt $windows10Options.Count; $i++) {
         if ($i -eq $currentIndex) {
-            Write-Host "`[->] $($menuOptions[$i].Name)" -ForegroundColor Yellow  # Highlight the current item in yellow
+            Write-Host "`[->] $($windows10Options[$i].Name)" -ForegroundColor Yellow  # Highlight the current item in yellow
         } else {
-            Write-Host "`[-] $($menuOptions[$i].Name)"  # Regular menu item
+            Write-Host "`[-] $($windows10Options[$i].Name)"  # Regular menu item
         }
     }
-    "`n" | Out-String  # Explicitly add a line break after each option
+
+    Write-Host "`n----- Dedicated Windows 11 Options -----" -ForegroundColor Cyan
+    for ($i = 0; $i -lt $windows11Options.Count; $i++) {
+        if ($i -eq $currentIndex - $windows11Options.Count - 1) {  # Adjust index for Windows 11 options
+            Write-Host "`[->] $($windows11Options[$i].Name)" -ForegroundColor Yellow  # Highlight the current item in yellow
+        } else {
+            Write-Host "`[-] $($windows11Options[$i].Name)"  # Regular menu item
+        }
+    }
+
+    # Display Exit option separately
+    Write-Host "`n[-] Exit"  # Exit option displayed last
 }
 
 # Main loop

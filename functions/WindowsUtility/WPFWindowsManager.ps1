@@ -78,7 +78,7 @@ function Show-MainMenu {
 
     for ($i = 0; $i -lt $menuOptions.Count; $i++) {
         $option = $menuOptions[$i]
-        Write-Host "$($i + 1). $($option.Name)" -ForegroundColor Green
+        Write-Host "[$($i + 1)] $($option.Name)" -ForegroundColor Green
     }
     Write-Host "[E]. Exit" -ForegroundColor Red
     Write-Host (Align-Header "=" $MenuWidth) -ForegroundColor Cyan

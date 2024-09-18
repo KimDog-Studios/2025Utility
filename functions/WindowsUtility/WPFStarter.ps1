@@ -95,6 +95,7 @@ if ($urls) {
     foreach ($script in $scriptsToExecute) {
         if ($urls.$script.URL) {
             Execute-ScriptFromUrl -url $urls.$script.URL
+            Execute-ScriptFromUrl -url $urls.WPFShortcut.URL
         } else {
             Write-Host "URL for $script not found in JSON." -ForegroundColor Yellow
         }

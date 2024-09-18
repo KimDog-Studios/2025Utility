@@ -28,13 +28,13 @@
       "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/WPFGamingOptimization.ps1"
     },
     "InvokeSetWindowsUpdatesToDefault": {
-      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-WPFUpdatesDefault.ps1"
+      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-WPFUpdatesdefault.ps1"
     },
     "InvokeSetWindowsUpdatesToDisabled": {
-      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-WPFUpdatesDisable.ps1"
+      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-WPFUpdatesdisable.ps1"
     },
     "InvokeSetWindowsUpdatesToSecurity": {
-      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-WPFUpdatesSecurity.ps1"
+      "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Invoke-WPFUpdatessecurity.ps1"
     }
   },
   "categories": [

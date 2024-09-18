@@ -131,9 +131,9 @@ $currentIndex = 0  # Track the current index
 function Show-MainMenu {
     for ($i = 0; $i -lt $menuOptions.Count; $i++) {
         if ($i -eq $currentIndex) {
-            Write-Host "`[*] $($menuOptions[$i].Name)" -ForegroundColor Yellow  # Highlight the current item in yellow
+            Write-Host "`[->] $($menuOptions[$i].Name)" -ForegroundColor Yellow  # Highlight the current item in yellow
         } else {
-            Write-Host "`[ ] $($menuOptions[$i].Name)"  # Regular menu item
+            Write-Host "`[-] $($menuOptions[$i].Name)"  # Regular menu item
         }
     }
     Write-Host "`n"

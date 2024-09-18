@@ -243,9 +243,9 @@ function Handle-AppSelection {
     while ($true) {
         for ($i = 0; $i -lt $options.Count; $i++) {
             if ($i -eq $currentIndex) {
-                Write-Host "`[*] $($options[$i].Name)" -ForegroundColor Yellow  # Highlight selected option
+                Write-Host "`[->] $($options[$i].Name)" -ForegroundColor Yellow  # Highlight selected option
             } else {
-                Write-Host "`[ ] $($options[$i].Name)"
+                Write-Host "`[-] $($options[$i].Name)"
             }
         }
         Write-Host ""

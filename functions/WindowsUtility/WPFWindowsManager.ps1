@@ -12,22 +12,17 @@ try {
 }
 
 # Access the URLs from the parsed JSON
-$urlsToAccess = @(
-    "WPFRemoveAppX", # Removes Bloatware from the System
-    "WPFUltimatePerformance", # Adds and Enbales Ultimate Performance Power Scheme
-    "InvokeDarkMode", # Sets PC Theme to Dark Mode
-    "InvokeMouseAcceleration", # Disbales Mouse Acceleration
-    "WPFGamingOptimization", # Enables Gaming Optimizations
-    "UninstallWinUtilEdgeBrowser", # Uninstall Microsoft Edge
-    "InvokeSetWindowsUpdatesToDefault", # Sets Windows Updates to Default
-    "InvokeSetWindowsUpdatesToDisabled", # Sets Windows Updates to Disabled
-    "InvokeSetWindowsUpdatesToSecurity", # Sets Windows Updates to Security
-    "WPFClassicRightClick" # Enables Classic Right Click Menu [Right Clicking on Windows 11]
-)
-
-foreach ($urlKey in $urlsToAccess) {
-    Set-Variable -Name "${urlKey}Url" -Value $urls.urls."$urlKey".URL
-}
+$removeAppXFilesUrl = $urls.urls.WPFRemoveAppX.URL
+$ultimatePerformanceUrl = $urls.urls.WPFUltimatePerformance.URL
+$darkModeUrl = $urls.urls.InvokeDarkMode.URL
+$mouseAccelerationUrl = $urls.urls.InvokeMouseAcceleration.URL
+$gamingOptimizationUrl = $urls.urls.WPFGamingOptimization.URL
+$UninstallWinUtilEdgeBrowser = $urls.urls.UninstallWinUtilEdgeBrowser.URL
+$InvokeSetWindowsUpdatesToDefault = $urls.urls.InvokeSetWindowsUpdatesToDefault.URL
+$InvokeSetWindowsUpdatesToDisabled = $urls.urls.InvokeSetWindowsUpdatesToDisabled.URL
+$InvokeSetWindowsUpdatesToSecurity = $urls.urls.InvokeSetWindowsUpdatesToSecurity.URL
+$WPFClassicRightClick = $urls.urls.WPFClassicRightClick.URL
+$WPFShortcut = $urls.urls.WPFShortcut.URL
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {
@@ -58,21 +53,22 @@ function Read-Key {
 
 # Define menu options and their corresponding actions
 $menuOptions = @(
-    @{ Name = "Optimize for Gaming [Runs Options: 3, 4, 5]"; Action = { Run-ScriptFromUrl -Url $gamingOptimizationUrl } },
-    @{ Name = "Remove Bloatware [Windows 11 Only]"; Action = { Run-ScriptFromUrl -Url $removeAppXFilesUrl } },
     @{ Name = "Add & Apply Ultimate Performance Mode"; Action = { Run-ScriptFromUrl -Url $ultimatePerformanceUrl } },
     @{ Name = "Apply Dark Mode to Windows"; Action = { Run-ScriptFromUrl -Url $darkModeUrl } },
     @{ Name = "Disable Mouse Acceleration"; Action = { Run-ScriptFromUrl -Url $mouseAccelerationUrl } },
-    @{ Name = "Remove Microsoft Edge"; Action = { Run-ScriptFromUrl -Url $UninstallWinUtilEdgeBrowser } },
-    @{ Name = "Set Windows Updates to Default"; Action = { Run-ScriptFromUrl -Url $setWindowsUpdatesToDefault } },
-    @{ Name = "Set Windows Updates to Disabled"; Action = { Run-ScriptFromUrl -Url $setWindowsUpdatesToDisabled } },
-    @{ Name = "Set Windows Updates to Security"; Action = { Run-ScriptFromUrl -Url $setWindowsUpdatesToSecurity } },
-    @{ Name = "Enable Classic Right Click Menu [Right Clicking on Windows 11]"; Action = { Run-ScriptFromUrl -Url $classicRightClickUrl } },
-    @{ Name = "Exit"; Action = { Write-Host "Exiting..." -ForegroundColor Red; exit } }
+    @{ Name = "Optimize for Gaming"; Action = { Run-ScriptFromUrl -Url $gamingOptimizationUrl } },
+    @{ Name = "Remove Bloatware [Windows 11 Only]"; Action = { Run-ScriptFromUrl -Url $removeAppXFilesUrl } },
+    @{ Name = "Uninstall Microsoft Edge"; Action = { Run-ScriptFromUrl -Url $UninstallWinUtilEdgeBrowser } },
+    @{ Name = "Set Windows 11 Right Click Menu to Classic"; Action = { Run-ScriptFromUrl -Url $WPFClassicRightClick } },
+    @{ Name = "Set Windows Updates to Default"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDefault } },
+    @{ Name = "Set Windows Updates to Disabled [Not Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDisabled } },
+    @{ Name = "Set Windows Updates to Security [Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToSecurity } },
+    @{ Name = "Create Utility Shortcuts Manually"; Action = { Run-ScriptFromUrl -Url $WPFShortcut } }
 )
 
-# Sort menu options alphabetically by Name
-$menuOptions = $menuOptions | Sort-Object { $_.Name }
+# Sort the menu options alphabetically and add the Exit option at the end
+$menuOptions = $menuOptions | Sort-Object Name
+$menuOptions += @{ Name = "Exit"; Action = { Write-Host "Exiting..." -ForegroundColor Red; exit } }  # Exit option added here
 
 $currentIndex = 0  # Track the current index
 
@@ -87,9 +83,9 @@ function Show-MainHeader {
 function Show-MainMenu {
     for ($i = 0; $i -lt $menuOptions.Count; $i++) {
         if ($i -eq $currentIndex) {
-            Write-Host "`[*] $($menuOptions[$i].Name)" -ForegroundColor Yellow  # Highlight the current item in yellow
+            Write-Host "`[->] $($menuOptions[$i].Name)" -ForegroundColor Yellow  # Highlight the current item in yellow
         } else {
-            Write-Host "`[ ] $($menuOptions[$i].Name)"  # Regular menu item
+            Write-Host "`[-] $($menuOptions[$i].Name)"  # Regular menu item
         }
     }
     "`n" | Out-String  # Explicitly add a line break after each option

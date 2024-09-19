@@ -54,15 +54,15 @@ function Read-Key {
 
 # Define menu options for Windows 10
 $windows10Options = @(
-    @{ Name = "Add & Apply Ultimate Performance Mode"; Action = { Run-ScriptFromUrl -Url $ultimatePerformanceUrl } },
-    @{ Name = "Apply Dark Mode to Windows"; Action = { Run-ScriptFromUrl -Url $darkModeUrl } },
-    @{ Name = "Disable Mouse Acceleration"; Action = { Run-ScriptFromUrl -Url $mouseAccelerationUrl } },
-    @{ Name = "Optimize for Gaming [Recommended for Gamers]"; Action = { Run-ScriptFromUrl -Url $gamingOptimizationUrl } },
-    @{ Name = "Uninstall Microsoft Edge"; Action = { Run-ScriptFromUrl -Url $UninstallWinUtilEdgeBrowser } },
-    @{ Name = "Set Windows Updates to Default"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDefault } },
-    @{ Name = "Set Windows Updates to Disabled [Not Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDisabled } },
-    @{ Name = "Set Windows Updates to Security [Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToSecurity } },
-    @{ Name = "Disable Sticky Keys"; Action = { Run-ScriptFromUrl -Url $InvokeDisableStickyKeys } }
+    @{ Name = "Add & Apply Ultimate Performance Mode"; Action = { Run-ScriptFromUrl -Url $ultimatePerformanceUrl } Write-Host "Running Add Ultimate Performance Scheme" },
+    @{ Name = "Apply Dark Mode to Windows"; Action = { Run-ScriptFromUrl -Url $darkModeUrl } Write-Host "Running Dark Mode" },
+    @{ Name = "Disable Mouse Acceleration"; Action = { Run-ScriptFromUrl -Url $mouseAccelerationUrl } Write-Host "Running Disable Mouse Acceleration" },
+    @{ Name = "Optimizations for Gaming [Recommended]"; Action = { Run-ScriptFromUrl -Url $gamingOptimizationUrl } Write-Host "Running Gaming Optimizations" },
+    @{ Name = "Uninstall Microsoft Edge"; Action = { Run-ScriptFromUrl -Url $UninstallWinUtilEdgeBrowser } Write-Host "Running Uninstall Microsoft Edge" },
+    @{ Name = "Set Windows Updates to Default"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDefault } Write-Host "Running Set Windows Updates to Default" },
+    @{ Name = "Set Windows Updates to Disabled [Not Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDisabled } Write-Host "Running Set Windows Updates to Disabled" },
+    @{ Name = "Set Windows Updates to Security [Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToSecurity } Write-Host "Running Set Windows Updates to Security" },
+    @{ Name = "Disable Sticky Keys"; Action = { Run-ScriptFromUrl -Url $InvokeDisableStickyKeys } Write-Host "Running Disable Sticky Keys" }
 )
 
 # Define menu options for Windows 11

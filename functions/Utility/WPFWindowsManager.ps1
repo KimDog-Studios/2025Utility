@@ -62,7 +62,7 @@ $windows10Options = @(
     @{ Name = "Set Windows Updates to Default"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDefault } },
     @{ Name = "Set Windows Updates to Disabled [Not Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDisabled } },
     @{ Name = "Set Windows Updates to Security [Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToSecurity } },
-    @{ Name = "Disable Sticky Keys"; Action = { Run-ScriptFromUrl -Url $InvokeDisableStickyKeys } },
+    @{ Name = "Disable Sticky Keys"; Action = { Run-ScriptFromUrl -Url $InvokeDisableStickyKeys } }
 )
 
 # Define menu options for Windows 11
@@ -75,7 +75,7 @@ $windows11Options = @(
 $menuOptions = $windows10Options + @{ Name = "----- Windows 10 Options -----"; Action = { } } + $windows11Options + @{ Name = "----- Windows 11 Options -----"; Action = { } }
 
 # Add the "Create Utility Shortcuts Manually" option to General Options
-$menuOptions += @{ Name = "Create Utility Shortcuts Manually"; Action = { Run-ScriptFromUrl -Url $WPFShortcut } }
+$menuOptions += @{ Name = "Create Utility Shortcuts Manually"; Action = { Run-ScriptFromUrl -Url $WPFShortcut } },
 $menuOptions += @{ Name = "Exit"; Action = { Write-Host "Exiting..." -ForegroundColor Red; exit } }  # Exit option added here
 
 $currentIndex = 0  # Track the current index

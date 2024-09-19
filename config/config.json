@@ -46,7 +46,7 @@
         "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Windows-10/WPFShortcut.ps1"
     },
     "InvokeDisableStickyKey": {
-        "URL": ""
+        "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Windows-10/Invoke-DisbaleStickyKeys.ps1"
     }
   },
   "categories": [

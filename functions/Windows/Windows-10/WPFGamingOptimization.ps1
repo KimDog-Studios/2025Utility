@@ -57,6 +57,7 @@ Write-Host "Sets Desktop Theme to Dark Mode" -ForegroundColor Red
 Write-Host "Disballes Mouse Acceleration" -ForegroundColor Red
 Write-Host "Sets Windows 11 Right click menu to the Classic!" -ForegroundColor Red
 Write-Host "Sets Windows Updates to Security" -ForegroundColor Red
+Write-Host "Disbales Sticky Keys" -ForegroundColor Red
 
 # Main execution
 try {
@@ -89,6 +90,9 @@ try {
     }
     if ($urls.InvokeSetWindowsUpdatesToSecurity.URL) {
         Run-ScriptFromUrl -Url $urls.InvokeSetWindowsUpdatesToSecurity.URL -Description "Sets Windows Updates to Security Only"
+    }
+    if ($urls.InvokeDisableStickyKeys.URL) {
+        Run-ScriptFromUrl -Url $urls.InvokeDisableStickyKeys.URL -Description "Disables Sticky Keys"
     }
 
     Restart-WindowsExplorer

@@ -105,8 +105,13 @@ function Show-MainMenu {
         }
     }
 
-    # Display Exit option separately
-    Write-Host "`n[-] Exit"  # Exit option displayed last
+    # Display Exit option on its own line
+   Write-Host "`n----- General Options -----" -ForegroundColor Cyan
+    if ($currentIndex -eq $menuOptions.Count - 1) {  # Highlight exit if selected
+        Write-Host "`[->] Exit" -ForegroundColor Yellow
+    } else {
+        Write-Host "`[-] Exit"  # Regular exit option
+    }
 }
 
 # Main loop
@@ -120,20 +125,10 @@ while ($true) {
     # Handle arrow keys and selection
     switch ($key.Key) {
         'UpArrow' {
-            if ($currentIndex -eq 0) {
-                $currentIndex = $menuOptions.Count - 1  # Wrap around to the last item
-            } else {
-                $currentIndex = ($currentIndex - 1) % $menuOptions.Count  # Move up
-            }
+            $currentIndex = ($currentIndex - 1 + $menuOptions.Count) % $menuOptions.Count  # Wrap around to the last item
         }
         'DownArrow' {
-            if ($currentIndex -lt $windows10Options.Count - 1) {
-                $currentIndex = ($currentIndex + 1) % $menuOptions.Count  # Move down within Windows 10 options
-            } elseif ($currentIndex -eq $windows10Options.Count - 1) {
-                $currentIndex = $windows10Options.Count  # Move to the first Windows 11 option
-            } elseif ($currentIndex -eq $windows10Options.Count) {
-                $currentIndex = ($currentIndex + 1) % $menuOptions.Count  # Move down within Windows 11 options
-            }
+            $currentIndex = ($currentIndex + 1) % $menuOptions.Count  # Move down
         }
         'Enter' {
             Clear-Host  # Clear the screen before running the action

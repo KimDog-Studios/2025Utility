@@ -98,7 +98,7 @@ function Show-MainMenu {
 
     Write-Host "`n----- Dedicated Windows 11 Options -----" -ForegroundColor Cyan
     for ($i = 0; $i -lt $windows11Options.Count; $i++) {
-        if ($i -eq $currentIndex - $windows11Options.Count - 1) {  # Adjust index for Windows 11 options
+        if ($i -eq $currentIndex - $windows10Options.Count - 1) {  # Adjust index for Windows 11 options
             Write-Host "`[->] $($windows11Options[$i].Name)" -ForegroundColor Yellow  # Highlight the current item in yellow
         } else {
             Write-Host "`[-] $($windows11Options[$i].Name)"  # Regular menu item
@@ -120,15 +120,24 @@ while ($true) {
     # Handle arrow keys and selection
     switch ($key.Key) {
         'UpArrow' {
-            $currentIndex = ($currentIndex - 1 + $menuOptions.Count) % $menuOptions.Count  # Move up
+            if ($currentIndex -eq 0) {
+                $currentIndex = $menuOptions.Count - 1  # Wrap around to the last item
+            } else {
+                $currentIndex = ($currentIndex - 1) % $menuOptions.Count  # Move up
+            }
         }
         'DownArrow' {
-            $currentIndex = ($currentIndex + 1) % $menuOptions.Count  # Move down
+            if ($currentIndex -lt $windows10Options.Count - 1) {
+                $currentIndex = ($currentIndex + 1) % $menuOptions.Count  # Move down within Windows 10 options
+            } elseif ($currentIndex -eq $windows10Options.Count - 1) {
+                $currentIndex = $windows10Options.Count  # Move to the first Windows 11 option
+            } elseif ($currentIndex -eq $windows10Options.Count) {
+                $currentIndex = ($currentIndex + 1) % $menuOptions.Count  # Move down within Windows 11 options
+            }
         }
         'Enter' {
             Clear-Host  # Clear the screen before running the action
             & $menuOptions[$currentIndex].Action  # Execute the selected option
         }
     }
-    Start-Sleep -Milliseconds 100
 }

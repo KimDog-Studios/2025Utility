@@ -23,6 +23,7 @@ $InvokeSetWindowsUpdatesToDisabled = $urls.urls.InvokeSetWindowsUpdatesToDisable
 $InvokeSetWindowsUpdatesToSecurity = $urls.urls.InvokeSetWindowsUpdatesToSecurity.URL
 $WPFClassicRightClick = $urls.urls.WPFClassicRightClick.URL
 $WPFShortcut = $urls.urls.WPFShortcut.URL
+$InvokeDisableStickyKeys = $urls.urls.InvokeDisableStickyKeys.URL
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {

@@ -10,8 +10,8 @@ function Create-Shortcut {
 
     $WshShell = New-Object -comObject WScript.Shell
     $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
-    $Shortcut.TargetPath = $TargetPath
-    $Shortcut.Arguments = $Arguments
+    $Shortcut.TargetPath = "powershell.exe"  # Change to PowerShell
+    $Shortcut.Arguments = "-ExecutionPolicy Bypass -File `"$TargetPath`""  # Pass the script path as an argument
 
     $iconUrl = "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/icon.ico"
     $iconPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "logo.ico")
@@ -44,13 +44,10 @@ function Create-WinUtilShortcuts {
             New-Item -Path $location.Value -ItemType Directory | Out-Null
         }
         
-        # Create shortcut that runs as admin
+        # Always create or update the shortcut
         $adminShortcutPath = [System.IO.Path]::Combine($location.Value, "KimDog's Utility.lnk")
-        if (-not (Test-Path -Path $adminShortcutPath)) {
-            Create-Shortcut -ShortcutName "KimDog's Utility" -ShortcutPath $adminShortcutPath -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
-        } else {
-            Write-Host "Shortcut '$adminShortcutPath' already exists." -ForegroundColor Yellow
-        }
+        Create-Shortcut -ShortcutName "KimDog's Utility" -ShortcutPath $adminShortcutPath -TargetPath $shell -Arguments $shellArgs -RunAsAdmin $true
+        Write-Host "Shortcut '$adminShortcutPath' created or updated." -ForegroundColor Green
     }
 }
 

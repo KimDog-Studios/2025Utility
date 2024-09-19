@@ -54,21 +54,21 @@ function Read-Key {
 
 # Define menu options for Windows 10
 $windows10Options = @(
-    @{ Name = "Add & Apply Ultimate Performance Mode"; Action = { Run-ScriptFromUrl -Url $ultimatePerformanceUrl } Write-Host "Running Add Ultimate Performance Scheme" },
-    @{ Name = "Apply Dark Mode to Windows"; Action = { Run-ScriptFromUrl -Url $darkModeUrl } Write-Host "Running Dark Mode" },
-    @{ Name = "Disable Mouse Acceleration"; Action = { Run-ScriptFromUrl -Url $mouseAccelerationUrl } Write-Host "Running Disable Mouse Acceleration" },
-    @{ Name = "Optimizations for Gaming [Recommended]"; Action = { Run-ScriptFromUrl -Url $gamingOptimizationUrl } Write-Host "Running Gaming Optimizations" },
-    @{ Name = "Uninstall Microsoft Edge"; Action = { Run-ScriptFromUrl -Url $UninstallWinUtilEdgeBrowser } Write-Host "Running Uninstall Microsoft Edge" },
-    @{ Name = "Set Windows Updates to Default"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDefault } Write-Host "Running Set Windows Updates to Default" },
+    @{ Name = "Add & Apply Ultimate Performance Mode"; Action = { Run-ScriptFromUrl -Url $ultimatePerformanceUrl }; Write-Host "Running Add Ultimate Performance Scheme" },
+    @{ Name = "Apply Dark Mode to Windows"; Action = { Run-ScriptFromUrl -Url $darkModeUrl }; Write-Host "Running Dark Mode" },
+    @{ Name = "Disable Mouse Acceleration"; Action = { Run-ScriptFromUrl -Url $mouseAccelerationUrl }; Write-Host "Running Disable Mouse Acceleration" },
+    @{ Name = "Optimizations for Gaming [Recommended]"; Action = { Run-ScriptFromUrl -Url $gamingOptimizationUrl }; Write-Host "Running Gaming Optimizations" },
+    @{ Name = "Uninstall Microsoft Edge"; Action = { Run-ScriptFromUrl -Url $UninstallWinUtilEdgeBrowser }; Write-Host "Running Uninstall Microsoft Edge" },
+    @{ Name = "Set Windows Updates to Default"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDefault }; Write-Host "Running Set Windows Updates to Default" },
     @{ Name = "Set Windows Updates to Disabled [Not Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDisabled } Write-Host "Running Set Windows Updates to Disabled" },
-    @{ Name = "Set Windows Updates to Security [Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToSecurity } Write-Host "Running Set Windows Updates to Security" },
-    @{ Name = "Disable Sticky Keys"; Action = { Run-ScriptFromUrl -Url $InvokeDisableStickyKeys } Write-Host "Running Disable Sticky Keys" }
+    @{ Name = "Set Windows Updates to Security [Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToSecurity }; Write-Host "Running Set Windows Updates to Security" },
+    @{ Name = "Disable Sticky Keys"; Action = { Run-ScriptFromUrl -Url $InvokeDisableStickyKeys }; Write-Host "Running Disable Sticky Keys" }
 )
 
 # Define menu options for Windows 11
 $windows11Options = @(
-    @{ Name = "Set Right Click Menu to Classic"; Action = { Run-ScriptFromUrl -Url $WPFClassicRightClick } },
-    @{ Name = "Remove Bloatware"; Action = { Run-ScriptFromUrl -Url $removeAppXFilesUrl } }
+    @{ Name = "Set Right Click Menu to Classic"; Action = { Run-ScriptFromUrl -Url $WPFClassicRightClick }; Write-Host "Running Set Right Click Menu to Classic" },
+    @{ Name = "Remove Bloatware"; Action = { Run-ScriptFromUrl -Url $removeAppXFilesUrl }; Write-Host "Running Remove Bloatware"}
 )
 
 # Combine the options with headers for Windows 10 and Windows 11

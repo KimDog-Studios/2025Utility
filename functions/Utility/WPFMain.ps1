@@ -161,5 +161,4 @@ do {
             & $menuOptions[$currentIndex].Action  # Execute the selected option
         }
     }
-    Start-Sleep -Milliseconds 100
 } while ($true)

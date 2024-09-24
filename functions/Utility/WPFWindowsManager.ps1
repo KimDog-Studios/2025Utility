@@ -63,6 +63,8 @@ $windows10Options = @(
     @{ Name = "Set Windows Updates to Disabled [Not Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDisabled }},
     @{ Name = "Set Windows Updates to Security [Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToSecurity }},
     @{ Name = "Disable Sticky Keys"; Action = { Run-ScriptFromUrl -Url $InvokeDisableStickyKeys }}
+    @{ Name = "Show Extention Names"}
+    @{ Name = "Show Hidden Items"}
 )
 
 # Define menu options for Windows 11

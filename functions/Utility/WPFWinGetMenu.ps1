@@ -220,6 +220,7 @@ function Upgrade-InstalledApps {
     }
 }
 
+
 # Handle app selection and installation
 function Handle-AppSelection {
     param ([PSCustomObject]$app)

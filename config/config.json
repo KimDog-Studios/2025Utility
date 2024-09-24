@@ -47,6 +47,12 @@
     },
     "InvokeDisableStickyKeys": {
         "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Windows-10/Invoke-DisbaleStickyKeys.ps1"
+    },
+    "InvokeWinUtilHiddenFiles": {
+        "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Windows-10/Invoke-WinUtilHiddenFiles.ps1"
+    },
+    "InvokeShowExtentionName": {
+        "URL": "https://raw.githubusercontent.com/KimDog-Studios/2025Utility/main/functions/Windows/Windows-10/Invoke-ShowFileExtentions.ps1"
     }
   },
   "categories": [

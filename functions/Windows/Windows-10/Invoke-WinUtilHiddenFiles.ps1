@@ -28,3 +28,5 @@ function Invoke-WinUtilHiddenFiles {
         Write-Warning $psitem.Exception.StackTrace
     }
 }
+
+Invoke-WinUtilHiddenFiles -Enabled $true

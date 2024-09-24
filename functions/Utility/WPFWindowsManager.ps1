@@ -24,6 +24,8 @@ $InvokeSetWindowsUpdatesToSecurity = $urls.urls.InvokeSetWindowsUpdatesToSecurit
 $WPFClassicRightClick = $urls.urls.WPFClassicRightClick.URL
 $WPFShortcut = $urls.urls.WPFShortcut.URL
 $InvokeDisableStickyKeys = $urls.urls.InvokeDisableStickyKeys.URL
+$InvokeWinUtilHiddenFiles = $urls.urls.InvokeWinUtilHiddenFiles.URL
+$InvokeShowFileExtentions = $urls.urls.InvokeShowExtentionName.URL
 
 # Function to fetch and execute the script from the URL
 function Run-ScriptFromUrl {
@@ -63,8 +65,8 @@ $windows10Options = @(
     @{ Name = "Set Windows Updates to Disabled [Not Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToDisabled }},
     @{ Name = "Set Windows Updates to Security [Recommended]"; Action = { Run-ScriptFromUrl -Url $InvokeSetWindowsUpdatesToSecurity }},
     @{ Name = "Disable Sticky Keys"; Action = { Run-ScriptFromUrl -Url $InvokeDisableStickyKeys }}
-    @{ Name = "Show Extention Names"}
-    @{ Name = "Show Hidden Items"}
+    @{ Name = "Show Extention Names"; Action = { Run-ScriptFromUrl -Url $InvokeShowFileExtentions }}
+    @{ Name = "Show Hidden Items"; Action = { Run-ScriptFromUrl -Url $InvokeWinUtilHiddenFiles }}
 )
 
 # Define menu options for Windows 11
